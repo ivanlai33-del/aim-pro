@@ -47,9 +47,9 @@ export async function POST(request: Request) {
         }
 
         // 3. Prepare URLs
-        const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL;
-        const returnUrl = `${origin}/dashboard/settings?payment=success`;
-        const notifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/webhook`;
+        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://aim.ycideas.com';
+        const returnUrl = `${origin}/api/payment/return`;
+        const notifyUrl = `${origin}/api/payment/webhook`;
 
         // 4. Generate Order Data (NewebPay format)
         const orderData = {
