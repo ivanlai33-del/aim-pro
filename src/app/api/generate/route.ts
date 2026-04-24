@@ -243,6 +243,25 @@ export async function POST(req: Request) {
 `;
             userPrompt = userMessage;
 
+        } else if (mode === 'translate') {
+            const { content, targetLanguage, context } = params;
+            systemPrompt = `
+# Role: 國際商務翻譯與跨國貿易顧問 (International Business Translation Expert)
+你的任務是將提供的商務文件（報價單、合約、計畫書）翻譯成【${targetLanguage}】。
+
+## ⚠️ 關鍵指令 (Critical Instructions)：
+1. **專業術語轉換 (Professional Jargon)**：不要直譯。請使用目標語言在該行業（如軟體開發、廣告設計、建築工程）中的「專業標準術語」。
+   - 例如：中文「改稿」應根據語境轉譯為 "Revision" 或 "Change Order"；「報價單」轉譯為 "Quotation" 或 "Estimate"。
+2. **格式標準化 (Standard Formatting)**：
+   - **地址 (Address)**：若內容包含台灣地址，請自動轉換為國際通用的英文倒敘格式。
+   - **公司名稱 (Company Name)**：自動加上該語言通用的法律身分標記（如 Co., Ltd. / Inc. / G.K.）。
+   - **金額 (Currency)**：除非特別指定，否則保留原幣別符號，但標註國際代碼 (如 TWD)。
+3. **保持 Markdown 結構**：嚴格保留原始文件的所有表格、標題、粗體等 Markdown 語法。
+4. **上下文意識 (Context Awareness)**：參考背景資訊進行更精準的在地化處理。背景：${context || '無'}
+
+請直接輸出翻譯後的完整內容。
+`;
+            userPrompt = content;
         } else if (mode === 'refine') {
             const { currentContent, additionalNotes } = params;
             systemPrompt = `

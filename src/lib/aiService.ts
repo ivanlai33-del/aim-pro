@@ -124,3 +124,29 @@ export async function refineReport(
         return { content: "", error: error instanceof Error ? error.message : "發生未知錯誤" };
     }
 }
+
+/**
+ * Professional Translation/Internationalization (Backend handled)
+ */
+export async function translateDocument(
+    content: string,
+    targetLanguage: 'English' | 'Japanese' | 'Traditional Chinese',
+    context?: string,
+    userApiKey?: string,
+    turnstileToken?: string
+): Promise<AIResponse> {
+    try {
+        const result = await callGenerateAPI({
+            mode: 'translate',
+            content,
+            targetLanguage,
+            context,
+            userApiKey,
+            turnstileToken
+        });
+        return { content: cleanAIResponse(result.content) };
+    } catch (error: any) {
+        console.error("Translation Service Error:", error);
+        return { content: "", error: error instanceof Error ? error.message : "翻譯服務暫時不可用" };
+    }
+}

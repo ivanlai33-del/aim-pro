@@ -3,8 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock } from 'lucide-react';
-import { refineReport } from '../lib/aiService';
+import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock, Languages, Globe } from 'lucide-react';
+import { refineReport, translateDocument } from '../lib/aiService';
 import Turnstile from './Turnstile';
 import { useProject } from '../context/ProjectContext';
 import { toast } from 'sonner';
@@ -25,7 +25,9 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
     const [editedContent, setEditedContent] = useState(reportContent);
     const [additionalNotes, setAdditionalNotes] = useState('');
     const [isRefining, setIsRefining] = useState(false);
+    const [isTranslating, setIsTranslating] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [showLangMenu, setShowLangMenu] = useState(false);
 
     useEffect(() => {
         setEditedContent(reportContent);
@@ -58,6 +60,38 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
             toast.error('AI 潤飾過程發生錯誤。');
         } finally {
             setIsRefining(false);
+        }
+    };
+
+    const handleTranslate = async (lang: 'English' | 'Japanese' | 'Traditional Chinese') => {
+        // 🔒 Paywall Check: Translation is a Pro feature
+        if (userTier === 'free') {
+            setShowUpgradeModal(true);
+            return;
+        }
+
+        setIsTranslating(true);
+        setShowLangMenu(false);
+        try {
+            const response = await translateDocument(
+                editedContent, 
+                lang, 
+                `這是為 ${userTier} 等級用戶進行的專業商務語譯。`, 
+                apiKey, 
+                turnstileToken || undefined
+            );
+            if (response.error) {
+                toast.error(`翻譯失敗：${response.error}`);
+            } else {
+                setEditedContent(response.content);
+                onSave(response.content); // Automatically save translated content
+                toast.success(`成功轉換為專業 ${lang === 'English' ? '英文' : lang === 'Japanese' ? '日文' : '繁體中文'} 版本！`);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('翻譯過程發生錯誤。');
+        } finally {
+            setIsTranslating(false);
         }
     };
 
@@ -136,6 +170,47 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                                 <Edit className="w-4 h-4 mr-1.5" />
                                 編輯內容
                             </button>
+                            {/* Internationalization Menu */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowLangMenu(!showLangMenu)}
+                                    disabled={isTranslating}
+                                    className="flex items-center px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-md hover:bg-indigo-100 transition-colors text-sm font-bold"
+                                >
+                                    {isTranslating ? (
+                                        <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                                    ) : (
+                                        <Globe className="w-4 h-4 mr-1.5" />
+                                    )}
+                                    一鍵國際化
+                                </button>
+
+                                {showLangMenu && (
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-border z-50 overflow-hidden animate-in fade-in zoom-in duration-200">
+                                        <div className="p-2 border-b border-border bg-slate-50">
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">選擇目標語言 (專業轉譯)</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => handleTranslate('English')}
+                                            className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center transition-colors"
+                                        >
+                                            <span className="mr-3 text-lg">🇺🇸</span> 專業商務英文
+                                        </button>
+                                        <button 
+                                            onClick={() => handleTranslate('Japanese')}
+                                            className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center transition-colors"
+                                        >
+                                            <span className="mr-3 text-lg">🇯🇵</span> 專業商務日文
+                                        </button>
+                                        <button 
+                                            onClick={() => handleTranslate('Traditional Chinese')}
+                                            className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 flex items-center transition-colors"
+                                        >
+                                            <span className="mr-3 text-lg">🇹🇼</span> 繁體中文 (精煉)
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                             <button
                                 onClick={handleDownloadPDF}
                                 className={`flex items-center px-4 py-2 rounded-xl transition-all text-sm font-black shadow-lg active:scale-95 ${
