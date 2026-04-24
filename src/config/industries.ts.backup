@@ -1,0 +1,343 @@
+
+export interface QuotationItemTemplate {
+    description: string;
+    unitPrice: number;
+    quantity: number;
+}
+
+export interface ProjectTypeOption {
+    id: string; // 'web' | 'design' | string;
+    label: string;
+    description: string;
+    icon?: string;
+}
+
+export interface IndustryConfig {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    defaultPrompt: string;
+    defaultItems: QuotationItemTemplate[];
+    projectTypes: ProjectTypeOption[];
+    workflow: {
+        diagram: string;
+        milestones: string[];
+    };
+}
+
+export const INDUSTRIES: Record<string, IndustryConfig> = {
+    web: {
+        id: 'web',
+        name: '網頁設計與開發 (Web Design)',
+        description: '適用於網站建置、APP 開發、軟體系統專案。',
+        icon: 'Layout',
+        defaultPrompt: 'You are a professional Senior Technical Consultant and Solution Architect. Your goal is to analyze the client\'s requirements for a web/software project, propose a technical stack (e.g., Next.js, React, Node.js), and estimate the development effort. You should focus on scalability, security, and user experience.',
+        defaultItems: [
+            { description: '系統架構設計與規劃 (System Architecture)', quantity: 1, unitPrice: 30000 },
+            { description: '前端介面開發 (RWD RESPONSIVE)', quantity: 1, unitPrice: 50000 },
+            { description: '後端 API 與資料庫建置 (Backend API)', quantity: 1, unitPrice: 60000 },
+            { description: '系統部署與測試 (Deployment & Testing)', quantity: 1, unitPrice: 20000 },
+        ],
+        projectTypes: [
+            { id: 'web', label: '🌐 網站/系統專案設定 (Website/System)', description: '如：形象網站、電商系統、APP 開發' },
+            // Removed Commercial Design (moved to Graphic)
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[開始企劃]
+    B --> C{分門別類}
+    C --> D[UI/UX 介面設計]
+    C --> E[後端系統架構建置]
+    D --> F[前端 RWD 程式開發]
+    E --> G[資料庫與 API 對接]
+    F --> H[系統整合測試]
+    G --> H
+    H --> I[客戶驗收/上線]`,
+            milestones: ['收到訂金', '開始企劃', '介面設計與架構建置', '程式開發與 API 對接', '系統整合測試', '客戶驗收/上線']
+        }
+    },
+    renovation: {
+        id: 'renovation',
+        name: '室內裝修工程 (Interior Design)',
+        description: '適用於居家裝潢、店面改裝、統包工程。',
+        icon: 'Hammer',
+        defaultPrompt: 'You are a professional Interior Designer and Construction Manager. Your goal is to analyze the client\'s renovation requirements, propose materials (e.g., flooring, paint, lighting), and estimate the construction costs. You should focus on aesthetics, functionality, and budget control. You are familiar with construction items like demolition, mudwork, carpentry, and painting.',
+        defaultItems: [
+            { description: '拆除與清運工程 (Demolition & Disposal)', quantity: 1, unitPrice: 25000 },
+            { description: '水電配置工程 (Plumbing & Electrical)', quantity: 1, unitPrice: 45000 },
+            { description: '泥作與磁磚工程 (Mudwork & Tiling)', quantity: 1, unitPrice: 60000 },
+            { description: '木作天花板與隔間 (Carpentry)', quantity: 1, unitPrice: 55000 },
+            { description: '油漆粉刷工程 (Painting)', quantity: 1, unitPrice: 18000 },
+        ],
+        projectTypes: [
+            { id: 'home', label: '🏠 居家空間裝潢 (Residential)', description: '如：老屋翻新、新成屋裝潢' },
+            { id: 'commercial', label: '🏢 商業空間設計 (Commercial Space)', description: '如：辦公室、店面、展場設計' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[開始企劃]
+    B --> C{分門別類}
+    C --> D[詳細設計圖與選材確認]
+    C --> E[工程進度排程]
+    D --> F[基礎工程: 拆除、水電、泥作]
+    E --> F
+    F --> G[裝飾工程: 木作、油漆、系統櫃]
+    G --> H[細部安裝與清潔]
+    H --> I[驗收交付]`,
+            milestones: ['收到訂金', '開始企劃', '設計確認與工程排程', '基礎工程建置', '裝飾工程施作', '驗收交付']
+        }
+    },
+    marketing: {
+        id: 'marketing',
+        name: '數位行銷代操 (Digital Marketing)',
+        description: '適用於社群經營、KOL 媒合專案。',
+        icon: 'Megaphone',
+        defaultPrompt: 'You are a professional Digital Marketing Strategist. Your goal is to analyze the client\'s brand and goals, propose a marketing campaign (social media, influencer), and estimate the costs. You should focus on engagement metrics and brand awareness.',
+        defaultItems: [
+            { description: '社群內容策略規劃 (Content Strategy)', quantity: 1, unitPrice: 15000 },
+            { description: 'FB/IG 貼文製作 (Social Media Post x 4)', quantity: 4, unitPrice: 3000 },
+            { description: 'KOL/網紅媒合與溝通 (Influencer Management)', quantity: 1, unitPrice: 10000 }, // Added influencer
+            { description: '月度社群成效報告 (Monthly Social Report)', quantity: 1, unitPrice: 5000 },
+        ],
+        projectTypes: [
+            { id: 'social', label: '📱 社群經營代操 (Social Media)', description: '如：IG/FB 粉專經營、貼文製作' },
+            { id: 'influencer', label: '🤝 KOL/網紅媒合 (Influencer)', description: '如：網紅團購、業配洽談' }, // Added
+            // Removed Ad Campaign (moved to Ads)
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[開始企劃]
+    B --> C{分門別類}
+    C --> D[品牌定位與受眾研究]
+    C --> E[內容行事曆排程]
+    D --> F[文案撰寫與視覺製作]
+    E --> F
+    F --> G[網紅媒合與貼文發佈]
+    G --> H[數據監測與互動回覆]
+    H --> I[月度成效報告]`,
+            milestones: ['收到訂金', '開始企劃', '品牌定位與內容排程', '文案撰寫與視覺製作', '執行與互動', '月度成效報告']
+        }
+    },
+    ads: {
+        id: 'ads',
+        name: '廣告投手 (Ad Optimizer)',
+        description: '適用於中小企業與品牌主的 Meta 廣告投放、成效優化與策略規劃。',
+        icon: 'TrendingUp',
+        defaultPrompt: `You are a professional Ad Optimizer and Media Buyer specialized in Meta (FB/IG) ads for SMBs and Brands.
+        Your goal is to maximize ad performance ROAS/ROI within the given budget.
+        Core Deliverables: Target Audience Analysis, Performance Reports, Optimization Strategy.`,
+        defaultItems: [
+            { description: '廣告帳戶與 BM 架構規劃 (Account Structure)', quantity: 1, unitPrice: 15000 },
+            { description: '廣告投放代操服務 (Ad Management)', quantity: 1, unitPrice: 25000 },
+            { description: '素材與受眾 A/B 測試 (A/B Testing)', quantity: 1, unitPrice: 10000 },
+            { description: '月度成效優化報告 (Monthly Optimization Report)', quantity: 1, unitPrice: 8000 },
+        ],
+        projectTypes: [
+            { id: 'ecommerce', label: '🛍️ 電商轉換 (E-commerce)', description: '如：ROAS 優化、DPA 動態廣告' },
+            { id: 'leadgen', label: '📋 名單獲取 (Lead Generation)', description: '如：名單型廣告、私訊廣告' },
+            { id: 'brand', label: '✨ 品牌推廣 (Brand Awareness)', description: '如：觸及率優化、影片觀看' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[需求與帳戶健檢] --> B[策略規劃與提案]
+    B --> C{架構確認}
+    C --> D[帳戶與 Pixel 建置]
+    C --> E[受眾包與素材建議]
+    D --> F[廣告上架與審核]
+    E --> F
+    F --> G[投放執行與每日監控]
+    G --> H[成效優化與擴量]
+    H --> I[結案/月度報告]`,
+            milestones: ['需求與帳戶健檢', '策略規劃', '帳戶建置與素材', '投放執行', '成效優化', '月度/結案報告']
+        }
+    },
+    event: {
+        id: 'event',
+        name: '活動婚禮統籌 (Event Planning)',
+        description: '適用於婚禮企劃、公司尾牙、新品發表會。',
+        icon: 'PartyPopper',
+        defaultPrompt: 'You are a professional Event Planner and Coordinator. Your goal is to organize a seamless event for the client, managing vendors, timeline, and budget. You should focus on guest experience, logistics, and contingency planning.',
+        defaultItems: [
+            { description: '活動企劃與流程設計 (Event Planning)', quantity: 1, unitPrice: 20000 },
+            { description: '場地佈置與花藝設計 (Decoration & Floral)', quantity: 1, unitPrice: 35000 },
+            { description: '專業攝影與錄影 (Photo & Video)', quantity: 1, unitPrice: 25000 },
+            { description: '活動主持人與工作人員 (Emcee & Staff)', quantity: 1, unitPrice: 15000 },
+            { description: '現場音響與燈光設備 (Audio & Lighting)', quantity: 1, unitPrice: 12000 },
+        ],
+        projectTypes: [
+            { id: 'wedding', label: '💍 婚禮統籌顧問 (Wedding Planning)', description: '如：婚禮流程、求婚企劃' },
+            { id: 'corporate', label: '🎤 企業/公關活動 (Corporate Event)', description: '如：尾牙、春酒、新品發表會' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[開始企劃]
+    B --> C{分門別類}
+    C --> D[場地佈置與視覺設計]
+    C --> E[廠商資源整合: 錄影、餐飲]
+    D --> F[活動細部流程 RUNDOWN]
+    E --> F
+    F --> G[物資備置與人力配置]
+    G --> H[現場執行與場控]
+    H --> I[結案檢討與交付]`,
+            milestones: ['收到訂金', '開始企劃', '資源整合與視觀設計', '流程確認與物資備置', '現場執行與場控', '結案檢討與交付']
+        }
+    },
+    exhibition: {
+        id: 'exhibition',
+        name: '展場設計企劃 (Exhibition Design)',
+        description: '適用於大型展館的提案、廠商接洽與執行報價。',
+        icon: 'Layout',
+        defaultPrompt: 'You are a professional Exhibition Design and Project Specialist. You have extensive experience in large venues. Your goal is to provide creative, innovative exhibition booth designs and comprehensive planning.',
+        defaultItems: [
+            { description: '展場創意設計與 3D 模擬圖 (Creative Design)', quantity: 1, unitPrice: 45000 },
+            { description: '攤位木作/結構工程 (Booth Construction)', quantity: 1, unitPrice: 150000 },
+            { description: '廠商接洽與專案監造費 (Project Management)', quantity: 1, unitPrice: 30000 },
+            { description: '展場影音與燈光租賃 (AV & Lighting)', quantity: 1, unitPrice: 25000 },
+            { description: '展期物料與現場人力 (Logistics & Staff)', quantity: 1, unitPrice: 20000 },
+        ],
+        projectTypes: [
+            { id: 'expo', label: '🏛️ 大型展館提案 (Exhibition Hall)', description: '如：世貿、南港展覽館大型攤位' },
+            { id: 'special', label: '✨ 創意特展規劃 (Special Exhibition)', description: '如：品牌快閃店、沉浸式特展' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[開始企劃]
+    B --> C{分門別類}
+    C --> D[創意發想與 3D 設計]
+    C --> E[廠商報價與成本核算]
+    D --> F[提案簡報與需求釐清]
+    E --> F
+    F --> G[進場施工與展位建置]
+    G --> H[展期執行與場控]
+    H --> I[撤場與結案報告]`,
+            milestones: ['收到訂金', '開始企劃', '創意設計與成本核算', '提案簡報與需求釐清', '進場施工與執行', '結案報告']
+        }
+    },
+    discord: {
+        id: 'discord',
+        name: 'Discord 社群設計架構 (Discord Setup)',
+        description: '包含伺服器架設、Bot 整合、自動化機制與全套美術設計。',
+        icon: 'MessageSquare',
+        defaultPrompt: 'You are a professional Discord Community Architect and Visual Designer. Your goal is to provide comprehensive Discord server solutions, including technical setup and aesthetic branding.',
+        defaultItems: [
+            { description: 'Discord 伺服器完整架設與權限規劃 (Full Setup)', quantity: 1, unitPrice: 15000 },
+            { description: '自動化 Bot 功能整合與設定 (Bot Integration)', quantity: 1, unitPrice: 8000 },
+            { description: '全套美術設計套組 (Art Set: Banner/Emoji/Icon)', quantity: 1, unitPrice: 12000 },
+            { description: 'GIF 動態設計套組 (Motion Set: Avatar/Banner)', quantity: 1, unitPrice: 10000 },
+        ],
+        projectTypes: [
+            { id: 'dc_setup', label: '🛠️ Discord 架設方案 (Setup)', description: '基礎 / 進階 / 專業版完整架設' },
+            { id: 'dc_art', label: '🎨 美術設計方案 (Visual Art)', description: 'Emoji / 視覺套裝 / 完整美術套組' },
+            { id: 'dc_motion', label: '✨ GIF 動態設計方案 (Motion)', description: '動態頭貼 / 動態橫幅 / 套組優惠' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[需求釐清] --> B[訂金與專案啟動]
+    B --> C{類別拆解}
+    C --> D[伺服器架構與權限設定]
+    C --> E[風格發想與美術草稿]
+    D --> F[Bot 整合與自動化測試]
+    E --> G[動態/靜態檔案製作]
+    F --> H[浮水印预览確認]
+    G --> H
+    H --> I[交付正式版與結案]`,
+            milestones: ['需求釐清', '專案啟動', '技術架構與美術設計', '功能整合與预览確認', '交付結案']
+        }
+    },
+    graphic: {
+        id: 'graphic',
+        name: '平面設計與品牌 (Graphic Design)',
+        description: '適用於品牌識別、包裝設計、行銷素材製作。',
+        icon: 'Palette',
+        defaultPrompt: 'You are a professional Graphic Designer and Brand Visual Director. Your goal is to create compelling visual identities and marketing materials that align with the client\'s brand values.',
+        defaultItems: [
+            { description: '品牌識別系統設計 (Brand Identity System)', quantity: 1, unitPrice: 30000 },
+            { description: '產品包裝結構與視覺設計 (Packaging Design)', quantity: 1, unitPrice: 15000 },
+            { description: '行銷素材與名片設計 (Marketing Assets)', quantity: 1, unitPrice: 8000 },
+            { description: '印刷發包與打樣費用 (Printing Service)', quantity: 1, unitPrice: 5000 },
+        ],
+        projectTypes: [
+            { id: 'brand_identity', label: '🎨 品牌識別設計 (Brand Identity)', description: '如：Logo、CIS 企業識別、名片信封' },
+            { id: 'packaging', label: '📦 包裝與印刷品 (Packaging)', description: '如：產品包裝、紙盒、書冊排版' },
+            { id: 'marketing_assets', label: '🖼️ 行銷素材設計 (Marketing Assets)', description: '如：主視覺 KV、社群圖卡' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[開始企劃]
+    B --> C{風格發想}
+    C --> D[草圖提案 (3款)]
+    C --> E[設計規範制定]
+    D --> F[客戶選定與修改]
+    F --> G[完稿製作]
+    E --> G
+    G --> H[打樣與校對]
+    H --> I[交付原始檔與結案]`,
+            milestones: ['收到訂金', '風格企劃', '草圖提案', '完稿製作', '打樣校對', '交付結案']
+        }
+    },
+    video: {
+        id: 'video',
+        name: '動態影像製作 (Video Production)',
+        description: '適用於品牌形象片、電視廣告、社群短影音拍攝後期。',
+        icon: 'Video',
+        defaultPrompt: 'You are a professional Video Producer and Director. Your goal is to produce high-quality video content, managing the entire production pipeline from pre-production (script) to post-production (editing, VFX).',
+        defaultItems: [
+            { description: '腳本企劃與分鏡製作 (Script & Storyboard)', quantity: 1, unitPrice: 5000 },
+            { description: '動態攝影與器材租賃 (Shooting & Rental)', quantity: 1, unitPrice: 20000 },
+            { description: '後期剪輯與調色 (Editing & Color Grading)', quantity: 1, unitPrice: 15000 },
+            { description: 'Motion Graphics 動畫特效 (VFX/MG)', quantity: 1, unitPrice: 10000 },
+        ],
+        projectTypes: [
+            { id: 'commercial', label: '🎬 形象/商業廣告 (Commercial)', description: '如：品牌形象片、TVC、產品宣傳' },
+            { id: 'social_reels', label: '📹 社群短影音 (Social Reels)', description: '如：Reels/Shorts/TikTok 垂直短片' },
+            { id: 'event_record', label: '🎥 活動紀錄攝影 (Event Record)', description: '如：活動花絮、訪談、婚禮錄影' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[腳本企劃]
+    B --> C{確認拍攝方案}
+    C --> D[分鏡腳本繪製]
+    C --> E[選角與勘景]
+    D --> F[正式拍攝執行]
+    E --> F
+    F --> G[初剪與配樂]
+    G --> H[特效與調色]
+    H --> I[交片與結案]`,
+            milestones: ['收到訂金', '腳本企劃', '拍攝執行', '初剪確認', '後期特效', '交片結案']
+        }
+    },
+    seo: {
+        id: 'seo',
+        name: 'SEO 搜尋引擎優化 (SEO)',
+        description: '適用於網站技術健檢、關鍵字策略、內容行銷。',
+        icon: 'Search',
+        defaultPrompt: 'You are a professional SEO Specialist. Your goal is to improve the client\'s website ranking on search engines through technical optimization, content strategy, and link building.',
+        defaultItems: [
+            { description: '網站技術健檢與優化建議 (Technical Audit)', quantity: 1, unitPrice: 10000 },
+            { description: '關鍵字策略研究報告 (Keyword Research)', quantity: 1, unitPrice: 8000 },
+            { description: 'SEO 優化文章撰寫 (Content Writing x 4)', quantity: 4, unitPrice: 5000 },
+            { description: '外部連結建設 (Backlink Building)', quantity: 1, unitPrice: 15000 },
+        ],
+        projectTypes: [
+            { id: 'technical', label: '⚙️ 技術與策略 (Technical)', description: '如：網站健檢、關鍵字佈局' },
+            { id: 'content', label: '📝 內容行銷撰寫 (Content)', description: '如：SEO 文章、部落格經營' },
+            { id: 'offpage', label: '🔗 權重優化 (Off-page)', description: '如：外部連結、在地商家優化' }
+        ],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[現況分析]
+    B --> C{策略規劃}
+    C --> D[網站技術健檢]
+    C --> E[關鍵字研究]
+    D --> F[內容撰寫與優化]
+    E --> F
+    F --> G[外部連結建設]
+    G --> H[排名監測與調整]
+    H --> I[月度報表]`,
+            milestones: ['收到訂金', '現況分析', '技術健檢', '內容優化', '連結建設', '月度報表']
+        }
+    }
+};
+
+export const DEFAULT_INDUSTRY = INDUSTRIES.web;

@@ -1,0 +1,899 @@
+// ============================================================
+// industries.ts — 商業模組框架
+// 架構說明：
+//   CategoryFolder  = 資料夾（五大類），僅作分類用途，不可訂閱。
+//   BusinessModule  = 獨立商業模組（17 個專業大腦），這是真正的訂閱單位。
+//   七大功能模組    = 每個 BusinessModule 的核心內容
+// ============================================================
+
+// ============================================================
+// SECTION 1: 基礎型別定義
+// ============================================================
+
+export interface QuotationItemTemplate {
+    description: string;
+    unitPrice: number;
+    quantity: number;
+}
+
+export interface ProjectTypeOption {
+    id: string;
+    label: string;
+    description: string;
+    icon?: string;
+}
+
+// ============================================================
+// SECTION 2: 七大功能模組介面
+// ============================================================
+
+/** 模組 1：表單配置 */
+export interface FormConfig {
+    descriptionPlaceholder: string;
+    stylePlaceholder?: string;
+    deliverablesPlaceholder?: string;
+    /** 多選需求類型（適用設計/行銷類） */
+    needsCheckboxes?: Array<{ id: string; label: string }>;
+    /** 自訂欄位 */
+    customFields?: Array<{
+        name: string;
+        label: string;
+        placeholder: string;
+        type?: 'text' | 'textarea' | 'number' | 'select';
+        options?: string[];
+    }>;
+}
+
+/** 模組 2：AI 提示詞配置 */
+export interface AIPrompts {
+    /** 報告生成 AI 的系統提示詞 */
+    reportGeneration: string;
+    /** 客戶溝通 AI 的系統提示詞 */
+    customerChat: string;
+    /** 報價建議 AI 的系統提示詞 */
+    quotationSuggestion: string;
+}
+
+/** 模組 3：報告模板配置 */
+export interface ReportTemplate {
+    /** Markdown 報告結構模板 */
+    structure: string;
+    /** 專業術語對照表 */
+    terminology: Record<string, string>;
+    /** 分析維度清單 */
+    analysisDimensions: string[];
+}
+
+/** 模組 4：合約重點配置 */
+export interface ContractHighlights {
+    mustHaveClauses: string[];
+    industrySpecificClauses: string[];
+    acceptanceCriteria: string[];
+    paymentMilestones: Array<{
+        stage: string;
+        percentage: number;
+        trigger: string;
+    }>;
+}
+
+/** 模組 5：報價單配置 */
+export interface QuotationConfig {
+    /** 項目分類名稱（如：功能模組、設計項目、工程項目） */
+    categoryName: string;
+    /** 計價單位（如：式、坪、小時、月、件） */
+    unit: string;
+    /** 用詞對照（如：客戶→甲方、廠商→乙方） */
+    terminology: Record<string, string>;
+    /** 預設報價項目 */
+    defaultItems: QuotationItemTemplate[];
+}
+
+/** 模組 6：客戶溝通話術配置 */
+export interface CommunicationScripts {
+    opening: string;
+    discoveryQuestions: string[];
+    objectionHandling: Record<string, string>;
+    closing: string;
+}
+
+/** 模組 7：任務執行配置 */
+export interface TaskConfig {
+    typicalTasks: Array<{
+        name: string;
+        type: 'internal' | 'outsourced' | 'external';
+        duration: string;
+        assignee: string;
+    }>;
+    milestones: Array<{
+        label: string;
+        order: number;
+    }>;
+    workflow: {
+        diagram: string;
+        description: string;
+    };
+}
+
+// ============================================================
+// SECTION 3: 核心介面 — BusinessModule & CategoryFolder
+// ============================================================
+
+/**
+ * BusinessModule — 獨立商業模組
+ * 每個模組是一個完整的「職業工具包」，七大功能模組可逐步完善
+ */
+export interface BusinessModule {
+    // --- 識別資訊 ---
+    id: string;
+    name: string;
+    description: string;
+    /** 所屬資料夾 ID (僅供分類顯示，非訂閱單位) */
+    categoryId: string;
+
+    // --- 職業 DNA ---
+    tagline: string;
+    targetUser: string;
+    painPoints: string[];
+
+    // --- AI Brain (3-Layer Prompt) ---
+    /** 核心職人人格 (IP: L1 Hidden) */
+    corePrompt: string;
+    /** 使用者自定義模版 (L2 Editable) */
+    userPromptTemplate?: string;
+
+    // --- 七大功能模組（可逐步填入） ---
+    formConfig?: FormConfig;
+    aiPrompts?: AIPrompts;
+    reportTemplate?: ReportTemplate;
+    contractHighlights?: ContractHighlights;
+    quotationConfig?: QuotationConfig;
+    communicationScripts?: CommunicationScripts;
+    taskConfig?: TaskConfig;
+
+    // --- 報價單預設項目（向後相容） ---
+    defaultItems: QuotationItemTemplate[];
+    projectTypes?: ProjectTypeOption[];
+}
+
+/**
+ * CategoryFolder — 資料夾（五大類）
+ * ⚠️ 重要：這只是「資料夾分類」，不是訂閱單位。
+ * 用戶訂閱的是個別的 BusinessModule (17 種專業大腦)，而非整個資料夾。
+ */
+export interface CategoryFolder {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    color: string;
+    /** 此資料夾下的模組 ID 清單（順序即顯示順序） */
+    moduleIds: string[];
+    /** 資料夾層級的工作流程（概覽用） */
+    workflow: {
+        diagram: string;
+        milestones: string[];
+    };
+}
+
+// 向後相容：IndustryItem = BusinessModule
+export type IndustryItem = BusinessModule;
+// 向後相容：IndustryCategory 結構
+export interface IndustryCategory {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    items: BusinessModule[];
+    workflow: { diagram: string; milestones: string[] };
+}
+
+// ============================================================
+// SECTION 4: 五大類資料夾定義
+// ============================================================
+
+export const CATEGORY_FOLDERS: Record<string, CategoryFolder> = {
+
+    web: {
+        id: 'web',
+        name: '網頁與數位產品',
+        description: '網站建置、APP 開發、軟體系統、系統整合',
+        icon: 'Layout',
+        color: '#6366f1',
+        moduleIds: ['web_development', 'software_outsourcing', 'system_integration'],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[需求分析]
+    B --> C[架構設計]
+    C --> D[開發階段]
+    D --> E[測試驗收]
+    E --> F[上線交付]`,
+            milestones: ['收到訂金', '需求分析', '架構設計', '開發', '測試', '上線交付'],
+        },
+    },
+
+    marketing: {
+        id: 'marketing',
+        name: '數位行銷與推廣',
+        description: '社群經營、廣告投放、SEO 優化、KOL 媒合',
+        icon: 'Megaphone',
+        color: '#f59e0b',
+        moduleIds: ['social_media', 'ad_management', 'seo', 'influencer_marketing'],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[策略規劃]
+    B --> C[內容製作]
+    C --> D[多渠道執行]
+    D --> E[數據監測]
+    E --> F[成效報告]`,
+            milestones: ['收到訂金', '策略規劃', '內容製作', '執行', '監測', '成效報告'],
+        },
+    },
+
+    design: {
+        id: 'design',
+        name: '視覺設計與創意',
+        description: '品牌設計、影片製作、社群視覺、攝影服務',
+        icon: 'Palette',
+        color: '#ec4899',
+        moduleIds: ['brand_design', 'video_production', 'social_visual', 'photography'],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[風格企劃]
+    B --> C[創意提案]
+    C --> D[設計製作]
+    D --> E[修改確認]
+    E --> F[交付結案]`,
+            milestones: ['收到訂金', '風格企劃', '創意提案', '製作', '修改確認', '交付'],
+        },
+    },
+
+    space: {
+        id: 'space',
+        name: '空間與活動企劃',
+        description: '室內裝修、活動婚禮、展場設計',
+        icon: 'Hammer',
+        color: '#10b981',
+        moduleIds: ['interior_design', 'event_planning', 'exhibition_design'],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[現場勘查]
+    B --> C[設計規劃]
+    C --> D[客戶確認]
+    D --> E[施工佈置]
+    E --> F[驗收結案]`,
+            milestones: ['收到訂金', '現場勘查', '設計規劃', '確認', '施工', '驗收'],
+        },
+    },
+
+    consulting: {
+        id: 'consulting',
+        name: '專業服務與顧問',
+        description: '企業顧問、企業培訓、策略規劃',
+        icon: 'Briefcase',
+        color: '#8b5cf6',
+        moduleIds: ['business_consulting', 'corporate_training', 'strategy_planning'],
+        workflow: {
+            diagram: `graph LR
+    A[收到訂金] --> B[現況訪談]
+    B --> C[分析診斷]
+    C --> D[策略規劃]
+    D --> E[提案確認]
+    E --> F[導入執行]`,
+            milestones: ['收到訂金', '現況訪談', '分析診斷', '策略規劃', '確認', '執行'],
+        },
+    },
+
+    // 預留擴充位置：
+    // creative: { id: 'creative', name: '創意產業', ... },
+    // education: { id: 'education', name: '教育科技', ... },
+};
+
+// ============================================================
+// SECTION 5: 17 個商業模組定義
+// ============================================================
+
+// ----------------------------------------------------------
+// 🟢 領域一：網頁與數位產品 (3 個模組)
+// ----------------------------------------------------------
+
+const MODULE_WEB_DEVELOPMENT: BusinessModule = {
+    id: 'web_development',
+    name: '網站/APP 開發',
+    description: '形象網站、電商系統、企業官網、APP 開發',
+    categoryId: 'web',
+    tagline: '把需求變成可驗收的系統，不再改不完',
+    targetUser: '網頁工作室、全端工程師、接案開發者',
+    painPoints: ['功能範圍不清、驗收標準模糊', '客戶一直追加功能', '改不完、收不到尾款'],
+    corePrompt: `Role: 資深技術顧問與解決方案架構師 (Senior Technical Consultant)
+    Profile: 你是一位精通網頁與行動應用開發的專家，熟悉現代化框架 (Next.js, React, Vue)、後端系統 (Node.js, Python) 與雲端基礎設施。
+    Focus: 系統擴充性、安全性、使用者體驗 (UX) 與技術可行性。
+    Task: 請根據專案複雜度、功能需求與時程，提供詳細的成本預估與執行建議。`,
+    defaultItems: [
+        { description: '系統架構設計與規劃 (System Architecture)', quantity: 1, unitPrice: 30000 },
+        { description: '前端介面開發 (RWD Responsive)', quantity: 1, unitPrice: 50000 },
+        { description: '後端 API 與資料庫建置 (Backend API)', quantity: 1, unitPrice: 60000 },
+        { description: '系統部署與測試 (Deployment & Testing)', quantity: 1, unitPrice: 20000 },
+    ],
+    projectTypes: [
+        { id: 'website', label: '🌐 形象網站 (Corporate Website)', description: '企業官網、品牌形象網站' },
+        { id: 'ecommerce', label: '🛒 電商系統 (E-commerce)', description: '線上購物平台、商城系統' },
+        { id: 'app', label: '📱 APP 開發 (Mobile App)', description: 'iOS/Android 應用程式' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_SOFTWARE_OUTSOURCING: BusinessModule = {
+    id: 'software_outsourcing',
+    name: '軟體外包與 SaaS',
+    description: '客製化系統開發、API 整合、資料遷移、技術顧問',
+    categoryId: 'web',
+    tagline: '用 SLA 和里程碑保護你的開發成果',
+    targetUser: '軟體公司、技術顧問、外包接案者',
+    painPoints: ['需求變更頻繁、SLA 沒有定義', '智財歸屬不清', '人月估算不準確'],
+    corePrompt: `Role: 軟體開發顧問 (Software Development Consultant)
+    Profile: 你專精於客製化軟體解決方案與 SaaS 產品開發。你的專業涵蓋需求分析、敏捷開發、API 整合與雲端部署。
+    Focus: 功能估算、技術債管理、擴充性規劃與維護成本分析。
+    Task: 請將專案拆解為明確的模組，並提供務實的時間與成本預估。`,
+    defaultItems: [
+        { description: '需求分析與技術規劃 (Requirement Analysis)', quantity: 1, unitPrice: 25000 },
+        { description: '系統開發（按功能模組計價）(Development)', quantity: 1, unitPrice: 80000 },
+        { description: '測試與部署 (Testing & Deployment)', quantity: 1, unitPrice: 15000 },
+        { description: '維護與技術支援（月費）(Maintenance)', quantity: 1, unitPrice: 10000 },
+    ],
+    projectTypes: [
+        { id: 'custom_software', label: '💻 客製化軟體 (Custom Software)', description: '企業專屬系統開發' },
+        { id: 'saas', label: '☁️ SaaS 產品 (SaaS Product)', description: '雲端訂閱制軟體' },
+        { id: 'api_integration', label: '🔌 API 整合 (API Integration)', description: '第三方服務串接' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_SYSTEM_INTEGRATION: BusinessModule = {
+    id: 'system_integration',
+    name: '系統整合',
+    description: 'ERP 整合、CRM 串接、第三方 API 整合',
+    categoryId: 'web',
+    tagline: '讓現有系統無縫連通，資料不再孤島',
+    targetUser: 'ERP/CRM 導入顧問、IT 整合商',
+    painPoints: ['現有系統不配合', '資料遷移風險高', '測試責任歸屬不清'],
+    corePrompt: `Role: 系統整合專家 (System Integration Specialist)
+    Profile: 你擅長連接不同的軟體系統與平台。你的技能包括 API 開發、資料遷移、ERP/CRM 整合與中介軟體解決方案。
+    Focus: 系統相容性、資料整合性、安全性與效能優化。
+    Task: 請提供包含明確里程碑與風險評估的完整整合計畫。`,
+    defaultItems: [
+        { description: '系統現況評估與分析 (System Assessment)', quantity: 1, unitPrice: 20000 },
+        { description: '整合方案設計 (Integration Design)', quantity: 1, unitPrice: 35000 },
+        { description: 'API 開發與串接 (API Development)', quantity: 1, unitPrice: 50000 },
+        { description: '測試與上線支援 (Testing & Support)', quantity: 1, unitPrice: 15000 },
+    ],
+    projectTypes: [
+        { id: 'erp_integration', label: '🏢 ERP 整合 (ERP Integration)', description: '企業資源規劃系統整合' },
+        { id: 'crm_integration', label: '👥 CRM 串接 (CRM Integration)', description: '客戶關係管理系統' },
+        { id: 'data_migration', label: '📊 資料遷移 (Data Migration)', description: '系統資料轉移與整合' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+// ----------------------------------------------------------
+// 🟡 領域二：數位行銷與推廣 (4 個模組)
+// ----------------------------------------------------------
+
+const MODULE_SOCIAL_MEDIA: BusinessModule = {
+    id: 'social_media',
+    name: '社群經營與內容行銷',
+    description: 'FB/IG 粉專經營、貼文製作、內容策略',
+    categoryId: 'marketing',
+    tagline: '帳號是你的，成效是可量化的',
+    targetUser: '社群小編、內容行銷公司、自媒體接案者',
+    painPoints: ['帳號所有權爭議', '成效定義不清', '客戶隨時要改方向'],
+    corePrompt: `Role: 數位行銷策略師 (Digital Marketing Strategist)
+    Profile: 你專精於社群媒體管理與內容行銷。你的專業涵蓋內容策略、社群互動、KOL 合作與品牌敘事。
+    Focus: 互動指標、內容行事曆、受眾分析與品牌一致性。
+    Task: 請提供包含內容主題、發布排程與 KPI 追蹤的詳細社群媒體計畫。`,
+    defaultItems: [
+        { description: '社群內容策略規劃 (Content Strategy)', quantity: 1, unitPrice: 15000 },
+        { description: 'FB/IG 貼文製作 (Social Media Post x 4)', quantity: 4, unitPrice: 3000 },
+        { description: 'KOL/網紅媒合與溝通 (Influencer Management)', quantity: 1, unitPrice: 10000 },
+        { description: '月度社群成效報告 (Monthly Social Report)', quantity: 1, unitPrice: 5000 },
+    ],
+    projectTypes: [
+        { id: 'social_management', label: '📱 社群經營 (Social Media)', description: 'IG/FB 粉專經營、貼文製作' },
+        { id: 'content_marketing', label: '✍️ 內容行銷 (Content Marketing)', description: '品牌內容策略、故事行銷' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_AD_MANAGEMENT: BusinessModule = {
+    id: 'ad_management',
+    name: '廣告投放與優化',
+    description: 'Meta 廣告投放、Google Ads、成效優化',
+    categoryId: 'marketing',
+    tagline: '廣告費和服務費分清楚，ROAS 說話',
+    targetUser: '數位廣告操手、媒體購買公司',
+    painPoints: ['廣告費和服務費混淆', 'KPI 承諾過高', '帳號權限問題'],
+    corePrompt: `Role: 廣告優化師與媒體採購 (Ad Optimizer)
+    Profile: 你專精於為中小企業與品牌進行 Meta (FB/IG) 廣告投放。你的目標是在預算限制下最大化 ROAS/ROI。
+    Focus: 受眾鎖定、A/B 測試、成效優化與月度報告。
+    Task: 請提供詳細的廣告活動架構，包含預算分配、受眾策略與預期成效。`,
+    defaultItems: [
+        { description: '廣告帳戶與 BM 架構規劃 (Account Structure)', quantity: 1, unitPrice: 15000 },
+        { description: '廣告投放代操服務 (Ad Management)', quantity: 1, unitPrice: 25000 },
+        { description: '素材與受眾 A/B 測試 (A/B Testing)', quantity: 1, unitPrice: 10000 },
+        { description: '月度成效優化報告 (Monthly Report)', quantity: 1, unitPrice: 8000 },
+    ],
+    projectTypes: [
+        { id: 'ecommerce_ads', label: '🛍️ 電商轉換 (E-commerce)', description: 'ROAS 優化、DPA 動態廣告' },
+        { id: 'leadgen_ads', label: '📋 名單獲取 (Lead Generation)', description: '名單型廣告、私訊廣告' },
+        { id: 'brand_awareness', label: '✨ 品牌推廣 (Brand Awareness)', description: '觸及率優化、影片觀看' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_SEO: BusinessModule = {
+    id: 'seo',
+    name: 'SEO 與搜尋策略',
+    description: '網站 SEO 優化、關鍵字策略、內容撰寫',
+    categoryId: 'marketing',
+    tagline: '白帽 SEO，長期排名，成效透明',
+    targetUser: 'SEO 顧問、數位行銷公司',
+    painPoints: ['排名承諾被濫用', '成效週期長客戶沒耐心', '白帽/黑帽爭議'],
+    corePrompt: `Role: SEO 搜尋引擎優化專家 (SEO Specialist)
+    Profile: 你具備技術 SEO、內容策略與連結建設的專業知識。你的目標是提升搜尋排名、自然流量成長與轉換率優化。
+    Focus: 技術檢測、關鍵字研究、內容優化與反向連結策略。
+    Task: 請提供可執行的 SEO 建議，並列出明確的優先順序與預期成效時程。`,
+    defaultItems: [
+        { description: '網站技術健檢與優化建議 (Technical Audit)', quantity: 1, unitPrice: 10000 },
+        { description: '關鍵字策略研究報告 (Keyword Research)', quantity: 1, unitPrice: 8000 },
+        { description: 'SEO 優化文章撰寫 (Content Writing x 4)', quantity: 4, unitPrice: 5000 },
+        { description: '外部連結建設 (Backlink Building)', quantity: 1, unitPrice: 15000 },
+    ],
+    projectTypes: [
+        { id: 'technical_seo', label: '⚙️ 技術 SEO (Technical)', description: '網站健檢、關鍵字佈局' },
+        { id: 'content_seo', label: '📝 內容行銷 (Content)', description: 'SEO 文章、部落格經營' },
+        { id: 'offpage_seo', label: '🔗 權重優化 (Off-page)', description: '外部連結、在地商家優化' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_INFLUENCER_MARKETING: BusinessModule = {
+    id: 'influencer_marketing',
+    name: 'KOL/網紅媒合',
+    description: 'KOL 篩選媒合、業配洽談、成效追蹤',
+    categoryId: 'marketing',
+    tagline: '找對 KOL，內容審核有保障',
+    targetUser: 'KOL 經紀公司、品牌行銷部門',
+    painPoints: ['KOL 臨時爽約', '內容不符品牌調性', '成效造假'],
+    corePrompt: `Role: KOL/網紅行銷專家 (Influencer Marketing Specialist)
+    Profile: 你專精於網紅篩選與行銷活動管理。你的專業涵蓋網紅審核、合約談判、內容簡報與成效追蹤。
+    Focus: 受眾真實性、品牌契合度、內容品質與可衡量的 ROI。
+    Task: 請提供詳細的網紅行銷計畫，包含篩選標準、活動架構與 KPI 追蹤。`,
+    defaultItems: [
+        { description: 'KOL 篩選與媒合服務 (KOL Selection)', quantity: 1, unitPrice: 15000 },
+        { description: '合約洽談與業配執行 (Campaign Execution)', quantity: 1, unitPrice: 20000 },
+        { description: '內容審核與品牌把關 (Content Review)', quantity: 1, unitPrice: 8000 },
+        { description: '成效追蹤報告 (Performance Report)', quantity: 1, unitPrice: 5000 },
+    ],
+    projectTypes: [
+        { id: 'kol_seeding', label: '🎁 開箱業配 (Product Seeding)', description: 'KOL 開箱、產品體驗' },
+        { id: 'kol_campaign', label: '📣 活動合作 (Campaign)', description: '品牌活動、聯名合作' },
+        { id: 'kol_ambassador', label: '⭐ 品牌大使 (Ambassador)', description: '長期合作、品牌代言' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+// ----------------------------------------------------------
+// 🔵 領域三：視覺設計與創意 (4 個模組)
+// ----------------------------------------------------------
+
+const MODULE_BRAND_DESIGN: BusinessModule = {
+    id: 'brand_design',
+    name: '品牌識別與平面設計',
+    description: 'LOGO、VI 系統、海報、名片、包裝、DM、Banner、插畫、PPT 等',
+    categoryId: 'design',
+    tagline: '修改次數說清楚，版權歸屬白紙黑字',
+    targetUser: '設計師、設計工作室、接案平面設計者',
+    painPoints: ['改稿沒有上限', '版權歸屬不清', '報價沒有依據'],
+    corePrompt: `Role: 品牌設計師與視覺傳達專家 (Brand Designer)
+    Profile: 你專精於品牌識別與平面設計。你的專業涵蓋 LOGO 設計、VI 系統、包裝、印刷品、數位素材與插畫。
+    Process: 
+    1. 確認所有需要的設計項目 (如：Logo, 海報, 名片, 包裝, Banner, 型錄, PPT, 插畫等)
+    2. 若有預算：將預算合理分配至各項目，標示超出預算的項目
+    3. 若無預算：為每個項目提供三種價位方案 (基礎/標準/進階)
+    4. 必須輸出包含詳細分項報價的「專案報價」區塊
+    Focus: 原創性、品牌一致性、製作可行性與印刷規格。`,
+    defaultItems: [
+        { description: '品牌識別系統設計 LOGO+VI (Brand Identity)', quantity: 1, unitPrice: 30000 },
+        { description: '平面設計品項（依需求報價）(Graphic Design)', quantity: 1, unitPrice: 8000 },
+        { description: '印刷規格與發包協助 (Print Production)', quantity: 1, unitPrice: 5000 },
+    ],
+    projectTypes: [
+        { id: 'brand_identity', label: '🎨 品牌識別 (Brand Identity)', description: 'LOGO、VI 系統、品牌規範手冊' },
+        { id: 'print_design', label: '🖨️ 印刷品設計 (Print)', description: '名片、海報、DM、型錄、包裝' },
+        { id: 'digital_design', label: '💻 數位素材 (Digital)', description: 'Banner、社群圖、PPT 模板' },
+        { id: 'illustration', label: '✏️ 插畫設計 (Illustration)', description: '品牌插畫、圖像創作' },
+    ],
+    formConfig: {
+        descriptionPlaceholder: '請描述您的設計需求，例如：\n• 品牌識別：全新 LOGO 設計，風格現代極簡\n• 印刷品：名片 200 張、A4 海報 3 款\n• 數位素材：IG 貼文模板 10 款、Banner 5 尺寸\n• 包裝：產品包裝（3 種規格）\n• 其他：公司簡介 PPT 模板...',
+        stylePlaceholder: '品牌定位與風格參考，例如：\n• 風格：現代極簡、日系清新、高端精品感\n• 參考品牌：Apple、無印良品、ZARA\n• 色彩偏好：藍色系、大地色、黑白為主',
+        needsCheckboxes: [
+            { id: 'brand_identity', label: '品牌識別系統（LOGO + VI）' },
+            { id: 'business_card', label: '名片設計' },
+            { id: 'poster', label: '海報設計' },
+            { id: 'packaging', label: '包裝設計' },
+            { id: 'banner', label: 'Banner/廣告素材' },
+            { id: 'dm', label: 'DM/傳單設計' },
+            { id: 'catalog', label: '型錄/目錄設計' },
+            { id: 'ppt', label: 'PPT/簡報模板' },
+            { id: 'illustration', label: '插畫設計' },
+            { id: 'social_visual', label: '社群視覺素材' },
+        ],
+        customFields: [
+            { name: 'brandStatus', label: '品牌現況', placeholder: '', type: 'select', options: ['全新品牌（從零開始）', '既有品牌延伸（已有 LOGO）', '品牌重塑（現有品牌更新）'] },
+            { name: 'printNeeds', label: '印刷需求', placeholder: '', type: 'select', options: ['僅需電子檔', '需要協助安排印刷', '需要提供印刷規格'] },
+            { name: 'budget', label: '預算上限（選填）', placeholder: '例：50000，若無預算限制請留空，AI 將估算合理報價' },
+        ],
+    },
+    // TODO: aiPrompts、reportTemplate、contractHighlights、quotationConfig、communicationScripts、taskConfig 待完善
+};
+
+const MODULE_VIDEO_PRODUCTION: BusinessModule = {
+    id: 'video_production',
+    name: '影片與動態影像',
+    description: '品牌形象片、TVC、社群短影音、活動紀錄、動態設計',
+    categoryId: 'design',
+    tagline: '腳本確認才開拍，版權音樂有授權',
+    targetUser: '影片製作公司、剪輯師、動態設計師',
+    painPoints: ['腳本一直改', '版權音樂糾紛', '素材所有權不清'],
+    corePrompt: `Role: 影視製作人與導演 (Video Producer)
+    Profile: 你專精於商業影片製作與動態影像設計。你的專業涵蓋腳本撰寫、攝影、後期製作與動態設計。
+    Focus: 敘事能力、視覺美學與製作效率。
+    Task: 請提供詳細的製作計畫，包含鏡頭清單、器材需求與後期製作流程。`,
+    defaultItems: [
+        { description: '腳本企劃與分鏡製作 (Script & Storyboard)', quantity: 1, unitPrice: 5000 },
+        { description: '動態攝影與器材租賃 (Shooting & Rental)', quantity: 1, unitPrice: 20000 },
+        { description: '後期剪輯與調色 (Editing & Color Grading)', quantity: 1, unitPrice: 15000 },
+        { description: 'Motion Graphics 動畫特效 (VFX/MG)', quantity: 1, unitPrice: 10000 },
+    ],
+    projectTypes: [
+        { id: 'commercial', label: '🎬 形象廣告 (Commercial)', description: '品牌形象片、TVC、產品宣傳' },
+        { id: 'social_video', label: '📹 社群短影音 (Social Reels)', description: 'Reels/Shorts/TikTok 垂直短片' },
+        { id: 'event_video', label: '🎥 活動紀錄 (Event Record)', description: '活動花絮、訪談、婚禮錄影' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_SOCIAL_VISUAL: BusinessModule = {
+    id: 'social_visual',
+    name: '社群視覺設計',
+    description: '社群圖卡、模板設計、Discord 視覺、Emoji 設計',
+    categoryId: 'design',
+    tagline: '模板授權範圍說清楚，視覺一致不走樣',
+    targetUser: '社群視覺設計師、品牌設計師',
+    painPoints: ['模板授權範圍不清', '客戶自行修改後出問題', '視覺不一致'],
+    corePrompt: `Role: 社群視覺設計師 (Social Media Visual Designer)
+    Profile: 你專精於品牌一致性的數位資產與社群視覺設計。你的專業涵蓋社群模板、Discord 伺服器設計、Emoji 創作與動態圖形。
+    Focus: 視覺一致性、平台規範與模板易用性。
+    Task: 請提供詳細的視覺設計套組，包含平台規格、檔案格式與使用指南。`,
+    defaultItems: [
+        { description: '社群視覺模板設計 (Social Template)', quantity: 1, unitPrice: 12000 },
+        { description: 'Discord 伺服器完整架設 (Discord Setup)', quantity: 1, unitPrice: 15000 },
+        { description: '全套美術設計套組 (Art Set)', quantity: 1, unitPrice: 12000 },
+        { description: 'GIF 動態設計套組 (Motion Set)', quantity: 1, unitPrice: 10000 },
+    ],
+    projectTypes: [
+        { id: 'social_template', label: '📱 社群模板 (Social Template)', description: 'IG/FB 貼文模板、限時動態' },
+        { id: 'discord_setup', label: '🛠️ Discord 架設 (Discord)', description: 'Discord 伺服器設計與架設' },
+        { id: 'discord_art', label: '🎨 Discord 美術 (Discord Art)', description: 'Emoji/Banner/頭貼設計' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_PHOTOGRAPHY: BusinessModule = {
+    id: 'photography',
+    name: '攝影服務',
+    description: '商業攝影、婚禮紀錄、產品拍攝、人像寫真',
+    categoryId: 'design',
+    tagline: '精修張數說清楚，版權使用範圍白紙黑字',
+    targetUser: '商業攝影師、婚攝、產品攝影師',
+    painPoints: ['精修張數爭議', '版權使用範圍不清', '場地問題責任歸屬'],
+    corePrompt: `Role: 專業攝影師 (Professional Photographer)
+    Profile: 你專精於商業、產品與活動攝影。你的專業涵蓋燈光佈置、構圖、後期修圖與客戶溝通。
+    Focus: 影像品質、客戶需求與工作流效率。
+    Task: 請提供詳細的攝影方案，包含拍攝清單、器材規格與交付時程。`,
+    defaultItems: [
+        { description: '拍攝費用（按時數，4 小時）(Shooting Fee)', quantity: 1, unitPrice: 16000 },
+        { description: '後製修圖與精修（20 張）(Post-processing)', quantity: 1, unitPrice: 10000 },
+        { description: '交通與器材費用 (Transportation & Equipment)', quantity: 1, unitPrice: 3000 },
+        { description: '加購底片/原始檔 (Additional Files)', quantity: 1, unitPrice: 5000 },
+    ],
+    projectTypes: [
+        { id: 'commercial_photo', label: '📸 商業攝影 (Commercial)', description: '企業形象、產品攝影' },
+        { id: 'wedding_photo', label: '💍 婚禮紀錄 (Wedding)', description: '婚禮攝影、婚紗拍攝' },
+        { id: 'portrait_photo', label: '👤 人像寫真 (Portrait)', description: '個人寫真、形象照' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+// ----------------------------------------------------------
+// 🟠 領域四：空間與活動企劃 (3 個模組)
+// ----------------------------------------------------------
+
+const MODULE_INTERIOR_DESIGN: BusinessModule = {
+    id: 'interior_design',
+    name: '室內空間設計與裝修',
+    description: '居家裝潢、店面改裝、辦公室設計',
+    categoryId: 'space',
+    tagline: '工序、材料、追加費用，全部寫進合約',
+    targetUser: '室內設計師、裝修工班、設計裝修公司',
+    painPoints: ['工期延誤', '材料替換糾紛', '追加工程費無限追加'],
+    corePrompt: `Role: 室內設計師與工務經理 (Interior Designer)
+    Profile: 你專精於住宅與商業空間設計。你的專業涵蓋空間規劃、材質挑選、施工管理與預算控制。
+    Focus: 美學、機能性、工期管理與成本估算。
+    Task: 請提供詳細的裝修計畫，包含材質規格、施工階段與務實的時程表。`,
+    defaultItems: [
+        { description: '拆除與清運工程 (Demolition & Disposal)', quantity: 1, unitPrice: 25000 },
+        { description: '水電配置工程 (Plumbing & Electrical)', quantity: 1, unitPrice: 45000 },
+        { description: '泥作與磁磚工程 (Mudwork & Tiling)', quantity: 1, unitPrice: 60000 },
+        { description: '木作天花板與隔間 (Carpentry)', quantity: 1, unitPrice: 55000 },
+        { description: '油漆粉刷工程 (Painting)', quantity: 1, unitPrice: 18000 },
+    ],
+    projectTypes: [
+        { id: 'residential', label: '🏠 居家裝潢 (Residential)', description: '老屋翻新、新成屋裝潢' },
+        { id: 'commercial_space', label: '🏢 商業空間 (Commercial)', description: '辦公室、店面、展場設計' },
+        { id: 'renovation', label: '🔨 統包工程 (Renovation)', description: '全室裝修、局部改裝' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_EVENT_PLANNING: BusinessModule = {
+    id: 'event_planning',
+    name: '活動與婚禮統籌',
+    description: '婚禮統籌、企業尾牙、新品發表會',
+    categoryId: 'space',
+    tagline: '取消政策、不可抗力，活動前就說清楚',
+    targetUser: '活動公司、婚禮顧問、企業活動統籌',
+    painPoints: ['臨時取消損失慘重', '場地問題責任歸屬', '人力調度臨時出包'],
+    corePrompt: `Role: 活動統籌與策劃人 (Event Planner)
+    Profile: 你專精於婚禮、企業活動與特殊場合的統籌。你的專業涵蓋活動設計、廠商管理、流程協調與現場執行。
+    Focus: 賓客體驗、後勤規劃、預算管理與應變計畫。
+    Task: 請提供完整的活動計畫，包含流程表、廠商名單與預算細項。`,
+    defaultItems: [
+        { description: '活動企劃與流程設計 (Event Planning)', quantity: 1, unitPrice: 20000 },
+        { description: '場地佈置與花藝設計 (Decoration & Floral)', quantity: 1, unitPrice: 35000 },
+        { description: '專業攝影與錄影 (Photo & Video)', quantity: 1, unitPrice: 25000 },
+        { description: '活動主持人與工作人員 (Emcee & Staff)', quantity: 1, unitPrice: 15000 },
+        { description: '現場音響與燈光設備 (Audio & Lighting)', quantity: 1, unitPrice: 12000 },
+    ],
+    projectTypes: [
+        { id: 'wedding', label: '💍 婚禮統籌 (Wedding)', description: '婚禮流程、求婚企劃' },
+        { id: 'corporate_event', label: '🎤 企業活動 (Corporate)', description: '尾牙、春酒、新品發表會' },
+        { id: 'special_event', label: '🎉 特殊活動 (Special)', description: '生日派對、週年慶典' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_EXHIBITION_DESIGN: BusinessModule = {
+    id: 'exhibition_design',
+    name: '展場與特展企劃',
+    description: '大型展館攤位、品牌快閃店、沉浸式特展',
+    categoryId: 'space',
+    tagline: '搭拆時程、展品安全，展前全部確認',
+    targetUser: '展場設計公司、特展策展人',
+    painPoints: ['搭建拆除時間壓力大', '展品損壞責任不清', '場地規範限制多'],
+    corePrompt: `Role: 展場設計與專案專家 (Exhibition Designer)
+    Profile: 你擁有豐富的大型展覽經驗。你的專業涵蓋創意攤位設計、3D 視覺化、廠商協調與專案管理。
+    Focus: 視覺衝擊力、品牌訊息傳達、結構可行性與預算優化。
+    Task: 請提供詳細的展場提案，包含 3D 模擬圖、施工計畫與廠商協調方案。`,
+    defaultItems: [
+        { description: '展場創意設計與 3D 模擬圖 (Creative Design)', quantity: 1, unitPrice: 45000 },
+        { description: '攤位木作/結構工程 (Booth Construction)', quantity: 1, unitPrice: 150000 },
+        { description: '廠商接洽與專案監造費 (Project Management)', quantity: 1, unitPrice: 30000 },
+        { description: '展場影音與燈光租賃 (AV & Lighting)', quantity: 1, unitPrice: 25000 },
+        { description: '展期物料與現場人力 (Logistics & Staff)', quantity: 1, unitPrice: 20000 },
+    ],
+    projectTypes: [
+        { id: 'expo_booth', label: '🏛️ 大型展館 (Exhibition Hall)', description: '世貿、南港展覽館大型攤位' },
+        { id: 'pop_up', label: '🎪 快閃店 (Pop-up Store)', description: '品牌快閃店、期間限定店' },
+        { id: 'special_exhibition', label: '✨ 特展企劃 (Special Exhibition)', description: '沉浸式特展、主題展覽' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+// ----------------------------------------------------------
+// 🟣 領域五：專業服務與顧問 (3 個模組)
+// ----------------------------------------------------------
+
+const MODULE_BUSINESS_CONSULTING: BusinessModule = {
+    id: 'business_consulting',
+    name: '企業管理顧問',
+    description: '企業診斷、流程優化、組織重整、數位轉型',
+    categoryId: 'consulting',
+    tagline: '顧問建議有依據，保密協議有保障',
+    targetUser: '管理顧問、企業診斷師',
+    painPoints: ['顧問建議不被執行', '成效難以量化', '保密資訊外洩風險'],
+    corePrompt: `Role: 企業顧問與策略導師 (Business Consultant)
+    Profile: 你專精於組織發展與流程優化。你的專業涵蓋企業診斷、策略規劃、變革管理與數位轉型。
+    Focus: 可執行的洞察、可衡量的成果與實施路徑圖。
+    Task: 請提供完整的顧問提案，包含現況分析、建議方案與執行計畫。`,
+    defaultItems: [
+        { description: '現況診斷與分析 (Business Diagnosis)', quantity: 1, unitPrice: 40000 },
+        { description: '策略規劃報告 (Strategy Planning)', quantity: 1, unitPrice: 50000 },
+        { description: '流程優化方案設計 (Process Optimization)', quantity: 1, unitPrice: 35000 },
+        { description: '導入輔導與教育訓練 (Implementation Support)', quantity: 1, unitPrice: 30000 },
+    ],
+    projectTypes: [
+        { id: 'business_diagnosis', label: '🔍 企業診斷 (Diagnosis)', description: '現況分析、問題診斷' },
+        { id: 'process_optimization', label: '⚙️ 流程優化 (Process)', description: '流程改善、效率提升' },
+        { id: 'digital_transformation', label: '💻 數位轉型 (Digital)', description: '數位化、系統導入' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_CORPORATE_TRAINING: BusinessModule = {
+    id: 'corporate_training',
+    name: '企業培訓與教練',
+    description: '內訓課程、工作坊、一對一教練、線上課程製作',
+    categoryId: 'consulting',
+    tagline: '出席率、錄影授權、成效評估，課前說清楚',
+    targetUser: '企業培訓師、教練、講師',
+    painPoints: ['出席率不足', '課程被錄影後流傳', '成效評估爭議'],
+    corePrompt: `Role: 企業培訓師與高階教練 (Corporate Trainer)
+    Profile: 你專精於領導力發展與技能培訓。你的專業涵蓋課程設計、引導技巧、教練方法學與學習評估。
+    Focus: 學習成效、學員投入度、實務應用與 ROI 衡量。
+    Task: 請提供詳細的培訓提案，包含學習目標、課程大綱與評估方法。`,
+    defaultItems: [
+        { description: '課程設計與教材製作 (Curriculum Design)', quantity: 1, unitPrice: 20000 },
+        { description: '講師鐘點費（8 小時）(Training Delivery)', quantity: 1, unitPrice: 32000 },
+        { description: '工作坊執行費用 (Workshop Facilitation)', quantity: 1, unitPrice: 25000 },
+        { description: '後續輔導與追蹤 (Follow-up Coaching)', quantity: 1, unitPrice: 15000 },
+    ],
+    projectTypes: [
+        { id: 'leadership_training', label: '👔 領導力培訓 (Leadership)', description: '主管培訓、領導力發展' },
+        { id: 'skill_training', label: '🎯 技能培訓 (Skills)', description: '專業技能、軟實力訓練' },
+        { id: 'executive_coaching', label: '🤝 高階教練 (Coaching)', description: '一對一教練、顧問諮詢' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+const MODULE_STRATEGY_PLANNING: BusinessModule = {
+    id: 'strategy_planning',
+    name: '策略規劃與顧問',
+    description: '商業模式設計、市場進入策略、競爭分析',
+    categoryId: 'consulting',
+    tagline: '策略報告所有權清楚，執行支援範圍有界定',
+    targetUser: '策略顧問、商業顧問',
+    painPoints: ['策略報告被拿去用但不付尾款', '執行支援範圍不清', '成效難量化'],
+    corePrompt: `Role: 策略顧問與商業模式專家 (Strategy Consultant)
+    Profile: 你專精於商業模式設計與市場進入策略。你的專業涵蓋市場研究、競爭分析、商業模式創新與策略路徑圖。
+    Focus: 數據驅動的洞察、策略選項、風險評估與執行規劃。
+    Task: 請提供完整的策略報告，包含市場分析、策略建議與實施計畫。`,
+    defaultItems: [
+        { description: '市場研究與競爭分析 (Market Research)', quantity: 1, unitPrice: 35000 },
+        { description: '商業模式設計 (Business Model Design)', quantity: 1, unitPrice: 40000 },
+        { description: '策略規劃報告 (Strategy Report)', quantity: 1, unitPrice: 45000 },
+        { description: '執行路徑圖與里程碑 (Execution Roadmap)', quantity: 1, unitPrice: 25000 },
+    ],
+    projectTypes: [
+        { id: 'market_entry', label: '🚀 市場進入 (Market Entry)', description: '新市場開發、進入策略' },
+        { id: 'business_model', label: '💡 商業模式 (Business Model)', description: '商業模式創新、設計' },
+        { id: 'competitive_strategy', label: '⚔️ 競爭策略 (Competitive)', description: '競爭分析、定位策略' },
+    ],
+    // TODO: 七大模組待完善
+};
+
+// ============================================================
+// SECTION 6: 模組登錄表 — 所有 17 個模組的索引
+// ============================================================
+
+export const BUSINESS_MODULES: Record<string, BusinessModule> = {
+    // 🟢 網頁與數位產品
+    web_development: MODULE_WEB_DEVELOPMENT,
+    software_outsourcing: MODULE_SOFTWARE_OUTSOURCING,
+    system_integration: MODULE_SYSTEM_INTEGRATION,
+
+    // 🟡 數位行銷與推廣
+    social_media: MODULE_SOCIAL_MEDIA,
+    ad_management: MODULE_AD_MANAGEMENT,
+    seo: MODULE_SEO,
+    influencer_marketing: MODULE_INFLUENCER_MARKETING,
+
+    // 🔵 視覺設計與創意
+    brand_design: MODULE_BRAND_DESIGN,
+    video_production: MODULE_VIDEO_PRODUCTION,
+    social_visual: MODULE_SOCIAL_VISUAL,
+    photography: MODULE_PHOTOGRAPHY,
+
+    // 🟠 空間與活動企劃
+    interior_design: MODULE_INTERIOR_DESIGN,
+    event_planning: MODULE_EVENT_PLANNING,
+    exhibition_design: MODULE_EXHIBITION_DESIGN,
+
+    // 🟣 專業服務與顧問
+    business_consulting: MODULE_BUSINESS_CONSULTING,
+    corporate_training: MODULE_CORPORATE_TRAINING,
+    strategy_planning: MODULE_STRATEGY_PLANNING,
+};
+
+// ============================================================
+// SECTION 7: 向後相容層 — 維持舊版 INDUSTRY_CATEGORIES 介面
+// ============================================================
+
+function buildLegacyCategory(folder: CategoryFolder): IndustryCategory {
+    return {
+        id: folder.id,
+        name: folder.name,
+        description: folder.description,
+        icon: folder.icon,
+        items: folder.moduleIds.map(id => BUSINESS_MODULES[id]).filter(Boolean),
+        workflow: folder.workflow,
+    };
+}
+
+export const INDUSTRY_CATEGORIES: Record<string, IndustryCategory> = Object.fromEntries(
+    Object.entries(CATEGORY_FOLDERS).map(([key, folder]) => [key, buildLegacyCategory(folder)])
+);
+
+export const DEFAULT_CATEGORY = INDUSTRY_CATEGORIES.web;
+
+// ============================================================
+// SECTION 8: 工具函數
+// ============================================================
+
+/** 根據模組 ID 取得模組 */
+export function getModuleById(moduleId: string): BusinessModule | undefined {
+    return BUSINESS_MODULES[moduleId];
+}
+
+/** 根據模組 ID 取得所屬資料夾 */
+export function getCategoryByModuleId(moduleId: string): CategoryFolder | undefined {
+    const module = BUSINESS_MODULES[moduleId];
+    if (!module) return undefined;
+    return CATEGORY_FOLDERS[module.categoryId];
+}
+
+/** 取得某資料夾下的所有模組 */
+export function getModulesByCategory(categoryId: string): BusinessModule[] {
+    const folder = CATEGORY_FOLDERS[categoryId];
+    if (!folder) return [];
+    return folder.moduleIds.map(id => BUSINESS_MODULES[id]).filter(Boolean);
+}
+
+/** 取得所有模組（扁平化） */
+export function getAllModules(): BusinessModule[] {
+    return Object.values(BUSINESS_MODULES);
+}
+
+/** 取得所有資料夾 */
+export function getAllCategories(): CategoryFolder[] {
+    return Object.values(CATEGORY_FOLDERS);
+}
+
+// 向後相容函數
+export function getCategoryByItemId(itemId: string): IndustryCategory | undefined {
+    const folder = getCategoryByModuleId(itemId);
+    if (!folder) return undefined;
+    return INDUSTRY_CATEGORIES[folder.id];
+}
+
+export function getItemById(itemId: string): BusinessModule | undefined {
+    return getModuleById(itemId);
+}
+
+export function getAllItems(): BusinessModule[] {
+    return getAllModules();
+}
+
+/** 新增模組到指定資料夾（執行時動態擴充用） */
+export function registerModule(module: BusinessModule): void {
+    BUSINESS_MODULES[module.id] = module;
+    const folder = CATEGORY_FOLDERS[module.categoryId];
+    if (folder && !folder.moduleIds.includes(module.id)) {
+        folder.moduleIds.push(module.id);
+    }
+}
+
+/** 新增資料夾（執行時動態擴充用） */
+export function registerCategory(folder: CategoryFolder): void {
+    CATEGORY_FOLDERS[folder.id] = folder;
+    INDUSTRY_CATEGORIES[folder.id] = buildLegacyCategory(folder);
+}

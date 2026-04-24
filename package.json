@@ -1,0 +1,47 @@
+{
+  "name": "aim-pro",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3055 -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start -p 3153",
+    "lint": "next lint",
+    "deploy": "npx vercel deploy --prod"
+  },
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.0.1",
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/auth-helpers-nextjs": "^0.14.0",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.95.3",
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "framer-motion": "^12.34.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.1.0",
+    "lucide-react": "^0.344.0",
+    "next": "^14.2.35",
+    "next-themes": "^0.4.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-markdown": "^9.0.1",
+    "recharts": "^2.15.4",
+    "remark-gfm": "^4.0.1",
+    "sonner": "^1.7.4",
+    "tailwind-merge": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/recharts": "^1.1.1",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "^14.2.35",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5",
+    "vercel": "^50.17.1"
+  }
+}

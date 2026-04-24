@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes shine-gold {
+    0% { transform: translateX(-150%) skewX(-20deg); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateX(250%) skewX(-20deg); opacity: 0; }
+}
+
+.shine-gold-effect {
+    background-size: 200% 100%;
+}
+
+.group:hover .shine-gold-effect {
+    animation: shine-gold 2s infinite ease-in-out;
+}
+
+@layer base {
+    :root {
+        /* Light Mode 淺色模式 */
+        --background: #F4F7FB;
+        --foreground: #2A3547;
+        --surface: #FFFFFF;
+        --primary: #5D87FF;
+        --primary-foreground: #FFFFFF;
+        --success: #13DEB9;
+        --border: rgba(0, 0, 0, 0.3);
+        --muted: #F8FAFC;
+        --muted-foreground: #5A6A85;
+
+        --radius-xl: 12px;
+        --radius-2xl: 16px;
+    }
+
+    .dark {
+        /* Dark Mode 深色模式 */
+        --background: #25293C;
+        --foreground: #EAEFF4;
+        --surface: #2F3349;
+        --primary: #7367F0;
+        --primary-foreground: #FFFFFF;
+        --success: #13DEB9;
+        --border: #33394D;
+        --muted: #2F3349;
+        --muted-foreground: #7C8FAC;
+    }
+}
+
+body {
+    @apply bg-background text-foreground;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.7s ease-out forwards;
+}
+
+.animate-zoom-in-95 {
+    animation: zoomIn 0.3s ease-out forwards;
+}
+
+/* Utilities for delay */
+.delay-100 {
+    animation-delay: 100ms;
+}
+
+.delay-200 {
+    animation-delay: 200ms;
+}
+
+.delay-300 {
+    animation-delay: 300ms;
+}
+
+/* Force input text color to be visible */
+input,
+textarea,
+select {
+    @apply text-foreground;
+}
+
+/* Watermark Styles */
+.watermark-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    opacity: 0.05;
+    user-select: none;
+}
+
+.watermark-text {
+    font-size: 24px;
+    font-weight: 900;
+    color: #000;
+    transform: rotate(-45deg);
+    white-space: nowrap;
+    padding: 60px;
+}
+
+@media print {
+    .watermark-overlay {
+        opacity: 0.1 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Reset potential layout constraints */
+    html,
+    body,
+    #__next,
+    div[class*="overflow-"] {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Hide Scrollbars */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Force background to white and remove margins */
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
+    body,
+    html,
+    #root,
+    #__next {
+        background-color: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+}
