@@ -53,30 +53,22 @@ export default function Sidebar() {
                 title={sidebarCollapsed ? "展開側欄" : "縮合側欄"}
             >
                 <div className={cn(
-                    "flex items-center justify-center shrink-0 transition-transform duration-300 bg-primary p-2.5 rounded-xl text-white shadow-lg shadow-primary/30",
+                    "flex items-center justify-center shrink-0 transition-transform duration-300",
+                    sidebarCollapsed ? "w-10 h-10" : "w-12 h-12"
                 )}>
-                    <LayoutGrid className="w-8 h-8" strokeWidth={2.5} />
+                    <img 
+                        src="/Logo.png" 
+                        alt="Aim.pro Icon" 
+                        className="w-full h-full object-contain"
+                    />
                 </div>
                 {!sidebarCollapsed && (
-                    <div className="flex flex-col whitespace-nowrap flex-1">
-                        <div className="flex items-center justify-between">
-                            <span className="font-bold text-[18px] text-[#111111] dark:text-white tracking-tight leading-tight">Project Estimator</span>
-                            
-                            {/* Sync Indicator */}
-                            <div className={cn(
-                                "flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black transition-all duration-500",
-                                isSyncing 
-                                ? "bg-amber-100 text-amber-600 animate-pulse" 
-                                : "bg-emerald-50 text-emerald-600 border border-emerald-100/50"
-                            )}>
-                                <div className={cn(
-                                    "w-1.5 h-1.5 rounded-full shrink-0",
-                                    isSyncing ? "bg-amber-500" : "bg-emerald-500"
-                                )} />
-                                {isSyncing ? "SYNCING" : "CLOUD SAVED"}
-                            </div>
-                        </div>
-                        <span className="text-[12px] text-slate-500 font-medium whitespace-nowrap">Dashboard Pro</span>
+                    <div className="flex flex-col whitespace-nowrap flex-1 ml-1">
+                        <img 
+                            src="/Logo_w.png" 
+                            alt="Aim.pro Logo" 
+                            className="h-10 object-contain object-left"
+                        />
                     </div>
                 )}
             </button>

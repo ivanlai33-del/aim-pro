@@ -15,11 +15,9 @@ export default function LandingPage() {
             {/* Navbar (Internal to allow simple composition) */}
             <nav className="fixed top-0 left-0 w-full z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-1.5 rounded-lg shadow-lg shadow-indigo-500/20 animate-pulse">
-                            <Layout className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="font-bold text-lg text-white tracking-tight">捷報 Estimator</span>
+                    <div className="flex items-center gap-3">
+                        <img src="/Logo.png" alt="Aim.pro Icon" className="w-8 h-8 object-contain" />
+                        <img src="/Logo_w.png" alt="Aim.pro Logo" className="h-7 object-contain hidden sm:block" />
                     </div>
 
                     <div className="flex items-center gap-6">

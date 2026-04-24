@@ -127,11 +127,13 @@ export default function LoginPage() {
             <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] overflow-hidden">
                 <div className="p-10 pt-12">
                     <div className="text-center mb-10">
-                        <div className="mx-auto w-20 h-20 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                            <Layout className="w-10 h-10 text-indigo-600" />
+                        <div className="mx-auto w-24 h-24 flex items-center justify-center mb-6">
+                            <img src="/Logo.png" alt="Aim.pro" className="w-full h-full object-contain" />
                         </div>
-                        <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Project Estimator</h1>
-                        <p className="text-slate-500 text-base font-medium">企業級專案估價與管理系統</p>
+                        <div className="flex justify-center mb-2">
+                            <img src="/Logo_w.png" alt="Aim.pro Logo" className="h-10 object-contain" />
+                        </div>
+                        <p className="text-slate-500 text-base font-medium">企業級 AI 職人智能總部</p>
                     </div>
 
                     <h2 className="text-xl font-bold text-slate-900 mb-8 text-center flex items-center justify-center gap-2">
