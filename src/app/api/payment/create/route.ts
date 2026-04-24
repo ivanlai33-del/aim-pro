@@ -7,10 +7,14 @@ import { SubscriptionTier, PricingPeriod } from '@/config/subscription';
 export async function POST(request: Request) {
     try {
         const supabase = createSupabaseServerClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        // Use getSession as a fallback or more resilient check
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const user = session?.user;
 
-        if (authError || !user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        if (!user) {
+            console.error('Payment Auth Error: No session found', sessionError);
+            return NextResponse.json({ error: 'Unauthorized: Please re-login' }, { status: 401 });
         }
 
         const body = await request.json();
