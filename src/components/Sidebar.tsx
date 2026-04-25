@@ -48,22 +48,20 @@ export default function Sidebar() {
                 onClick={toggleSidebar}
                 className={cn(
                     "flex items-center transition-all duration-300 overflow-hidden w-full group/logo hover:bg-slate-50 dark:hover:bg-slate-800/50 text-left outline-none border-b border-black/10 dark:border-slate-800",
-                    sidebarCollapsed ? "p-4 justify-center" : "px-6 py-5 gap-3"
+                    sidebarCollapsed ? "p-4 justify-center" : "px-6 py-5"
                 )}
                 title={sidebarCollapsed ? "展開側欄" : "縮合側欄"}
             >
-                <div className={cn(
-                    "flex items-center justify-center shrink-0 transition-transform duration-300",
-                    sidebarCollapsed ? "w-10 h-10" : "w-12 h-12"
-                )}>
-                    <img 
-                        src="/Logo.png" 
-                        alt="Aim.pro Icon" 
-                        className="w-full h-full object-contain"
-                    />
-                </div>
-                {!sidebarCollapsed && (
-                    <div className="flex flex-col whitespace-nowrap flex-1 ml-1">
+                {sidebarCollapsed ? (
+                    <div className="flex items-center justify-center shrink-0 transition-transform duration-300 w-10 h-10">
+                        <img 
+                            src="/Logo.png" 
+                            alt="Aim.pro Icon" 
+                            className="w-full h-full object-contain"
+                        />
+                    </div>
+                ) : (
+                    <div className="flex flex-col whitespace-nowrap flex-1">
                         <img 
                             src="/Logo_w.png" 
                             alt="Aim.pro Logo" 
