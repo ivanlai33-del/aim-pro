@@ -204,7 +204,7 @@ export default function Pricing() {
                 <div className="mt-16 text-center">
                     <p className="text-slate-500 text-sm">
                         所有方案皆包含 256-bit 加密保護與 Cloudflare Turnstile 安全驗證。需要更大型的方案？ 
-                        <a href="mailto:sales@jiebao.tw" className="text-indigo-400 hover:underline ml-1">聯繫我們</a>
+                        <a href="mailto:aim@ycideas.com" className="text-indigo-400 hover:underline ml-1">聯繫我們</a>
                     </p>
                 </div>
             </div>

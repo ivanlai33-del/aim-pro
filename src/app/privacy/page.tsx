@@ -13,7 +13,7 @@ export default function PrivacyPage() {
                         <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-1.5 rounded-lg shadow-lg shadow-indigo-500/20">
                             <Layout className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-bold text-lg text-white tracking-tight">捷報 Estimator</span>
+                        <span className="font-bold text-lg text-white tracking-tight">Aim pro 捷報</span>
                     </Link>
                     <Link href="/" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
                         返回首頁
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
                             <h2 className="text-2xl font-bold text-white">一、個人資料之蒐集與類別</h2>
                         </div>
                         <p className="mb-4">
-                            當您使用「捷報 Estimator」服務時，我們將蒐集必要的資訊以提供完整的服務體驗。蒐集之資料類別包含：
+                            當您使用「Aim pro 捷報」服務時，我們將蒐集必要的資訊以提供完整的服務體驗。蒐集之資料類別包含：
                         </p>
                         <ul className="list-disc list-inside space-y-2 text-slate-400">
                             <li><strong>帳戶資訊</strong>：您的姓名、Email、LINE 顯示名稱、頭像與 LINE UID (僅用於登入驗證)。</li>
@@ -85,13 +85,13 @@ export default function PrivacyPage() {
                         </p>
                     </section>
 
-                    <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p className="text-slate-500 text-sm">
-                            © 2026 YC Ideas 奕暢創新工作室. All rights reserved.
+                    <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-xs">
+                        <p className="text-slate-500">
+                            © 2026 YC Ideas 奕暢創新工作室. All rights reserved. 地址：244 新北市林口區文化北路一段486號之2，3樓
                         </p>
-                        <div className="flex gap-6 text-sm">
+                        <div className="flex gap-6">
                             <Link href="/terms" className="text-indigo-400 hover:text-indigo-300 transition-colors">服務條款</Link>
-                            <a href="mailto:info@ycideas.com" className="text-slate-400 hover:text-white transition-colors">聯絡我們</a>
+                            <a href="mailto:aim@ycideas.com" className="text-slate-400 hover:text-white transition-colors">聯絡我們</a>
                         </div>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ export default function TermsPage() {
                         <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-1.5 rounded-lg shadow-lg shadow-indigo-500/20">
                             <Layout className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-bold text-lg text-white tracking-tight">捷報 Estimator</span>
+                        <span className="font-bold text-lg text-white tracking-tight">Aim pro 捷報</span>
                     </Link>
                     <Link href="/" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
                         返回首頁
@@ -34,7 +34,7 @@ export default function TermsPage() {
                             <h2 className="text-2xl font-bold text-white">一、服務受理與同意</h2>
                         </div>
                         <p>
-                            歡迎您使用由 YC Ideas (以下簡稱「本公司」) 營運之「捷報 Estimator」AI 專案估價與管理服務。當您開始使用本服務、註冊帳號或進行付費訂閱時，即表示您已詳細閱讀並同意接受本服務條款之所有內容。如果您不同意本條款，請立即停止使用本服務。
+                            歡迎您使用由 YC Ideas 奕暢創新工作室 (以下簡稱「本公司」) 營運之「Aim pro 捷報」AI 職人智能總部服務。當您開始使用本服務、註冊帳號或進行付費訂閱時，即表示您已詳細閱讀並同意接受本服務條款之所有內容。如果您不同意本條款，請立即停止使用本服務。
                         </p>
                     </section>
 
@@ -100,13 +100,13 @@ export default function TermsPage() {
                         </ul>
                     </section>
 
-                    <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p className="text-slate-500 text-sm">
-                            © 2026 YC Ideas 奕暢創新工作室. All rights reserved.
+                    <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-xs">
+                        <p className="text-slate-500">
+                            © 2026 YC Ideas 奕暢創新工作室. All rights reserved. 地址：244 新北市林口區文化北路一段486號之2，3樓
                         </p>
-                        <div className="flex gap-6 text-sm">
+                        <div className="flex gap-6">
                             <Link href="/privacy" className="text-indigo-400 hover:text-indigo-300 transition-colors">隱私權政策</Link>
-                            <a href="mailto:info@ycideas.com" className="text-slate-400 hover:text-white transition-colors">聯絡我們</a>
+                            <a href="mailto:aim@ycideas.com" className="text-slate-400 hover:text-white transition-colors">聯絡我們</a>
                         </div>
                     </div>
                 </div>

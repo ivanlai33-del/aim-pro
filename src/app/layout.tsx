@@ -7,8 +7,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: '捷報 Estimator Pro | 全球職人智庫 x 智能經營總部',
-    template: '%s | 捷報 Estimator'
+    default: 'Aim pro 捷報 AI 職人智能總部 | 全球職人智庫 x 智能經營總部',
+    template: '%s | Aim pro 捷報'
   },
   description: '專為職人打造的 AI 虛擬總部。深度整合全球跨領域專家大腦與法務、財務、稅務基因，為您的專業價值提供最強大的後援。',
   keywords: ['AI 經營大腦', '全球專家矩陣', '職人法務財務稅務', '虛擬總部', 'AI 估價', '自動化合約'],
