@@ -48,11 +48,14 @@ function Dashboard() {
         resetModuleVisibility,
         currentTeamRole,
         consumeAiQuota,
-        setUpgradeModalOpen
+        setUpgradeModalOpen,
+        turnstileToken,
+        setTurnstileToken
     } = useProject();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<'setup' | 'report' | 'chat' | 'quote' | 'plan' | 'execution' | 'team'>('setup');
-    const [apiKey, setApiKey] = useState('AIzaSyAgjWaTkyHCRAauBTeevj3NBVDg-zeWb4Y'); // Built-in Default Key
+    const [apiKey, setApiKey] = useState(''); 
+    const [useCustomKey, setUseCustomKey] = useState(false);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
     const [isGenerating, setIsGenerating] = useState(false);
@@ -68,14 +71,16 @@ function Dashboard() {
     // Custom Prompts State
     const [customPrompts, setCustomPrompts] = useState<Record<string, string>>({});
 
-    // Turnstile State
-    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    // Deleted local turnstile state: token is now in ProjectContext
 
     // Load persisted settings on mount
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(() => {
         const storedKey = localStorage.getItem('gemini_api_key');
-        if (storedKey) setApiKey(storedKey);
+        if (storedKey) {
+            setApiKey(storedKey);
+            // Removed: setUseCustomKey(true); // Don't auto-enable, let the user decide in settings
+        }
 
         // Load custom prompts
         const loadedPrompts: Record<string, string> = {};
@@ -119,16 +124,15 @@ function Dashboard() {
     // Effect to upgrade tier on login (Handled by ProjectContext cloud fetch now)
     useEffect(() => {
         if (supaUser) {
-            setPersona(MOCK_PERSONAS[1]); // Designer Persona (Partial Unlock)
+            // persona will be fetched from cloud in ProjectContext
         }
-    }, [supaUser, setPersona]);
+    }, [supaUser]);
 
-    // Save settings when changed
+    // Save prompts when changed (Keep this, but remove apiKey saving from here)
     useEffect(() => {
         if (!isLoaded) return;
-        if (apiKey) localStorage.setItem('gemini_api_key', apiKey);
         localStorage.setItem('custom_prompts_map', JSON.stringify(customPrompts));
-    }, [apiKey, customPrompts, isLoaded]);
+    }, [customPrompts, isLoaded]);
 
     const resetPrompts = () => {
         const currentIndustryId = activeProject?.industries?.[0];
@@ -206,7 +210,7 @@ function Dashboard() {
             // Pass custom prompts and turnstile token to the service
             const response = await fetchAIResponse(
                 activeProject.data,
-                apiKey,
+                useCustomKey ? apiKey : undefined,
                 customPrompts,
                 turnstileToken || undefined
             );
@@ -319,36 +323,37 @@ function Dashboard() {
                             {/* Window Tabs */}
                             {/* Window Tabs & Project Info */}
                             {/* Window Tabs & Project Info */}
-                            <div className="px-[50px] shrink-0 flex items-center justify-center print:hidden mt-[58px] mb-2 py-3 w-full max-w-[1200px] mx-auto">
+                            <div className="w-full bg-white border-b border-slate-200/20 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] relative z-40 print:hidden">
+                                <div className="px-4 shrink-0 flex items-center justify-center mt-2 py-4 w-full max-w-[1450px] mx-auto">
                                 {/* Tabs (Center) */}
-                                <nav className="flex space-x-2 w-full -translate-y-[20px] origin-center" aria-label="Tabs">
+                                <nav className="flex space-x-2 w-full max-w-[1450px] origin-center whitespace-nowrap" aria-label="Tabs">
                                     <TabButton
                                         isActive={activeTab === 'setup'}
                                         onClick={() => setActiveTab('setup')}
                                         icon={<Sliders className="w-5 h-5 lg:mr-2" />}
                                         label="1. 專案設定"
-                                        activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/30"
+                                        activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-[0_15px_40px_-10px_rgba(6,182,212,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                     />
                                     <TabButton
                                         isActive={activeTab === 'report'}
                                         onClick={() => setActiveTab('report')}
                                         icon={<FileText className="w-5 h-5 lg:mr-2" />}
                                         label="2. 分析報告"
-                                        activeClass="bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                                        activeClass="bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-[0_15px_40px_-10px_rgba(16,185,129,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                     />
                                     <TabButton
                                         isActive={activeTab === 'plan'}
                                         onClick={() => setActiveTab('plan')}
                                         icon={<Workflow className="w-5 h-5 lg:mr-2" />}
                                         label="3. 執行企劃"
-                                        activeClass="bg-gradient-to-br from-violet-600 to-purple-700 text-white shadow-md shadow-violet-600/30"
+                                        activeClass="bg-gradient-to-br from-violet-600 to-purple-700 text-white shadow-[0_15px_40px_-10px_rgba(124,58,237,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                     />
                                     <TabButton
                                         isActive={activeTab === 'chat'}
                                         onClick={() => setActiveTab('chat')}
                                         icon={<MessageSquare className="w-5 h-5 lg:mr-2" />}
                                         label="4. 客戶溝通"
-                                        activeClass="bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/30"
+                                        activeClass="bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-[0_15px_40px_-10px_rgba(244,63,94,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                     />
 
                                     {/* Locked Features for Free Tier */}
@@ -361,7 +366,7 @@ function Dashboard() {
                                         icon={<FileText className="w-5 h-5 lg:mr-2" />}
                                         label="5. 報價單"
                                         isLocked={userTier === 'free'}
-                                        activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/30"
+                                        activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-[0_15px_40px_-10px_rgba(6,182,212,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                     />
                                     <TabButton
                                         isActive={activeTab === 'execution'}
@@ -372,7 +377,7 @@ function Dashboard() {
                                         icon={<Activity className="w-5 h-5 lg:mr-2" />}
                                         label="6. 財務與執行"
                                         isLocked={userTier === 'free'}
-                                        activeClass="bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-md shadow-orange-500/30"
+                                        activeClass="bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-[0_15px_40px_-10px_rgba(245,158,11,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                     />
                                     {['owner', 'admin'].includes(currentTeamRole) && (
                                         <TabButton
@@ -384,11 +389,12 @@ function Dashboard() {
                                             icon={<Users className="w-5 h-5 lg:mr-2" />}
                                             label="7. 團隊管理"
                                             isLocked={userTier === 'free'}
-                                            activeClass="bg-gradient-to-br from-slate-700 to-slate-900 text-white shadow-md shadow-slate-700/30"
+                                            activeClass="bg-gradient-to-br from-slate-700 to-slate-900 text-white shadow-[0_15px_40px_-10px_rgba(30,41,59,0.4)] ring-1 ring-white/40 border-t border-white/30"
                                         />
                                     )}
                                 </nav>
                             </div>
+                        </div>
 
                             {/* Content Area */}
                             <div className="flex-1 overflow-y-auto py-8 px-[50px] relative print:p-0 print:overflow-visible print:h-auto bg-[#f8fafc]">
@@ -423,7 +429,7 @@ function Dashboard() {
                                                                 onClick={() => resetModuleVisibility()}
                                                                 className="text-[11px] text-indigo-600 font-bold hover:underline"
                                                             >
-                                                                重設隱藏模組 ({tempHiddenModules.length})
+                                                                重置隱藏模組 ({tempHiddenModules.length})
                                                             </button>
                                                         )}
                                                     </div>
@@ -431,6 +437,10 @@ function Dashboard() {
                                             </div>
 
                                             <div className="flex items-center gap-4 w-full md:w-auto justify-end border-t md:border-t-0 pt-6 md:pt-0 border-black/20">
+                                                <div className="scale-[0.85] origin-right mr-2">
+                                                    <Turnstile onVerify={(token) => setTurnstileToken(token)} />
+                                                </div>
+
                                                 <button
                                                     type="submit"
                                                     form="project-setup-form"
@@ -439,6 +449,7 @@ function Dashboard() {
                                                     <Save className="-ml-1 mr-2 h-6 w-6 text-slate-400" />
                                                     儲存設定環境
                                                 </button>
+                                                
                                                  <button
                                                     onClick={handleGenerateReport}
                                                     disabled={isGenerating || (!apiKey && !turnstileToken)}
@@ -459,16 +470,6 @@ function Dashboard() {
                                             </div>
                                         </div>
 
-                                        {/* Security Verification (Turnstile) */}
-                                        {!apiKey && (
-                                            <div className="flex justify-center mb-8">
-                                                <div className="bg-white p-4 rounded-2xl border border-black/10 shadow-sm flex items-center gap-4">
-                                                    <span className="text-xs font-bold text-slate-400">安全驗證：</span>
-                                                    <Turnstile onVerify={(token) => setTurnstileToken(token)} />
-                                                </div>
-                                            </div>
-                                        )}
-
                                         {/* Main Form Blocks */}
                                         <div className="w-full">
                                             <InputForm
@@ -481,12 +482,12 @@ function Dashboard() {
                                 )}
 
                                 {activeTab === 'report' && (
-                                    <div className="animate-in fade-in zoom-in-95 duration-200 h-full">
+                                    <div className="animate-in fade-in zoom-in-95 duration-200 min-h-full">
                                         {activeProject.reportContent ? (
                                             <ReportView
                                                 reportContent={activeProject.reportContent}
                                                 onSave={handleReportUpdate}
-                                                apiKey={apiKey}
+                                                apiKey={useCustomKey ? apiKey : undefined}
                                             />
                                         ) : (
                                             <div className="h-full flex flex-col items-center justify-center text-center">
@@ -510,7 +511,7 @@ function Dashboard() {
 
                                 {activeTab === 'chat' && (
                                     <div className="animate-in fade-in zoom-in-95 duration-200 h-full">
-                                        <ChatInterface apiKey={apiKey} />
+                                        <ChatInterface apiKey={useCustomKey ? apiKey : undefined} />
                                     </div>
                                 )}
 
@@ -574,10 +575,10 @@ function TabButton({ isActive, onClick, icon, label, isLocked, activeClass }: { 
         <button
             onClick={onClick}
             className={cn(
-                "group flex-1 flex justify-center items-center px-2 lg:px-4 py-4 lg:py-[18px] rounded-xl font-black text-sm lg:text-[15px] transition-all outline-none select-none relative shrink-0",
+                "group flex-1 flex justify-center items-center px-2 lg:px-[3px] py-4 lg:py-[18px] rounded-xl font-black text-sm lg:text-[15px] transition-all outline-none select-none relative shrink-0 whitespace-nowrap backdrop-blur-sm",
                 isActive
                     ? activeStyling
-                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 border border-slate-100 hover:border-slate-200"
+                    : "text-slate-600 hover:bg-white/80 dark:text-slate-400 dark:hover:bg-slate-800 border border-slate-100/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 active:scale-95"
             )}
         >
             <span className={cn("transition-colors flex items-center shrink-0", isActive ? "text-white" : "text-slate-500 group-hover:text-primary")}>

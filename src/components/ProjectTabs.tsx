@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useModuleAccess } from "@/hooks/useModuleAccess";
 import { INDUSTRY_CATEGORIES } from "@/config/industries";
 import { ThemeToggle } from "./ThemeToggle";
+import Turnstile from "./Turnstile";
 
 interface ProjectTabsProps {
     onDeleteRequest: (project: { id: string, name: string }) => void;
@@ -17,7 +18,7 @@ interface ProjectTabsProps {
 
 export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSettings }: ProjectTabsProps) {
     const [showAddCategory, setShowAddCategory] = useState(false);
-    const { projects, activeProjectId, selectProject, createProject, addProjectIndustry, activeProject, userTier } = useProject();
+    const { projects, activeProjectId, selectProject, createProject, addProjectIndustry, activeProject, userTier, setTurnstileToken } = useProject();
     const { checkAccess } = useModuleAccess();
 
     const getProjectIcon = (projectType: string) => {
@@ -136,6 +137,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                     <Download className="w-5 h-5" />
                 </button>
                 <ThemeToggle />
+
                 <div className="relative group">
                     <button
                         onClick={onSettings}

@@ -203,6 +203,8 @@ interface ProjectContextType {
     setUpgradeModalOpen: (open: boolean) => void;
     isSyncing: boolean;
     syncProviderInfoToCloud: (info: any) => Promise<void>;
+    turnstileToken: string | null;
+    setTurnstileToken: (token: string | null) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -224,6 +226,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [userRole, setUserRole] = useState<string>('general');
     const [userTier, setUserTier] = useState<SubscriptionTier>('free');
     const [aiQuota, setAiQuota] = useState<number>(10);
+    const [unlockedModules, setUnlockedModules] = useState<string[]>([]);
 
     const [providerInfo, setProviderInfo] = useState<{
         name: string;
@@ -248,6 +251,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [tempHiddenModules, setTempHiddenModules] = useState<string[]>([]);
     const [isUpgradeModalOpen, setUpgradeModalOpen] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
 
     const consumeAiQuota = async (): Promise<boolean> => {
@@ -325,7 +329,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         email: session?.user?.email || '',
         tier: userTier,
         billingPeriod: 'monthly',
-        unlockedModules: [], 
+        unlockedModules: unlockedModules, 
         addOnModules: [],
         role: userRole as any,
         usage: {
@@ -340,7 +344,6 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             setSession(session);
             if (session?.user) {
                 handleAuthenticatedUser(session.user.id);
-                setUserTier('professional'); // Default for auth users during dev
             } else {
                 loadLocalData();
             }
@@ -417,6 +420,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         }
     };
     const fetchCloudData = async (userId: string) => {
+        console.log('DEBUG: Starting fetchCloudData for UID:', userId);
         try {
             // Try to fetch user profile
             try {
@@ -449,6 +453,10 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
                         setUserTier(profile.tier as SubscriptionTier);
                     }
                     setAiQuota(profile.ai_quota || 0);
+                    // NEW: Sync unlocked modules from DB
+                    if (profile.unlocked_modules) {
+                        setUnlockedModules(profile.unlocked_modules);
+                    }
                 }
 
                 // Also load provider info from user metadata
@@ -523,7 +531,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
                 if (!subError && subDataArray && subDataArray.length > 0) {
                     const subData = subDataArray[0];
-                    setUserTier(subData.plan_id || 'free');
+                    console.log('DEBUG: Found subscription data:', subData);
+                    // Support both plan_id (estimator-v3 default) and plan_type (SaaS template default)
+                    const tier = subData.plan_id || subData.plan_type || 'free';
+                    console.log('DEBUG: Setting user tier to:', tier);
+                    setUserTier(tier as SubscriptionTier);
+                } else {
+                    console.log('DEBUG: No subscription records found for this user.');
                 }
             } catch (e) {
                 console.debug('Subscriptions table not ready');
@@ -1063,7 +1077,9 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             isUpgradeModalOpen,
             setUpgradeModalOpen,
             isSyncing,
-            syncProviderInfoToCloud
+            syncProviderInfoToCloud,
+            turnstileToken,
+            setTurnstileToken
         }}>
             {children}
         </ProjectContext.Provider>

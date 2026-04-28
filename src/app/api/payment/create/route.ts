@@ -59,7 +59,7 @@ export async function POST(request: Request) {
             Version: '2.0',
             MerchantOrderNo: orderNo,
             Amt: calculation.totalPrice,
-            ItemDesc: `AI Project Estimator - ${calculation.details.tierName} (${calculation.details.billingPeriod})`,
+            ItemDesc: `Aim pro - ${calculation.details.tierName} (${calculation.details.billingPeriod})`,
             Email: user.email || '',
             LoginType: 0,
             NotifyURL: notifyUrl,

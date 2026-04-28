@@ -84,7 +84,7 @@ export const PRICING_CONFIG: Record<SubscriptionTier, PricingPlan> = {
             noWatermark: true,
             cloudStorage: true,
             customBranding: false,
-            financeModule: false,
+            financeModule: true,
             teamCollaboration: false,
             apiAccess: false
         },

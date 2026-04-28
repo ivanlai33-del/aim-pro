@@ -87,35 +87,43 @@ const DEFAULT_OUTPUT_FORMAT = `
 
 // POST request handler for AI generation
 export async function POST(req: Request) {
+    let source = 'NONE';
+    let apiKey = '';
+
     try {
         const body = await req.json();
         const { mode, userApiKey, turnstileToken, ...params } = body;
 
-        // --- NEW: Bot Protection (Turnstile) ---
-        // Verify Turnstile token if no custom API key is used
+        // Use custom key if provided, otherwise use system key from env
+        apiKey = userApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
+        source = userApiKey ? 'User Provided' : 'System Default';
+        
+        // --- Turnstile Token Verification ---
         if (!userApiKey) {
-            const secretKey = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA'; // Testing secret key
-            
             if (!turnstileToken) {
-                return NextResponse.json({ error: 'Security verification failed (Missing token)' }, { status: 403 });
+                return NextResponse.json({ error: 'Security verification failed: Missing token' }, { status: 403 });
             }
 
-            const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+            const verifyRes = await fetch(verifyUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `secret=${secretKey}&response=${turnstileToken}`,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    secret: process.env.TURNSTILE_SECRET_KEY,
+                    response: turnstileToken,
+                }),
             });
 
-            const verifyData = await verifyResponse.json();
+            const verifyData = await verifyRes.json();
             if (!verifyData.success) {
-                return NextResponse.json({ error: 'Security verification failed (Invalid token)' }, { status: 403 });
+                console.error("Turnstile verification failed:", verifyData);
+                return NextResponse.json({ error: 'Security verification failed: Invalid token' }, { status: 403 });
             }
+            console.log("[SECURITY] Turnstile verification passed.");
         }
-
-        // Use custom key if provided, otherwise use system key from env
-        const apiKey = userApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-
+        
         if (!apiKey) {
+            console.error("AI Generation failed: API Key is missing");
             return NextResponse.json(
                 { error: 'API key is missing. Please provide a custom API key or ensure system API key is configured.' },
                 { status: 401 }
@@ -123,6 +131,8 @@ export async function POST(req: Request) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
+        // FORCE using v1 if v1beta fails, but SDK defaults to v1beta for some features.
+        // Let's try 1.5-flash again with a more standard approach.
         let systemPrompt = "";
         let userPrompt = "";
 
@@ -274,13 +284,32 @@ export async function POST(req: Request) {
             userPrompt = currentContent;
         }
 
-        const model = genAI.getGenerativeModel({
-            model: "gemini-flash-latest",
-            systemInstruction: systemPrompt
+        // --- ULTIMATE BYPASS: Using 'latest' alias confirmed in your list ---
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+        
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [
+                    { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+                ],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 2048,
+                }
+            })
         });
 
-        const result = await model.generateContent(userPrompt);
-        const text = result.response.text();
+        const resultData = await response.json();
+        
+        if (!response.ok) {
+            console.error("[DIRECT API ERROR]", resultData);
+            throw new Error(resultData.error?.message || 'API request failed');
+        }
+
+        const text = resultData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        if (!text) throw new Error('AI 回傳內容為空');
 
         // --- NEW: Consume Quota ---
         if (!userApiKey) {
@@ -294,8 +323,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ content: text });
     } catch (error: any) {
         console.error("AI Generation API Error:", error);
+        
         return NextResponse.json(
-            { error: error.message || 'An unexpected error occurred during AI generation' },
+            { error: `AI 故障: ${error?.message || '未知錯誤'} (Source: ${source}, Prefix: ${apiKey?.substring(0, 6)}...)` },
             { status: 500 }
         );
     }

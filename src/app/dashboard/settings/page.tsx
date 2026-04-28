@@ -117,7 +117,7 @@ function SettingsContent({
         const storedKey = localStorage.getItem('gemini_api_key');
         if (storedKey) {
             setApiKey(storedKey);
-            setUseCustomKey(true); // Auto-enable if key exists
+            // Removed: setUseCustomKey(true); // Do not auto-enable, let user decide
         }
 
         // Load custom prompts
@@ -320,10 +320,13 @@ function SettingsContent({
                                         className="w-full flex items-center justify-between py-6 group-hover:bg-slate-50/50 transition-colors text-left border-t border-black/20"
                                     >
                                         <div className="flex items-center space-x-5">
-                                            <div className={cn(
-                                                "p-4 rounded-2xl text-white shadow-lg transition-transform group-hover:scale-110 bg-gradient-to-br",
-                                                CATEGORY_GRADIENTS[category.id] || "from-slate-400 to-slate-500"
-                                            )}>
+                                            <div 
+                                                className="p-4 rounded-2xl text-white shadow-lg transition-transform group-hover:scale-110"
+                                                style={{ 
+                                                    backgroundColor: category.color,
+                                                    background: `linear-gradient(135deg, ${category.color}dd, ${category.color})` 
+                                                }}
+                                            >
                                                 <Icon className="w-10 h-10" />
                                             </div>
                                             <div className="mt-[10px]">
@@ -344,7 +347,11 @@ function SettingsContent({
                                                     if (!moduleInfo) return null;
 
                                                     // Check Permission Hook
-                                                    const isUnlocked = checkAccess(moduleId);
+                                                    const hasSubscriptionAccess = checkAccess(moduleId);
+                                                    const isUnlocked = devMode || hasSubscriptionAccess;
+                                                    
+                                                    const categoryConfig = CATEGORY_FOLDERS[category.id];
+                                                    const bgColor = categoryConfig?.color || '#6366f1';
 
                                                     return (
                                                         <button
@@ -353,9 +360,13 @@ function SettingsContent({
                                                             className={cn(
                                                                 "flex flex-col items-start justify-start p-[15px] rounded-2xl transition-all w-full h-[200px] text-left border border-black/20 overflow-hidden relative group active:scale-95",
                                                                 isUnlocked
-                                                                    ? `bg-gradient-to-br ${CATEGORY_GRADIENTS[category.id] || "from-indigo-500 to-purple-600"} text-white shadow-lg shadow-indigo-500/20 border-transparent`
+                                                                    ? "text-white shadow-lg shadow-indigo-500/20 border-transparent"
                                                                     : "bg-white text-slate-900 hover:border-indigo-400 hover:shadow-md"
                                                             )}
+                                                            style={isUnlocked ? {
+                                                                background: `linear-gradient(135deg, ${bgColor}ee, ${bgColor}ff)`,
+                                                                backgroundColor: bgColor
+                                                            } : {}}
                                                         >
                                                             <div className="w-full flex flex-col items-start z-10 relative h-full">
                                                                 <div className="w-full flex justify-between items-start mb-2">

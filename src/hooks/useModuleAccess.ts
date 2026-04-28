@@ -1,3 +1,4 @@
+import React from 'react';
 import { useProject } from '@/context/ProjectContext';
 
 type AccessStatus = {
@@ -14,7 +15,7 @@ export function useModuleAccess(): { checkAccess: (id: string) => boolean };
 export function useModuleAccess(moduleId?: string) {
     const { currentPersona, devMode, tempHiddenModules } = useProject();
 
-    const checkAccess = (id: string): boolean => {
+    const checkAccess = React.useCallback((id: string): boolean => {
         // 0. Manual Hidden Override (Highest Priority for Dev Testing)
         if (tempHiddenModules && tempHiddenModules.includes(id)) return false;
 
@@ -25,15 +26,13 @@ export function useModuleAccess(moduleId?: string) {
         if (!currentPersona) return false;
 
         // 3. Subscription Check
-        // Company tier unlocks everything (usually handled by data, but good as fallback)
         if (currentPersona.tier === 'enterprise') return true;
 
-        // specific unlocks (Base Plan + Add-ons)
         return (
             currentPersona.unlockedModules.includes(id) ||
             (currentPersona.addOnModules && currentPersona.addOnModules.includes(id))
         );
-    };
+    }, [devMode, currentPersona, tempHiddenModules]);
 
     if (moduleId) {
         const hasAccess = checkAccess(moduleId);

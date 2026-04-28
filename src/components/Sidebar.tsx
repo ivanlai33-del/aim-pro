@@ -9,12 +9,14 @@ import { useTheme } from "next-themes";
 import { PRICING_CONFIG } from "@/config/subscription";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/tracking";
+import Turnstile from "./Turnstile";
 
 export default function Sidebar() {
     const { 
         projects, activeProjectId, selectProject, createProject, deleteProject, 
         sidebarCollapsed, setSidebarCollapsed, userTier, aiQuota, 
-        setUpgradeModalOpen, isSyncing, providerInfo, currentPersona
+        setUpgradeModalOpen, isSyncing, providerInfo, currentPersona,
+        setTurnstileToken
     } = useProject();
     const pathname = usePathname();
     const router = useRouter();
@@ -243,9 +245,9 @@ export default function Sidebar() {
                             <LogOut className="w-4 h-4" />
                         </button>
                     )}
-                </div>
             </div>
-        </div >
+        </div>
+    </div>
     );
 }
 

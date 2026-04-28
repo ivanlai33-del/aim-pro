@@ -278,6 +278,7 @@ export default function ProfilePage() {
                                         <p className="text-sm font-medium text-gray-500">當前方案</p>
                                         <p className="text-xl font-bold text-gray-900">
                                             {
+                                                userTier === 'starter' ? 'Starter' :
                                                 userTier === 'professional' ? 'Professional' :
                                                     userTier === 'pro_plus' ? 'Pro+' :
                                                         userTier === 'enterprise' ? 'Enterprise' : 'Free'
