@@ -225,5 +225,27 @@ export const MOCK_PERSONAS: UserPersona[] = [
         addOnModules: [],
         role: 'owner',
         usage: { projectsCount: 12, aiGenerations: 85 }
+    },
+    {
+        id: 'user_pro_plus',
+        name: '工作室小李 (Pro+)',
+        email: 'lee@proplus.tw',
+        tier: 'pro_plus',
+        billingPeriod: 'yearly',
+        unlockedModules: ['brand_design', 'ui_ux_design', 'video_production'],
+        addOnModules: ['social_media'],
+        role: 'owner',
+        usage: { projectsCount: 45, aiGenerations: 1250 }
+    },
+    {
+        id: 'user_enterprise',
+        name: '代理商老王 (Enterprise)',
+        email: 'wang@enterprise.tw',
+        tier: 'enterprise',
+        billingPeriod: 'yearly',
+        unlockedModules: ['web_development', 'software_outsourcing', 'system_integration', 'ad_management', 'seo'],
+        addOnModules: ['influencer_marketing', 'pr_agency'],
+        role: 'owner',
+        usage: { projectsCount: 128, aiGenerations: 15600 }
     }
 ];

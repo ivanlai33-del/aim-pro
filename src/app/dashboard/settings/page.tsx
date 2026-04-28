@@ -16,6 +16,7 @@ import { CATEGORY_FOLDERS, BUSINESS_MODULES, BusinessModule, CATEGORY_GRADIENTS 
 import { BankInfo } from '@/context/ProjectContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import BankBranchSelector from '@/components/BankBranchSelector';
 
 // --- Icons Map ---
 const CATEGORY_ICONS: Record<string, any> = {
@@ -57,7 +58,6 @@ const MODULE_ICONS: Record<string, any> = {
     ip_agent: ShieldCheck
 };
 
-import { MOCK_PERSONAS } from '@/config/subscription';
 import { useModuleAccess } from '@/hooks/useModuleAccess';
 
 export default function SettingsPage() {
@@ -65,7 +65,8 @@ export default function SettingsPage() {
         providerInfo, setProviderInfo,
         currentIndustry, switchIndustry,
         currentPersona, setPersona,
-        devMode, setDevMode
+        devMode, setDevMode,
+        syncProviderInfoToCloud
     } = useProject();
 
     // Permission Hook
@@ -83,6 +84,7 @@ export default function SettingsPage() {
                 devMode={devMode}
                 setDevMode={setDevMode}
                 checkAccess={checkAccess}
+                syncProviderInfoToCloud={syncProviderInfoToCloud}
             />
         </Suspense>
     );
@@ -93,7 +95,8 @@ function SettingsContent({
     currentIndustry, switchIndustry, 
     currentPersona, setPersona, 
     devMode, setDevMode,
-    checkAccess 
+    checkAccess,
+    syncProviderInfoToCloud 
 }: any) {
     const searchParams = useSearchParams();
     const isPaymentSuccess = searchParams.get('payment') === 'success';
@@ -130,8 +133,8 @@ function SettingsContent({
         // Default selection logic
         if (currentIndustry && !selectedModuleId) {
             // Optional: Auto-select first module if none selected
-            const firstModule = MOCK_PERSONAS[0].unlockedModules[0];
-            if (firstModule) setSelectedModuleId(firstModule);
+            // Default to web_development if none selected
+            setSelectedModuleId('web_development');
         }
     }, [currentIndustry, selectedModuleId]);
 
@@ -146,7 +149,9 @@ function SettingsContent({
         }
 
         localStorage.setItem('custom_prompts_map', JSON.stringify(customPrompts));
-        // DevMode is handled by context sync now, but we can verify
+        
+        // Cloud Sync for Provider Info
+        syncProviderInfoToCloud(providerInfo);
 
         toast.success("設定已儲存");
     };
@@ -521,7 +526,7 @@ function SettingsContent({
 
                 {/* --- 4. Company Info --- */}
                 <div className="border-t border-black/20 pt-[50px] mt-[50px]">
-                    <section className="bg-white rounded-xl border border-black/20 shadow-sm overflow-hidden">
+                    <section className="bg-white rounded-xl border border-black/20 shadow-sm">
                         <div className="p-6 border-b border-black/20 bg-gray-50/50 flex justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <Building2 className="w-10 h-10 text-indigo-600 flex-shrink-0" />
@@ -617,22 +622,12 @@ function SettingsContent({
                                             : "bg-white border-black/20 hover:border-black/20 shadow-sm"
                                     )}>
                                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                            <div className="md:col-span-1">
-                                                <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">銀行名稱</label>
-                                                <input
-                                                    value={acc.bankName}
-                                                    onChange={(e) => updateBankAccount(acc.id, 'bankName', e.target.value)}
-                                                    placeholder="例如：台新銀行 (812)"
-                                                    className="w-full text-sm bg-transparent border-none p-0 focus:ring-0 font-medium text-gray-900"
-                                                />
-                                            </div>
-                                            <div className="md:col-span-1">
-                                                <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">分行/代碼</label>
-                                                <input
-                                                    value={acc.branch}
-                                                    onChange={(e) => updateBankAccount(acc.id, 'branch', e.target.value)}
-                                                    placeholder="例如：建南分行"
-                                                    className="w-full text-sm bg-transparent border-none p-0 focus:ring-0 font-medium text-gray-900"
+                                            <div className="md:col-span-2">
+                                                <BankBranchSelector
+                                                    bankName={acc.bankName}
+                                                    branch={acc.branch}
+                                                    onBankChange={(val) => updateBankAccount(acc.id, 'bankName', val)}
+                                                    onBranchChange={(val) => updateBankAccount(acc.id, 'branch', val)}
                                                 />
                                             </div>
                                             <div className="md:col-span-1">
@@ -702,18 +697,29 @@ function SettingsContent({
                                 <Crown className="w-5 h-5 text-yellow-400" />
                                 <h2 className="text-lg font-bold">訂閱模擬 (Simulation Mode)</h2>
                             </div>
-                            <select
-                                value={currentPersona.id}
-                                onChange={(e) => {
-                                    const persona = MOCK_PERSONAS.find(p => p.id === e.target.value);
-                                    if (persona) setPersona(persona);
-                                }}
-                                className="bg-slate-700 border-slate-600 text-white text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                            >
-                                {MOCK_PERSONAS.map(p => (
-                                    <option key={p.id} value={p.id}>{p.name}</option>
-                                ))}
-                            </select>
+                            <div className="flex gap-2">
+                                <select
+                                    value={currentPersona.tier}
+                                    onChange={(e) => setPersona({ tier: e.target.value as any })}
+                                    className="bg-slate-700 border-slate-600 text-white text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                                >
+                                    <option value="free">訪客體驗版 (Free)</option>
+                                    <option value="starter">個人啟航版 (Starter)</option>
+                                    <option value="professional">專業職人版 (Pro)</option>
+                                    <option value="pro_plus">Pro+ 團隊協作版</option>
+                                    <option value="enterprise">企業旗艦版 (Enterprise)</option>
+                                </select>
+                                <select
+                                    value={currentPersona.role}
+                                    onChange={(e) => setPersona({ role: e.target.value as any })}
+                                    className="bg-slate-800 border-slate-700 text-cyan-400 text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-cyan-400 focus:outline-none font-bold"
+                                >
+                                    <option value="owner">所有者 (Owner)</option>
+                                    <option value="admin">管理員 (Admin)</option>
+                                    <option value="sales">業務開發 (Sales)</option>
+                                    <option value="accountant">財務會計 (Finance)</option>
+                                </select>
+                            </div>
                         </div>
 
                         {/* Simulation Stats */}
@@ -736,16 +742,24 @@ function SettingsContent({
                             <div>
                                 <div className="flex justify-between text-xs text-indigo-200/70 mb-1">
                                     <span>AI 生成額度</span>
-                                    <span>{currentPersona.usage.aiGenerations} / {
-                                        currentPersona.tier === 'free' ? '10' :
-                                            currentPersona.tier === 'professional' ? '1,000' :
-                                                currentPersona.tier === 'pro_plus' ? '5,000' : '∞'
+                                    <span>{currentPersona.usage.aiGenerations.toLocaleString()} / {
+                                        currentPersona.tier === 'free' ? '50' :
+                                            currentPersona.tier === 'starter' ? '300' :
+                                                currentPersona.tier === 'professional' ? '2,000' :
+                                                    currentPersona.tier === 'pro_plus' ? '10,000' : '50,000'
                                     }</span>
                                 </div>
                                 <div className="w-full bg-slate-800/50 rounded-full h-1.5">
                                     <div
                                         className="bg-purple-500 h-1.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
-                                        style={{ width: `${Math.min(100, (currentPersona.usage.aiGenerations / (currentPersona.tier === 'free' ? 10 : currentPersona.tier === 'professional' ? 1000 : 5000)) * 100)}%` }}
+                                        style={{ 
+                                            width: `${Math.min(100, (currentPersona.usage.aiGenerations / (
+                                                currentPersona.tier === 'free' ? 50 : 
+                                                currentPersona.tier === 'starter' ? 300 : 
+                                                currentPersona.tier === 'professional' ? 2000 : 
+                                                currentPersona.tier === 'pro_plus' ? 10000 : 50000
+                                            )) * 100)}%` 
+                                        }}
                                     />
                                 </div>
                             </div>

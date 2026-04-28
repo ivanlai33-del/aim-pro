@@ -477,17 +477,17 @@ export default function FinancePage() {
 
             {/* Top Row: Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl p-8 shadow-xl shadow-indigo-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 rounded-2xl p-8 shadow-xl shadow-cyan-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <ArrowUpRight className="w-24 h-24" />
                     </div>
                     <div className="relative z-10">
-                        <div className="flex items-center text-indigo-100 font-bold mb-3 text-base uppercase tracking-wider">
+                        <div className="flex items-center text-cyan-50 font-bold mb-3 text-base uppercase tracking-wider">
                             <ArrowUpRight className="w-5 h-5 mr-1" />
                             本期銷項 (Sales)
                         </div>
                         <div className="text-3xl font-black tracking-tight">NT$ {totalSales.toLocaleString()}</div>
-                        <div className="text-sm text-indigo-100/70 mt-3 font-medium">
+                        <div className="text-sm text-cyan-50/70 mt-3 font-medium">
                             銷項稅額 (5%): <span className="font-black text-white">NT$ {outputTax.toLocaleString()}</span>
                         </div>
                     </div>
@@ -655,7 +655,7 @@ export default function FinancePage() {
                         "rounded-xl p-6 border relative overflow-hidden h-full flex flex-col justify-center transition-all duration-300",
                         daysUntilDeadline <= 5
                             ? "bg-gradient-to-br from-rose-50 to-red-100 border-rose-200 shadow-xl shadow-rose-900/10 text-slate-900"
-                            : "bg-gradient-to-br from-cyan-500 to-blue-600 border-transparent shadow-xl shadow-cyan-900/10 text-white"
+                            : "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 border-transparent shadow-xl shadow-cyan-900/10 text-white"
                     )}>
                         <div className="flex items-center justify-between mb-4">
                             <h3 className={cn("font-black flex items-center uppercase tracking-wider text-xs", daysUntilDeadline <= 5 ? "text-rose-700" : "text-cyan-100")}>
@@ -755,9 +755,9 @@ export default function FinancePage() {
 
                                 {/* Step -1 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-indigo-600 to-blue-700 text-white flex items-center justify-center text-sm font-black tracking-widest mb-5 shadow-xl shadow-indigo-900/20 border-4 border-white uppercase">Pro</div>
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white flex items-center justify-center text-sm font-black tracking-widest mb-5 shadow-xl shadow-cyan-900/20 border-4 border-white uppercase">Pro</div>
                                     <h4 className="text-[22px] font-black text-slate-900 mb-2">辦理工商憑證</h4>
-                                    <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-indigo-600 to-blue-700 text-white font-bold mb-4 tracking-widest shadow-md uppercase">建議線上</span>
+                                    <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white font-bold mb-4 tracking-widest shadow-md uppercase">建議線上</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed mb-3 font-medium">全線上辦理的「總鑰匙」。</p>
                                     <a href="https://moaca.nat.gov.tw/" target="_blank" rel="noopener noreferrer" className="text-[18px] text-indigo-600 font-black hover:text-indigo-800 transition-colors flex items-center group">
                                         前往申辦 <ExternalLink className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />

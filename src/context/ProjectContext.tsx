@@ -184,7 +184,7 @@ interface ProjectContextType {
     addCustomer: (customer: Omit<Customer, 'id' | 'createdAt'>) => void;
     updateCustomer: (id: string, customer: Partial<Customer>) => void;
     deleteCustomer: (id: string) => void;
-    userRole: string;
+    userRole: string; // The simulated/real RBAC role
     setUserRole: (role: string) => void;
     userTier: SubscriptionTier;
     setUserTier: (tier: SubscriptionTier) => void;
@@ -192,7 +192,7 @@ interface ProjectContextType {
     setAiQuota: (quota: number) => void;
     // --- Subscription & Persona Management ---
     currentPersona: UserPersona;
-    setPersona: (persona: UserPersona) => void;
+    setPersona: (updates: { tier?: SubscriptionTier, role?: UserPersona['role'] }) => void;
     devMode: boolean;
     setDevMode: (enabled: boolean) => void;
     tempHiddenModules: string[];
@@ -202,11 +202,12 @@ interface ProjectContextType {
     isUpgradeModalOpen: boolean;
     setUpgradeModalOpen: (open: boolean) => void;
     isSyncing: boolean;
+    syncProviderInfoToCloud: (info: any) => Promise<void>;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
-import { UserPersona, MOCK_PERSONAS, SubscriptionTier } from '@/config/subscription';
+import { UserPersona, MOCK_PERSONAS, SubscriptionTier, PRICING_CONFIG } from '@/config/subscription';
 
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [teams, setTeams] = useState<Team[]>([]);
@@ -224,12 +225,30 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [userTier, setUserTier] = useState<SubscriptionTier>('free');
     const [aiQuota, setAiQuota] = useState<number>(10);
 
+    const [providerInfo, setProviderInfo] = useState<{
+        name: string;
+        taxId: string;
+        phone: string;
+        address: string;
+        contact: string;
+        bankAccounts: BankInfo[];
+        primaryBankId: string;
+    }>({
+        name: '',
+        taxId: '',
+        phone: '',
+        address: '',
+        contact: '',
+        bankAccounts: [],
+        primaryBankId: ''
+    });
+
     // Subscription & Dev Mode State
-    const [currentPersona, setCurrentPersona] = useState<UserPersona>(MOCK_PERSONAS[0]);
     const [devMode, setDevMode] = useState(false);
     const [tempHiddenModules, setTempHiddenModules] = useState<string[]>([]);
     const [isUpgradeModalOpen, setUpgradeModalOpen] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
+
 
     const consumeAiQuota = async (): Promise<boolean> => {
         if (!session?.user) {
@@ -278,9 +297,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('dev_mode', String(enabled));
     };
 
-    const handleSetPersona = (persona: UserPersona) => {
-        setCurrentPersona(persona);
-        setUserTier(persona.tier); // Sync tier from persona
+    const handleSetPersona = (updates: { tier?: SubscriptionTier, role?: UserPersona['role'] }) => {
+        if (updates.tier) {
+            setUserTier(updates.tier); 
+            // Sync AI quota based on tier for simulation
+            const plan = PRICING_CONFIG[updates.tier];
+            const maxQuota = plan?.limits?.aiCreditsMonthly || 50;
+            setAiQuota(maxQuota); 
+        }
+        if (updates.role) {
+            setUserRole(updates.role);
+        }
     };
 
     const toggleModuleVisibility = (id: string) => {
@@ -291,23 +318,21 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
     const resetModuleVisibility = () => setTempHiddenModules([]);
 
-    const [providerInfo, setProviderInfo] = useState<{
-        name: string;
-        taxId: string;
-        phone: string;
-        address: string;
-        contact: string;
-        bankAccounts: BankInfo[];
-        primaryBankId: string;
-    }>({
-        name: '',
-        taxId: '',
-        phone: '',
-        address: '',
-        contact: '',
-        bankAccounts: [],
-        primaryBankId: ''
-    });
+    // Derive Persona from real data
+    const currentPersona: UserPersona = React.useMemo(() => ({
+        id: session?.user?.id || 'guest',
+        name: providerInfo.contact || (session?.user?.email?.split('@')[0]) || '訪客',
+        email: session?.user?.email || '',
+        tier: userTier,
+        billingPeriod: 'monthly',
+        unlockedModules: [], 
+        addOnModules: [],
+        role: userRole as any,
+        usage: {
+            projectsCount: projects.length,
+            aiGenerations: 100 // Mock for simulation UI
+        }
+    }), [session, providerInfo, userTier, projects.length]);
 
     // Auth Listener & Data Loading
     useEffect(() => {
@@ -333,6 +358,19 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
         return () => subscription.unsubscribe();
     }, []);
+
+    const syncProviderInfoToCloud = async (info: any) => {
+        if (!session?.user) return;
+        try {
+            const { error } = await supabase.auth.updateUser({
+                data: { provider_info: info }
+            });
+            if (error) throw error;
+            console.log('Provider info synced to cloud');
+        } catch (err) {
+            console.warn('Failed to sync provider info to cloud:', err);
+        }
+    };
 
     const handleAuthenticatedUser = async (userId: string) => {
         // Trigger migration
@@ -407,8 +445,16 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
                 }
                 
                 if (profile) {
-                    setUserTier(profile.tier as SubscriptionTier);
+                    if (!devMode) {
+                        setUserTier(profile.tier as SubscriptionTier);
+                    }
                     setAiQuota(profile.ai_quota || 0);
+                }
+
+                // Also load provider info from user metadata
+                const { data: { user: authUser } } = await supabase.auth.getUser();
+                if (authUser?.user_metadata?.provider_info) {
+                    setProviderInfo(authUser.user_metadata.provider_info);
                 }
             } catch (e) {
                 console.warn('Failed to fetch user profile:', e);
@@ -1011,7 +1057,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             consumeAiQuota,
             isUpgradeModalOpen,
             setUpgradeModalOpen,
-            isSyncing
+            isSyncing,
+            syncProviderInfoToCloud
         }}>
             {children}
         </ProjectContext.Provider>

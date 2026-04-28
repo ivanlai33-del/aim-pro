@@ -62,7 +62,7 @@ export default function UpgradeModal({ isOpen, onClose, planName, tierId, period
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-slate-900 border border-indigo-500/30 rounded-2xl w-full max-w-md p-6 relative shadow-2xl shadow-indigo-500/20 animate-in zoom-in-95 duration-200">
+            <div className="bg-slate-900 border border-cyan-500/30 rounded-2xl w-full max-w-md p-6 relative shadow-2xl shadow-cyan-500/20 animate-in zoom-in-95 duration-200">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
@@ -73,7 +73,7 @@ export default function UpgradeModal({ isOpen, onClose, planName, tierId, period
 
                     <>
                         <h3 className="text-2xl font-bold text-white mb-2">
-                            升級至 <span className="text-indigo-400">{planName}</span>
+                            升級至 <span className="text-cyan-400">{planName}</span>
                         </h3>
                         <p className="text-slate-400 mb-6">
                             立即解鎖專業版功能：無限專案數、自動生成分析報告、財務收支追蹤，以及更多的 AI 生成額度。
@@ -86,7 +86,7 @@ export default function UpgradeModal({ isOpen, onClose, planName, tierId, period
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-slate-400">應付金額</span>
-                                <span className="text-2xl font-bold text-indigo-400">
+                                <span className="text-2xl font-bold text-cyan-400">
                                     NT$ {PRICING_CONFIG[tierId as SubscriptionTier]?.price[period].toLocaleString()}
                                 </span>
                             </div>
@@ -95,7 +95,7 @@ export default function UpgradeModal({ isOpen, onClose, planName, tierId, period
                         <button
                             onClick={handlePayment}
                             disabled={isLoading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"
+                            className="w-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 hover:brightness-110 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 border border-white/10"
                         >
                             {isLoading ? '處理中...' : '前往安全支付 (藍新金流)'}
                         </button>

@@ -275,8 +275,8 @@ export default function ExecutionManager() {
                         onClick={() => { setShowFlow(false); setShowDistribution(false); }}
                         className={cn(
                             "flex-1 py-3 rounded-xl text-sm font-black transition-all flex justify-center items-center h-[54px]",
-                            (!showFlow && !showDistribution)
-                                ? "bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-lg shadow-indigo-500/30"
+                            ((!showFlow && !showDistribution) && !activeProject.executionTasks?.some(t => t.payoutStatus))
+                                ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
                                 : "text-slate-500 hover:text-slate-800 bg-black/20 hover:bg-black/30"
                         )}
                     >
@@ -330,7 +330,7 @@ export default function ExecutionManager() {
             {/* 1. Summary Cards (Hidden for members) */}
             {!showDistribution && canSeeRevenue && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-8 rounded-3xl shadow-xl shadow-indigo-500/20 flex flex-col justify-between overflow-hidden relative group transition-all hover:shadow-2xl hover:shadow-indigo-500/40 hover:-translate-y-1 cursor-pointer" onClick={() => canSeeCosts && setShowFlow(true)}>
+                    <div className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 p-8 rounded-3xl shadow-xl shadow-cyan-500/20 flex flex-col justify-between overflow-hidden relative group transition-all hover:shadow-2xl hover:shadow-cyan-500/40 hover:-translate-y-1 cursor-pointer" onClick={() => canSeeCosts && setShowFlow(true)}>
                         <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                             <DollarSign className="w-24 h-24 text-white" />
                         </div>
@@ -341,7 +341,7 @@ export default function ExecutionManager() {
                         {canSeeCosts && (
                             <div className="mt-8 flex items-center text-xs relative z-10">
                                 <span className="bg-white/20 text-white px-4 py-1.5 rounded-xl font-black mr-3 shadow-sm border border-white/10">100% REVENUE</span>
-                                <span className="text-indigo-200 font-black uppercase tracking-wider">點擊查看流向圖</span>
+                                <span className="text-cyan-50 font-black uppercase tracking-wider">點擊查看流向圖</span>
                             </div>
                         )}
                     </div>
@@ -400,7 +400,7 @@ export default function ExecutionManager() {
                 <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-black/20 overflow-hidden">
                     <div className="px-8 py-8 border-b border-black/20 bg-gradient-to-r from-slate-50 to-white flex justify-between items-center">
                         <div className="flex items-center">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mr-5 shadow-lg shadow-indigo-200">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 flex items-center justify-center mr-5 shadow-lg shadow-cyan-200">
                                 <Clock className="w-6 h-6 text-white" />
                             </div>
                             <div className="flex flex-col">
@@ -415,7 +415,7 @@ export default function ExecutionManager() {
                                 <>
                                     <button
                                         onClick={() => handleAddTask()}
-                                        className="bg-white border-2 border-indigo-600 text-indigo-600 px-6 py-5 rounded-2xl hover:bg-indigo-50 transition-all font-black text-[17px] flex items-center shadow-md active:scale-95 h-[67px]"
+                                        className="bg-white border-2 border-cyan-600 text-cyan-600 px-6 py-5 rounded-2xl hover:bg-cyan-50 transition-all font-black text-[17px] flex items-center shadow-md active:scale-95 h-[67px]"
                                     >
                                         <Plus className="w-6 h-6 mr-2" />
                                         手動新增
@@ -428,7 +428,7 @@ export default function ExecutionManager() {
                                             }
                                             executeSmartTaskImport();
                                         }}
-                                        className="bg-gradient-to-br from-indigo-600 to-violet-700 text-white px-10 py-5 rounded-2xl hover:brightness-110 transition-all font-black text-[17px] flex items-center shadow-xl shadow-indigo-100 active:scale-95 h-[67px]"
+                                        className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white px-10 py-5 rounded-2xl hover:brightness-110 transition-all font-black text-[17px] flex items-center shadow-xl shadow-cyan-100 active:scale-95 h-[67px] border border-white/20"
                                     >
                                         <Sparkles className="w-6 h-6 mr-2" />
                                         AI 智慧拆解
@@ -470,7 +470,7 @@ export default function ExecutionManager() {
                                                         disabled={!canEditProject}
                                                         onChange={(e) => handleUpdateTask(task.id, { name: e.target.value })}
                                                         className={cn(
-                                                            "bg-transparent border-none p-1 font-black focus:ring-4 focus:ring-indigo-100 text-[21.5px] w-full resize-none overflow-hidden leading-tight rounded-xl transition-all disabled:opacity-80",
+                                                            "bg-transparent border-none p-1 font-black focus:ring-4 focus:ring-cyan-100 text-[21.5px] w-full resize-none overflow-hidden leading-tight rounded-xl transition-all disabled:opacity-80",
                                                             task.payoutStatus === 'paid' ? "text-slate-400 line-through decoration-emerald-500/50" : "text-slate-900"
                                                         )}
                                                         rows={task.name.length > 25 ? 2 : 1}
@@ -497,7 +497,7 @@ export default function ExecutionManager() {
                                                         }}
                                                         className={cn(
                                                             "p-3.5 rounded-lg transition-all",
-                                                            task.type === 'internal' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                                                            task.type === 'internal' ? "bg-white text-cyan-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
                                                         )}
                                                         title="內部成員"
                                                     >
@@ -540,7 +540,7 @@ export default function ExecutionManager() {
                                                             value={task.assignee}
                                                             disabled={!canEditProject}
                                                             onChange={(e) => handleUpdateTask(task.id, { assignee: e.target.value })}
-                                                            className="w-full bg-slate-100 border border-transparent focus:border-indigo-200 focus:bg-white rounded-xl pl-12 py-4 text-[17px] font-black transition-all text-slate-900 placeholder:font-bold disabled:opacity-80"
+                                                            className="w-full bg-slate-100 border border-transparent focus:border-cyan-200 focus:bg-white rounded-xl pl-12 py-4 text-[17px] font-black transition-all text-slate-900 placeholder:font-bold disabled:opacity-80"
                                                             placeholder="填寫負責人..."
                                                         />
                                                     </div>
@@ -554,7 +554,7 @@ export default function ExecutionManager() {
                                                             </div>
                                                             <button
                                                                 onClick={() => setManualTimerTask({ id: task.id, name: task.name })}
-                                                                className="text-indigo-600 hover:text-indigo-800"
+                                                                className="text-cyan-600 hover:text-cyan-800"
                                                                 title="手動紀錄工時"
                                                                 type="button"
                                                             >
@@ -578,7 +578,7 @@ export default function ExecutionManager() {
                                                                 "w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-md",
                                                                 activeTimerTaskId === task.id
                                                                     ? "bg-gradient-to-br from-rose-500 to-red-600 text-white animate-pulse shadow-rose-200"
-                                                                    : "bg-indigo-100 text-indigo-600 hover:bg-white hover:shadow-indigo-100"
+                                                                    : "bg-cyan-100 text-cyan-600 hover:bg-white hover:shadow-cyan-100"
                                                             )}
                                                         >
                                                             {activeTimerTaskId === task.id ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
@@ -629,21 +629,21 @@ export default function ExecutionManager() {
                                                                             splitType: 'fixed',
                                                                             budgetStatus: canApproveBudget ? task.budgetStatus : 'pending_approval'
                                                                         })}
-                                                                        className={cn("px-2 py-1 text-[10px] font-black rounded", task.splitType === 'fixed' || !task.splitType ? "bg-white shadow-sm text-indigo-600" : "text-slate-400")}
+                                                                        className={cn("px-2 py-1 text-[10px] font-black rounded", task.splitType === 'fixed' || !task.splitType ? "bg-white shadow-sm text-cyan-600" : "text-slate-400")}
                                                                     >固定</button>
                                                                     <button
                                                                         onClick={() => handleUpdateTask(task.id, { 
                                                                             splitType: 'percentage',
                                                                             budgetStatus: canApproveBudget ? task.budgetStatus : 'pending_approval'
                                                                         })}
-                                                                        className={cn("px-2 py-1 text-[10px] font-black rounded mx-1", task.splitType === 'percentage' ? "bg-white shadow-sm text-indigo-600" : "text-slate-400")}
+                                                                        className={cn("px-2 py-1 text-[10px] font-black rounded mx-1", task.splitType === 'percentage' ? "bg-white shadow-sm text-cyan-600" : "text-slate-400")}
                                                                     >% 抽成</button>
                                                                     <button
                                                                         onClick={() => handleUpdateTask(task.id, { 
                                                                             splitType: 'unit',
                                                                             budgetStatus: canApproveBudget ? task.budgetStatus : 'pending_approval'
                                                                         })}
-                                                                        className={cn("px-2 py-1 text-[10px] font-black rounded", task.splitType === 'unit' ? "bg-white shadow-sm text-indigo-600" : "text-slate-400")}
+                                                                        className={cn("px-2 py-1 text-[10px] font-black rounded", task.splitType === 'unit' ? "bg-white shadow-sm text-cyan-600" : "text-slate-400")}
                                                                     >單位</button>
                                                                 </div>
                                                             )}
@@ -733,9 +733,9 @@ export default function ExecutionManager() {
                                                     value={task.status}
                                                     onChange={(e) => handleUpdateTask(task.id, { status: e.target.value as any })}
                                                     className={cn(
-                                                        "w-full bg-slate-100 border-2 rounded-2xl px-4 py-4 text-[17px] font-black focus:ring-4 focus:ring-indigo-100 outline-none transition-all cursor-pointer h-[58px]",
+                                                        "w-full bg-slate-100 border-2 rounded-2xl px-4 py-4 text-[17px] font-black focus:ring-4 focus:ring-cyan-100 outline-none transition-all cursor-pointer h-[58px]",
                                                         task.status === 'completed' || task.status === 'verified' ? "text-emerald-700 border-emerald-200 bg-emerald-50" :
-                                                            task.status === 'in_progress' ? "text-indigo-900 border-indigo-200 bg-indigo-50" : "text-slate-600 border border-black/20"
+                                                            task.status === 'in_progress' ? "text-cyan-900 border-cyan-200 bg-cyan-50" : "text-slate-600 border border-black/20"
                                                     )}
                                                 >
                                                     <option value="pending">⚪ 待處理</option>
@@ -792,10 +792,10 @@ export default function ExecutionManager() {
                     {canEditProject && (
                         <div className="bg-slate-50/80 p-8 border-t border-black/20">
                             <div className="flex flex-col space-y-5">
-                                <p className="font-black flex items-center text-indigo-600">
+                                <p className="font-black flex items-center text-cyan-600">
                                     <ArrowRightLeft className="w-5 h-5 mr-2" />
                                     <span className="text-[14.5px]">依據報價明細快速拆解任務</span>
-                                    <span className="text-xs ml-2 uppercase tracking-widest text-indigo-600/80">(QUICK BREAKDOWN)</span>
+                                    <span className="text-xs ml-2 uppercase tracking-widest text-cyan-600/80">(QUICK BREAKDOWN)</span>
                                 </p>
                                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                                     {quoteItems.map((item) => (

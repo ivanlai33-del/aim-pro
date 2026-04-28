@@ -29,7 +29,15 @@ const FEATURES = [
 
 export default function Features() {
     return (
-        <section className="py-24 bg-slate-900 border-y border-white/5">
+        <section 
+            className="py-24 bg-slate-900/90 border-y border-white/5 relative overflow-hidden"
+            style={{ 
+                backgroundImage: 'linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url(/HeroBG.png)', 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed'
+            }}
+        >
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
@@ -42,7 +50,7 @@ export default function Features() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {FEATURES.map((feat, i) => (
-                        <div key={i} className="bg-slate-800/50 p-8 rounded-3xl border border-white/5 hover:bg-slate-800 transition-colors">
+                        <div key={i} className="bg-slate-800/40 p-8 rounded-3xl border border-white/5 hover:bg-slate-800 transition-colors">
                             <div className={`w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center mb-6 ${feat.color}`}>
                                 <feat.icon className="w-6 h-6" />
                             </div>

@@ -13,6 +13,7 @@ export async function migrateDataToSupabase(userId: string) {
     // 1. 讀取 LocalStorage 資料
     const localProjectsStr = localStorage.getItem('project-estimator-v2');
     const localCustomersStr = localStorage.getItem('customers-v1');
+    const localProviderInfoStr = localStorage.getItem('provider-info-v1');
 
     // 標記是否已遷移 (避免重複執行)
     const isMigrated = localStorage.getItem(`migrated_to_supabase_${userId}`);
@@ -86,6 +87,16 @@ export async function migrateDataToSupabase(userId: string) {
                 if (error) throw error;
                 console.log('Projects migrated successfully.');
             }
+        }
+
+        // --- 遷移公司資訊 (Provider Info) ---
+        if (localProviderInfoStr) {
+            console.log('Migrating provider info...');
+            const { error } = await supabase.auth.updateUser({
+                data: { provider_info: JSON.parse(localProviderInfoStr) }
+            });
+            if (error) throw error;
+            console.log('Provider info migrated successfully.');
         }
 
         // 標記遷移完成

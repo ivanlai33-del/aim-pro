@@ -123,15 +123,19 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-blue-600 p-6">
-            <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-[#F4F7FB] p-6 relative overflow-hidden">
+            {/* Background Accents */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-100 rounded-full blur-3xl opacity-50 -mr-48 -mt-48" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-50 -ml-48 -mb-48" />
+
+            <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-black/5 overflow-hidden relative z-10">
                 <div className="p-10 pt-12">
                     <div className="text-center mb-10">
                         <div className="mx-auto w-24 h-24 flex items-center justify-center mb-6">
                             <img src="/Logo.png" alt="Aim.pro" className="w-full h-full object-contain" />
                         </div>
                         <div className="flex justify-center mb-2">
-                            <img src="/Logo_w.png" alt="Aim.pro Logo" className="h-10 object-contain" />
+                            <img src="/Logo_w.png" alt="Aim.pro Logo" className="h-10 object-contain invert grayscale" />
                         </div>
                         <p className="text-slate-500 text-base font-medium">企業級 AI 職人智能總部</p>
                     </div>
@@ -163,13 +167,13 @@ export default function LoginPage() {
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">Email</label>
                             <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-cyan-500 transition-colors" />
                                 <input
                                     type="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 text-slate-900 font-medium outline-none transition-all placeholder:text-slate-300 shadow-sm"
+                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 text-slate-900 font-medium outline-none transition-all placeholder:text-slate-300 shadow-sm"
                                     placeholder="name@company.com"
                                 />
                             </div>
@@ -178,13 +182,13 @@ export default function LoginPage() {
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">密碼</label>
                             <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-cyan-500 transition-colors" />
                                 <input
                                     type="password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 text-slate-900 font-medium outline-none transition-all placeholder:text-slate-300 shadow-sm"
+                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 text-slate-900 font-medium outline-none transition-all placeholder:text-slate-300 shadow-sm"
                                     placeholder="••••••••"
                                     minLength={6}
                                 />
@@ -194,7 +198,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-black py-4 rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center shadow-lg shadow-indigo-500/25 active:scale-[0.98]"
+                            className="w-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 hover:brightness-110 text-white font-black py-4 rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center shadow-lg shadow-cyan-500/25 active:scale-[0.98] border border-white/20"
                         >
                             {loading ? (
                                 <Loader2 className="w-6 h-6 animate-spin" />
@@ -213,7 +217,7 @@ export default function LoginPage() {
                                 setIsSignUp(!isSignUp);
                                 setSecurityWarnings([]);
                             }}
-                            className="ml-2 text-indigo-600 hover:text-indigo-800 font-bold underline-offset-4 hover:underline"
+                            className="ml-2 text-cyan-600 hover:text-cyan-800 font-bold underline-offset-4 hover:underline"
                         >
                             {isSignUp ? '直接登入' : '立即註冊'}
                         </button>

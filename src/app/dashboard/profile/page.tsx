@@ -137,8 +137,8 @@ export default function ProfilePage() {
             <div className="space-y-6">
                 {/* Account Info */}
                 <section className="bg-white rounded-xl border border-black/30 shadow-sm overflow-hidden">
-                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 px-6 py-4 border-b border-black/30 flex items-center">
-                        <User className="w-5 h-5 text-indigo-600 mr-2" />
+                    <div className="bg-gradient-to-r from-cyan-50 to-emerald-50 px-6 py-4 border-b border-black/30 flex items-center">
+                        <User className="w-5 h-5 text-cyan-600 mr-2" />
                         <h2 className="text-lg font-bold text-gray-800">帳號資訊</h2>
                     </div>
                     <div className="p-6">
@@ -176,7 +176,7 @@ export default function ProfilePage() {
                 {/* Contact Info */}
                 <section className="bg-white rounded-xl border border-black/30 shadow-sm overflow-hidden">
                     <div className="bg-gray-50 px-6 py-4 border-b border-black/30 flex items-center">
-                        <Phone className="w-5 h-5 text-indigo-600 mr-2" />
+                        <Phone className="w-5 h-5 text-cyan-600 mr-2" />
                         <h2 className="text-lg font-bold text-gray-800">聯絡資訊</h2>
                     </div>
                     <div className="p-6">
@@ -229,7 +229,7 @@ export default function ProfilePage() {
                 {/* Account Security */}
                 <section className="bg-white rounded-xl border border-black/30 shadow-sm overflow-hidden">
                     <div className="bg-gray-50 px-6 py-4 border-b border-black/30 flex items-center">
-                        <Shield className="w-5 h-5 text-indigo-600 mr-2" />
+                        <Shield className="w-5 h-5 text-cyan-600 mr-2" />
                         <h2 className="text-lg font-bold text-gray-800">帳號安全</h2>
                     </div>
                     <div className="p-6">
@@ -252,7 +252,7 @@ export default function ProfilePage() {
                                         toast.error('發送失敗');
                                     }
                                 }}
-                                className="px-4 py-2 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                className="px-4 py-2 text-sm text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                             >
                                 發送重設信
                             </button>
@@ -271,7 +271,7 @@ export default function ProfilePage() {
                             {/* Current Plan */}
                             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
                                 <div className="flex items-center space-x-3">
-                                    <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center">
+                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-emerald-500 flex items-center justify-center">
                                         <Crown className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
@@ -288,7 +288,7 @@ export default function ProfilePage() {
                                 {userTier === 'free' && (
                                     <button
                                         onClick={() => toast.info('升級功能即將推出')}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                                        className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-lg font-medium hover:brightness-110 transition-all shadow-md shadow-cyan-500/20"
                                     >
                                         升級方案
                                     </button>
@@ -339,7 +339,7 @@ export default function ProfilePage() {
                 {/* Feature Permissions */}
                 <section className="bg-white rounded-xl border border-black/30 shadow-sm overflow-hidden">
                     <div className="bg-gray-50 px-6 py-4 border-b border-black/30 flex items-center">
-                        <Shield className="w-5 h-5 text-indigo-600 mr-2" />
+                        <Shield className="w-5 h-5 text-cyan-600 mr-2" />
                         <h2 className="text-lg font-bold text-gray-800">功能權限</h2>
                     </div>
                     <div className="p-6">
@@ -420,7 +420,7 @@ export default function ProfilePage() {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+                        className="px-8 py-3 bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-cyan-500/25 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 border border-white/20"
                     >
                         {saving ? (
                             <>

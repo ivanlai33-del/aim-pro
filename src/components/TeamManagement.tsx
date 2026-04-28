@@ -95,7 +95,7 @@ export default function TeamManagement() {
     const getRoleIcon = (role: TeamMember['role']) => {
         switch (role) {
             case 'owner': return <Crown className="w-4 h-4 text-amber-500" />;
-            case 'admin': return <Shield className="w-4 h-4 text-indigo-500" />;
+            case 'admin': return <Shield className="w-4 h-4 text-cyan-500" />;
             case 'sales': return <Briefcase className="w-4 h-4 text-emerald-500" />;
             case 'accountant': return <Calculator className="w-4 h-4 text-orange-500" />;
             default: return <User className="w-4 h-4 text-slate-400" />;
@@ -105,7 +105,7 @@ export default function TeamManagement() {
     const getRoleBadge = (role: TeamMember['role']) => {
         const styles = {
             owner: "bg-amber-50 text-amber-700 border-amber-200",
-            admin: "bg-indigo-50 text-indigo-700 border-indigo-200",
+            admin: "bg-cyan-50 text-cyan-700 border-cyan-200",
             sales: "bg-emerald-50 text-emerald-700 border-emerald-200",
             accountant: "bg-orange-50 text-orange-700 border-orange-200",
             member: "bg-slate-50 text-slate-700 border-slate-200"
@@ -142,14 +142,14 @@ export default function TeamManagement() {
             <div className="flex justify-between items-end">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 flex items-center">
-                        <Users className="w-8 h-8 mr-3 text-indigo-600" />
+                        <Users className="w-8 h-8 mr-3 text-cyan-600" />
                         團隊成員管理
                     </h2>
                     <p className="text-slate-500 font-bold mt-1">管理職位權限、發送邀請與成員汰換</p>
                 </div>
-                <div className="bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100 flex items-center">
-                    <Crown className="w-4 h-4 text-indigo-600 mr-2" />
-                    <span className="text-xs font-black text-indigo-700 uppercase tracking-widest">Pro+ 團隊版方案</span>
+                <div className="bg-cyan-50 px-4 py-2 rounded-2xl border border-cyan-100 flex items-center">
+                    <Crown className="w-4 h-4 text-cyan-600 mr-2" />
+                    <span className="text-xs font-black text-cyan-700 uppercase tracking-widest">Pro+ 團隊版方案</span>
                 </div>
             </div>
 
@@ -159,7 +159,7 @@ export default function TeamManagement() {
                     <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-black/10 overflow-hidden">
                         <div className="p-6 bg-gradient-to-br from-slate-50 to-slate-100 border-b border-black/10">
                             <h3 className="font-black text-lg text-slate-800 flex items-center">
-                                <UserPlus className="w-5 h-5 mr-2 text-indigo-600" />
+                                <UserPlus className="w-5 h-5 mr-2 text-cyan-600" />
                                 邀請新成員
                             </h3>
                         </div>
@@ -174,7 +174,7 @@ export default function TeamManagement() {
                                         value={inviteEmail}
                                         onChange={(e) => setInviteEmail(e.target.value)}
                                         placeholder="employee@studio.tw"
-                                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-black/10 rounded-xl font-bold focus:ring-4 focus:ring-indigo-100 focus:bg-white transition-all outline-none"
+                                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-black/10 rounded-xl font-bold focus:ring-4 focus:ring-cyan-100 focus:bg-white transition-all outline-none"
                                     />
                                 </div>
                             </div>
@@ -183,7 +183,7 @@ export default function TeamManagement() {
                                 <select 
                                     value={inviteRole}
                                     onChange={(e) => setInviteRole(e.target.value as any)}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-black/10 rounded-xl font-black text-slate-700 focus:ring-4 focus:ring-indigo-100 focus:bg-white transition-all outline-none appearance-none"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-black/10 rounded-xl font-black text-slate-700 focus:ring-4 focus:ring-cyan-100 focus:bg-white transition-all outline-none appearance-none"
                                 >
                                     <option value="admin">專案經理 (Admin)</option>
                                     <option value="sales">業務開發 (Sales)</option>
@@ -196,7 +196,7 @@ export default function TeamManagement() {
                             </div>
                             <button 
                                 type="submit"
-                                className="w-full bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-black py-4 rounded-xl shadow-lg shadow-indigo-100 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center mt-4"
+                                className="w-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white font-black py-4 rounded-xl shadow-lg shadow-cyan-100 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center mt-4 border border-white/20"
                             >
                                 <UserPlus className="w-5 h-5 mr-2" />
                                 發送邀請
@@ -266,13 +266,13 @@ export default function TeamManagement() {
             </div>
 
             {/* Permissions Matrix Mini-Guide */}
-            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative">
+            <div className="bg-gradient-to-br from-slate-900 via-[#1a2a3a] to-slate-800 rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
                     <Shield className="w-64 h-64" />
                 </div>
                 <div className="relative z-10">
-                    <h4 className="text-xl font-black mb-6 flex items-center">
-                        <Shield className="w-6 h-6 mr-3 text-indigo-400" />
+                    <h4 className="text-xl font-black mb-6 flex items-center text-white">
+                        <Shield className="w-6 h-6 mr-3 text-cyan-400" />
                         權限矩陣概覽 (RBAC Quick Guide)
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -283,7 +283,7 @@ export default function TeamManagement() {
                             <p className="text-xs text-slate-300 font-bold leading-relaxed">最高權限，可管理團隊成員、訂閱方案與公司級財務報表。</p>
                         </div>
                         <div className="bg-white/5 p-5 rounded-2xl border border-white/10">
-                            <p className="text-indigo-400 font-black text-sm mb-2 flex items-center uppercase tracking-widest">
+                            <p className="text-cyan-400 font-black text-sm mb-2 flex items-center uppercase tracking-widest">
                                 <Shield className="w-4 h-4 mr-2" /> PM (Admin)
                             </p>
                             <p className="text-xs text-slate-300 font-bold leading-relaxed">管理專案、發包任務、設定成本預算。預算需經由 Owner 簽核。</p>

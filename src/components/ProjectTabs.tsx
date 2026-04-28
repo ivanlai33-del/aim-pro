@@ -55,7 +55,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
             {/* Left: New Project Button */}
             <button
                 onClick={createProject}
-                className="flex items-center justify-center bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-14 rounded-xl font-bold text-sm transition-all shadow-lg ml-12 z-20 shrink-0 shadow-primary/20"
+                className="flex items-center justify-center bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white h-14 w-14 rounded-xl font-bold text-sm transition-all shadow-lg ml-12 z-20 shrink-0 shadow-cyan-500/20 active:scale-95 border border-white/30"
                 title="新增專案"
             >
                 <Plus className="w-8 h-8 transition-transform group-hover:rotate-90" />
@@ -70,8 +70,8 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         className={cn(
                             "group relative flex items-center min-w-[160px] max-w-[200px] h-12 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all select-none shrink-0 active:scale-[0.98]",
                             activeProjectId === project.id
-                                ? "bg-primary text-white shadow-md z-10"
-                                : "bg-white/60 text-slate-500 hover:bg-white hover:text-primary border border-black/5"
+                                ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md z-10 border border-white/20"
+                                : "bg-white/60 text-slate-500 hover:bg-white hover:text-cyan-600 border border-black/5"
                         )}
                     >
                         {getProjectIcon(project.data.projectType)}

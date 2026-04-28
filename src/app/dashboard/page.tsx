@@ -302,35 +302,7 @@ function Dashboard() {
             {/* Dashboard Content */}
             <div className="flex-1 flex flex-col overflow-hidden relative">
 
-                {/* 🔴 Low Quota Warning Banner */}
-                {(() => {
-                    const plan = PRICING_CONFIG[userTier as keyof typeof PRICING_CONFIG];
-                    const maxQuota = plan?.limits?.aiCreditsMonthly || 50;
-                    const isLowQuota = maxQuota > 0 && aiQuota <= Math.max(10, maxQuota * 0.05);
-                    if (!isLowQuota) return null;
-                    return (
-                        <div
-                            className="print:hidden mx-4 mt-3 flex items-center justify-between gap-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl px-5 py-3 shadow-sm cursor-pointer hover:from-amber-100 hover:to-orange-100 transition-all animate-in slide-in-from-top-2 duration-500"
-                            onClick={() => router.push('/dashboard/settings')}
-                        >
-                            <div className="flex items-center gap-3">
-                                <span className="text-2xl">⚠️</span>
-                                <div>
-                                    <p className="text-sm font-black text-amber-800">
-                                        AI 點數即將耗盡！剩餘 <span className="text-red-600">{aiQuota}</span> 點
-                                    </p>
-                                    <p className="text-xs text-amber-600">升級方案以繼續使用 AI 功能</p>
-                                </div>
-                            </div>
-                            <button
-                                className="whitespace-nowrap text-xs font-black text-white bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 rounded-xl shadow-md hover:brightness-110 transition-all active:scale-95"
-                                onClick={(e) => { e.stopPropagation(); router.push('/dashboard/settings'); }}
-                            >
-                                立刻升級 →
-                            </button>
-                        </div>
-                    );
-                })()}
+
 
                 {/* 3. Main Workspace (Centered Window) */}
                 <div className="flex-1 overflow-hidden flex flex-col bg-background">
@@ -355,7 +327,7 @@ function Dashboard() {
                                         onClick={() => setActiveTab('setup')}
                                         icon={<Sliders className="w-5 h-5 lg:mr-2" />}
                                         label="1. 專案設定"
-                                        activeClass="bg-gradient-to-br from-indigo-600 to-blue-700 text-white shadow-md shadow-indigo-600/30"
+                                        activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/30"
                                     />
                                     <TabButton
                                         isActive={activeTab === 'report'}
@@ -389,7 +361,7 @@ function Dashboard() {
                                         icon={<FileText className="w-5 h-5 lg:mr-2" />}
                                         label="5. 報價單"
                                         isLocked={userTier === 'free'}
-                                        activeClass="bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/30"
+                                        activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/30"
                                     />
                                     <TabButton
                                         isActive={activeTab === 'execution'}
@@ -426,7 +398,7 @@ function Dashboard() {
                                         <div className="bg-white p-8 rounded-[24px] border border-black/20 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
                                             <div className="flex flex-col gap-2 w-full md:w-auto">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                                    <div className="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600 shrink-0">
                                                         <Sliders className="w-7 h-7" />
                                                     </div>
                                                     <div className="flex flex-col flex-1">
@@ -470,7 +442,7 @@ function Dashboard() {
                                                  <button
                                                     onClick={handleGenerateReport}
                                                     disabled={isGenerating || (!apiKey && !turnstileToken)}
-                                                    className="inline-flex items-center px-10 py-5 border border-transparent text-[16px] font-bold rounded-2xl shadow-xl shadow-primary/25 text-white bg-primary hover:bg-primary/90 disabled:opacity-50 transition-all active:scale-95 whitespace-nowrap"
+                                                    className="inline-flex items-center px-10 py-5 border border-white/20 text-[16px] font-bold rounded-2xl shadow-xl shadow-cyan-500/25 text-white bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 hover:brightness-110 disabled:opacity-50 transition-all active:scale-95 whitespace-nowrap"
                                                 >
                                                     {isGenerating ? (
                                                         <>

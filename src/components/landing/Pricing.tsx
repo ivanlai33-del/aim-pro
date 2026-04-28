@@ -31,7 +31,16 @@ export default function Pricing() {
     };
 
     return (
-        <section id="pricing" className="py-24 bg-slate-950 relative overflow-hidden">
+        <section 
+            id="pricing" 
+            className="py-24 bg-slate-950/80 relative overflow-hidden"
+            style={{ 
+                backgroundImage: 'linear-gradient(rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6)), url(/HeroBG.png)', 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed'
+            }}
+        >
             {/* Background Glow */}
             <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[60%] h-[60%] bg-indigo-900/10 rounded-full blur-[120px] pointer-events-none" />
 
@@ -92,7 +101,7 @@ export default function Pricing() {
                                 {/* Main Dark Glass Card */}
                                 <div className={cn(
                                     "flex flex-col h-full p-8 rounded-[2.5rem] transition-all duration-500 relative z-10",
-                                    "bg-slate-900/75 backdrop-blur-2xl border border-white/10",
+                                    "bg-slate-900/60 backdrop-blur-2xl border border-white/10",
                                     "group-hover:border-white/20 group-hover:-translate-y-[20px]",
                                     isPro ? "border-indigo-500/40 shadow-2xl shadow-indigo-500/30" : "shadow-xl"
                                 )}>

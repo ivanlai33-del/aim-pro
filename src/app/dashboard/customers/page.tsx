@@ -74,7 +74,7 @@ export default function CustomersPage() {
                             placeholder="搜尋客戶、公司、統編..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 pr-4 py-2 bg-white border border-black/30 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-64 transition-all"
+                            className="pl-10 pr-4 py-2 bg-white border border-black/30 rounded-xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none w-64 transition-all"
                         />
                     </div>
                     <button
@@ -83,7 +83,7 @@ export default function CustomersPage() {
                             setEditingId(null);
                             setFormData({ name: '', company: '', taxId: '', email: '', phone: '', address: '', tags: [] });
                         }}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all"
+                        className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center shadow-lg shadow-cyan-600/20 hover:brightness-110 transition-all border border-white/20"
                     >
                         {isAdding ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                         {isAdding ? '取消' : '新增客戶'}
