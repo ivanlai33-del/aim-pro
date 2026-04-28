@@ -511,13 +511,18 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
             // 3. Fetch Subscription (Defensive)
             try {
-                const { data: subData, error: subError } = await supabase
+                // Using .select() instead of .maybeSingle() to avoid 406 errors on schema mismatch/duplicates
+                const { data: subDataArray, error: subError } = await supabase
                     .from('subscriptions')
                     .select('*')
-                    .eq('user_id', userId)
-                    .maybeSingle();
+                    .eq('user_id', userId);
 
-                if (!subError && subData) {
+                if (subError) {
+                    console.error('Subscription Fetch Error:', subError);
+                }
+
+                if (!subError && subDataArray && subDataArray.length > 0) {
+                    const subData = subDataArray[0];
                     setUserTier(subData.plan_id || 'free');
                 }
             } catch (e) {
