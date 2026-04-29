@@ -150,3 +150,26 @@ export async function translateDocument(
         return { content: "", error: error instanceof Error ? error.message : "翻譯服務暫時不可用" };
     }
 }
+/**
+ * Surgical/Partial Edit of a specific text segment (Backend handled)
+ */
+export async function partialRefine(
+    selectedText: string,
+    instruction: string,
+    userApiKey?: string,
+    turnstileToken?: string
+): Promise<AIResponse> {
+    try {
+        const result = await callGenerateAPI({
+            mode: 'partial_refine',
+            selectedText,
+            instruction,
+            userApiKey,
+            turnstileToken
+        });
+        return { content: cleanAIResponse(result.content) };
+    } catch (error: any) {
+        console.error("Partial Refinement Error:", error);
+        return { content: "", error: error instanceof Error ? error.message : "局部修改失敗" };
+    }
+}

@@ -203,10 +203,10 @@ export const BUSINESS_MODULES: Record<string, BusinessModule> = {
 
     // 🔵 視覺設計與創意
     brand_design: MODULE_BRAND_DESIGN,
+    ui_ux_design: MODULE_UI_UX,
     video_production: MODULE_VIDEO_PRODUCTION,
     social_visual: MODULE_SOCIAL_VISUAL,
     photography: MODULE_PHOTOGRAPHY,
-    ui_ux_design: MODULE_UI_UX,
 
     // 🟠 空間與活動企劃
     interior_design: MODULE_INTERIOR_DESIGN,

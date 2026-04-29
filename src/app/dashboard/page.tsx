@@ -78,8 +78,14 @@ function Dashboard() {
     useEffect(() => {
         const storedKey = localStorage.getItem('gemini_api_key');
         if (storedKey) {
-            setApiKey(storedKey);
-            // Removed: setUseCustomKey(true); // Don't auto-enable, let the user decide in settings
+            // Auto-clear known leaked key to prevent persistent errors
+            if (storedKey.includes('AgjWaTky') || storedKey.includes('CU5efTTi')) {
+                localStorage.removeItem('gemini_api_key');
+                setApiKey('');
+                toast.info('偵測到已失效的金鑰，系統已自動切換回預設安全路徑。');
+            } else {
+                setApiKey(storedKey);
+            }
         }
 
         // Load custom prompts
@@ -326,7 +332,7 @@ function Dashboard() {
                             <div className="w-full bg-white border-b border-slate-200/20 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] relative z-40 print:hidden">
                                 <div className="px-4 shrink-0 flex items-center justify-center mt-2 py-4 w-full max-w-[1450px] mx-auto">
                                 {/* Tabs (Center) */}
-                                <nav className="flex space-x-2 w-full max-w-[1450px] origin-center whitespace-nowrap" aria-label="Tabs">
+                                <nav className="flex space-x-2 w-full max-w-[1450px] justify-center whitespace-nowrap overflow-x-auto no-scrollbar" aria-label="Tabs">
                                     <TabButton
                                         isActive={activeTab === 'setup'}
                                         onClick={() => setActiveTab('setup')}
@@ -573,9 +579,12 @@ function TabButton({ isActive, onClick, icon, label, isLocked, activeClass }: { 
 
     return (
         <button
-            onClick={onClick}
+            onClick={(e) => {
+                e.preventDefault();
+                onClick();
+            }}
             className={cn(
-                "group flex-1 flex justify-center items-center px-2 lg:px-[3px] py-4 lg:py-[18px] rounded-xl font-black text-sm lg:text-[15px] transition-all outline-none select-none relative shrink-0 whitespace-nowrap backdrop-blur-sm",
+                "group flex-1 flex justify-center items-center px-4 lg:px-6 py-4 lg:py-[18px] rounded-xl font-black text-sm lg:text-[15px] transition-all outline-none select-none relative whitespace-nowrap backdrop-blur-sm min-w-[120px]",
                 isActive
                     ? activeStyling
                     : "text-slate-600 hover:bg-white/80 dark:text-slate-400 dark:hover:bg-slate-800 border border-slate-100/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 active:scale-95"

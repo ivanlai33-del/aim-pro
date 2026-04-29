@@ -63,21 +63,30 @@ const TYPE_ICONS: Record<string, any> = {
 };
 
 const OPTION_GRADIENTS = [
-    "from-indigo-500 to-blue-600",
-    "from-emerald-500 to-teal-600",
-    "from-violet-500 to-purple-600",
-    "from-rose-500 to-pink-600",
-    "from-cyan-500 to-blue-600",
-    "from-orange-400 to-amber-500"
+    "bg-gradient-to-br from-indigo-500 to-blue-600",
+    "bg-gradient-to-br from-emerald-500 to-teal-600",
+    "bg-gradient-to-br from-violet-500 to-purple-600",
+    "bg-gradient-to-br from-rose-500 to-pink-600",
+    "bg-gradient-to-br from-cyan-500 to-blue-600",
+    "bg-gradient-to-br from-orange-400 to-amber-500"
 ];
 
 const TYPE_GRADIENTS = [
-    "from-indigo-500 to-blue-600",
-    "from-emerald-500 to-teal-600",
-    "from-violet-500 to-purple-600",
-    "from-rose-500 to-pink-600",
-    "from-orange-400 to-amber-500"
+    "bg-gradient-to-br from-indigo-500 to-blue-600",
+    "bg-gradient-to-br from-emerald-500 to-teal-600",
+    "bg-gradient-to-br from-violet-500 to-purple-600",
+    "bg-gradient-to-br from-rose-500 to-pink-600",
+    "bg-gradient-to-br from-orange-400 to-amber-500"
 ];
+
+const CATEGORY_GRADIENT_MAP: Record<string, string> = {
+    web: "bg-gradient-to-br from-indigo-500 to-blue-600",
+    marketing: "bg-gradient-to-br from-orange-400 to-rose-500",
+    design: "bg-gradient-to-br from-pink-500 to-purple-600",
+    space: "bg-gradient-to-br from-emerald-400 to-teal-500",
+    consulting: "bg-gradient-to-br from-violet-500 to-fuchsia-600",
+    pro_service: "bg-gradient-to-br from-sky-500 to-blue-500"
+};
 
 // --- Helper Component: Big Block Card ---
 function FormCard({ title, children, className, colSpan = "col-span-12", titleClassName, icon: Icon }: { title?: string, children: React.ReactNode, className?: string, colSpan?: string, titleClassName?: string, icon?: any }) {
@@ -108,23 +117,22 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
     );
 }
 
-// --- Helper Component: Option Button (Two-Line Support) ---
 function OptionButton({
     label,
     isActive,
     onClick,
     className,
     icon,
-    showBadge, // Added showBadge prop
-    gradient
+    showBadge,
+    activeBg = "bg-gradient-to-br from-indigo-500 to-blue-600"
 }: {
     label: string,
     isActive: boolean,
     onClick: () => void,
     className?: string,
     icon?: React.ReactNode,
-    showBadge?: boolean, // Type for the showBadge prop
-    gradient?: string
+    showBadge?: boolean,
+    activeBg?: string
 }) {
     // Logic to split "Chinese (English)" into two lines
     const match = label.match(/^([^(]+)(?:\s*\((.*)\))?$/);
@@ -138,13 +146,13 @@ function OptionButton({
             className={cn(
                 "flex flex-col items-start justify-start p-[15px] rounded-2xl border transition-all min-h-[160px] text-left group active:scale-95 relative overflow-hidden",
                 isActive
-                    ? `border-transparent bg-gradient-to-br ${gradient || 'from-indigo-500 to-purple-600'} text-white shadow-lg ${!gradient ? 'shadow-indigo-500/25' : 'shadow-black/10'}`
-                    : 'border-black/20 bg-slate-50 text-slate-500 hover:border-primary/50 hover:bg-white hover:text-primary hover:shadow-md',
+                    ? `border-transparent ${activeBg} text-white shadow-lg shadow-primary/20`
+                    : 'border-black/20 bg-white text-slate-500 hover:border-primary/50 hover:bg-slate-50 hover:text-primary hover:shadow-md',
                 className
             )}
         >
             {icon && <div className={cn("mb-2", isActive ? "text-white/80" : "text-slate-400 group-hover:text-primary/70")}>{icon}</div>}
-            <span className="text-[22px] font-bold leading-tight block">{mainText}</span>
+            <span className="text-[22px] font-bold leading-tight block">{mainText || "未命名模組"}</span>
             {subText && (
                 <span className={cn(
                     "text-[16px] font-medium mt-1 block tracking-tight",
@@ -247,9 +255,11 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
         }
     }, [initialData]);
 
-    // Update active module when industry changes
+    // Update active module when industry changes (only if current module doesn't belong to the new industry)
     useEffect(() => {
-        if (currentIndustry?.items?.[0]) {
+        const isCurrentModuleInNewIndustry = currentIndustry?.items?.some(m => m.id === formData.moduleId);
+        
+        if (currentIndustry?.items?.[0] && !isCurrentModuleInNewIndustry) {
             setFormData(prev => ({
                 ...prev,
                 moduleId: currentIndustry.items[0].id,
@@ -426,7 +436,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                     isActive={isActive}
                                     icon={<ModIcon className="w-8 h-8" />}
                                     showBadge={true}
-                                    gradient={CATEGORY_GRADIENTS[module.categoryId]}
+                                    activeBg={CATEGORY_GRADIENT_MAP[module.categoryId]}
                                     className="min-h-[200px]"
                                     onClick={() => {
                                         if (devMode && isActive) {
@@ -486,7 +496,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                     label={labelText}
                                     isActive={formData.projectType === type.id}
                                     icon={emoji ? <span className="text-[28px] leading-none block">{emoji}</span> : null}
-                                    gradient={TYPE_GRADIENTS[index % TYPE_GRADIENTS.length]}
+                                    activeBg={TYPE_GRADIENTS[index % TYPE_GRADIENTS.length]}
                                     onClick={() => handleTypeChange(type.id)}
                                 />
                             );
@@ -541,7 +551,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                                     label={opt}
                                                     isActive={isSelected}
                                                     onClick={() => handleMultiSelectToggle(field.name, opt)}
-                                                    gradient={OPTION_GRADIENTS[index % OPTION_GRADIENTS.length]}
+                                                    activeBg={OPTION_GRADIENTS[index % OPTION_GRADIENTS.length]}
                                                     className="min-h-[130px]"
                                                 />
                                             );

@@ -4,17 +4,53 @@ import remarkGfm from 'remark-gfm';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock, Languages, Globe } from 'lucide-react';
-import { refineReport, translateDocument } from '../lib/aiService';
+import { refineReport, translateDocument, partialRefine } from '../lib/aiService';
 import Turnstile from './Turnstile';
 import { useProject } from '../context/ProjectContext';
 import { toast } from 'sonner';
 import UpgradeModal from './landing/UpgradeModal';
+import mermaid from 'mermaid';
+
+// Initialize mermaid
+if (typeof window !== 'undefined') {
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        fontFamily: 'inherit',
+    });
+}
 
 interface ReportViewProps {
     reportContent: string;
     onSave: (content: string) => void;
     apiKey?: string;
 }
+
+// Mermaid component for dynamic rendering
+const MermaidDiagram = ({ chart }: { chart: string }) => {
+    const [svg, setSvg] = useState<string>('');
+    const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+
+    useEffect(() => {
+        const renderChart = async () => {
+            try {
+                const { svg } = await mermaid.render(id, chart);
+                setSvg(svg);
+            } catch (error) {
+                console.error('Mermaid render error:', error);
+            }
+        };
+        renderChart();
+    }, [chart, id]);
+
+    return (
+        <div 
+            className="mermaid-container my-8 flex justify-center bg-white p-6 rounded-2xl border border-border shadow-sm overflow-x-auto" 
+            dangerouslySetInnerHTML={{ __html: svg }} 
+        />
+    );
+};
 
 export default function ReportView({ reportContent, onSave, apiKey }: ReportViewProps) {
     const { userTier, aiQuota } = useProject();
@@ -28,6 +64,25 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
     const [isTranslating, setIsTranslating] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [showLangMenu, setShowLangMenu] = useState(false);
+    const [selectedText, setSelectedText] = useState('');
+    const [selectionRange, setSelectionRange] = useState({ start: 0, end: 0 });
+    const [partialInstruction, setPartialInstruction] = useState('');
+    const [isPartiallyRefining, setIsPartiallyRefining] = useState(false);
+
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const handleTextSelection = () => {
+        if (textareaRef.current) {
+            const start = textareaRef.current.selectionStart;
+            const end = textareaRef.current.selectionEnd;
+            const text = textareaRef.current.value.substring(start, end);
+            
+            if (text.trim()) {
+                setSelectedText(text);
+                setSelectionRange({ start, end });
+            }
+        }
+    };
 
     useEffect(() => {
         setEditedContent(reportContent);
@@ -60,6 +115,33 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
             toast.error('AI 潤飾過程發生錯誤。');
         } finally {
             setIsRefining(false);
+        }
+    };
+
+    const handlePartialRefine = async () => {
+        if (!selectedText || !partialInstruction) return;
+        
+        setIsPartiallyRefining(true);
+        try {
+            const response = await partialRefine(selectedText, partialInstruction, apiKey, turnstileToken || undefined);
+            if (response.error) {
+                toast.error(`局部修改失敗：${response.error}`);
+            } else {
+                // Surgical replacement in the full content
+                const before = editedContent.substring(0, selectionRange.start);
+                const after = editedContent.substring(selectionRange.end);
+                const newContent = before + response.content + after;
+                
+                setEditedContent(newContent);
+                setSelectedText('');
+                setPartialInstruction('');
+                toast.success('局部內容已成功更新！');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('局部修改過程發生錯誤。');
+        } finally {
+            setIsPartiallyRefining(false);
         }
     };
 
@@ -229,14 +311,56 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
 
             {isEditing ? (
                 <div className="flex-1 flex flex-col space-y-4 min-h-0">
-                    <div className="flex-1 bg-surface rounded-xl shadow border border-border overflow-hidden">
+                    <div className="flex-1 bg-surface rounded-xl shadow border border-border overflow-hidden relative group">
                         <textarea
+                            ref={textareaRef}
                             value={editedContent}
                             onChange={(e) => setEditedContent(e.target.value)}
-                            className="w-full h-full p-8 focus:outline-none resize-none font-sans text-base leading-relaxed text-foreground rounded-lg placeholder:text-muted-foreground bg-surface"
+                            onMouseUp={handleTextSelection}
+                            onKeyUp={handleTextSelection}
+                            className="w-full h-full p-8 focus:outline-none resize-none font-sans text-base leading-relaxed text-foreground rounded-lg placeholder:text-muted-foreground bg-surface transition-all"
                             placeholder="請在此輸入或修改分析報告內容 (支援 Markdown 語法)..."
                             spellCheck={false}
                         />
+
+                        {/* Partial Selection Toolbar */}
+                        {selectedText && (
+                            <div className="absolute top-4 right-4 animate-in fade-in slide-in-from-top-2 duration-300 z-10">
+                                <div className="bg-white/95 backdrop-blur shadow-2xl border border-primary/20 rounded-2xl p-4 w-80 space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">局部 AI 修改選取中...</p>
+                                        <button onClick={() => setSelectedText('')} className="text-slate-400 hover:text-slate-600">
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    <div className="text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-100 max-h-20 overflow-y-auto italic">
+                                        "{selectedText.substring(0, 100)}{selectedText.length > 100 ? '...' : ''}"
+                                    </div>
+                                    <input 
+                                        type="text"
+                                        value={partialInstruction}
+                                        onChange={(e) => setPartialInstruction(e.target.value)}
+                                        placeholder="對這段選取內容的指令... (如：幫我加圖表、刪除此項)"
+                                        className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !isPartiallyRefining) handlePartialRefine();
+                                        }}
+                                    />
+                                    <button
+                                        onClick={handlePartialRefine}
+                                        disabled={isPartiallyRefining || !partialInstruction}
+                                        className="w-full py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center disabled:opacity-50"
+                                    >
+                                        {isPartiallyRefining ? (
+                                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                        ) : (
+                                            <Sparkles className="w-4 h-4 mr-2" />
+                                        )}
+                                        {isPartiallyRefining ? '修改中...' : '執行局部修改'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Additional Notes Field */}
@@ -300,6 +424,20 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                             h2: ({ node, ...props }) => <h2 className="text-2xl font-black text-foreground mt-12 mb-6 border-l-8 border-muted-foreground/30 pl-4 bg-muted/50 py-2 rounded-r-lg" {...props} />,
                             h3: ({ node, ...props }) => <h3 className="text-xl font-semibold text-foreground mt-6 mb-3" {...props} />,
                             ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-2 text-foreground" {...props} />,
+                            code({ node, inline, className, children, ...props }: any) {
+                                const match = /language-(\w+)/.exec(className || '');
+                                const lang = match ? match[1] : '';
+                                
+                                if (!inline && lang === 'mermaid') {
+                                    return <MermaidDiagram chart={String(children).replace(/\n$/, '')} />;
+                                }
+                                
+                                return (
+                                    <code className={className} {...props}>
+                                        {children}
+                                    </code>
+                                );
+                            }
                         }}
                     >
                         {reportContent}
