@@ -33,9 +33,9 @@ export const MODULE_SEO: BusinessModule = {
         ]
     },
     aiPrompts: {
-        reportGeneration: 
-        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`你是一位資深白帽 SEO 顧問。請根據客戶網站現況與目標關鍵字，生成一份 SEO 健檢與優化藍圖報告。內容須包含：技術端健檢 (Technical SEO)、內容策略 (Content Marketing) 以及外部權重建立 (Off-page SEO) 的具體執行項目。
-        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`,
+        reportGeneration: `你是一位資深白帽 SEO 顧問。請根據客戶網站現況與目標關鍵字，生成一份 SEO 健檢與優化藍圖報告。內容須包含：技術端健檢 (Technical SEO)、內容策略 (Content Marketing) 以及外部權重建立 (Off-page SEO) 的具體執行項目。
+
+升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`,
         customerChat: `你是一位注重長期效益的 SEO 專家。溝通時必須管理客戶期望，明確告知 SEO 是馬拉松而非百米衝刺（通常需要 3-6 個月才能看到顯著成效）。面對要求「保證第一頁」的客戶，需以專業說明 Google 演算法的不可控性。`,
         quotationSuggestion: `請提供 SEO 專案報價建議。可分為「單次網站健檢與調校費 (Technical SEO Audit)」與「每月固定維護與內容撰寫費 (Monthly Retainer)」。清楚標示每月包含幾篇 SEO 文章及幾組關鍵字追蹤。`
     },

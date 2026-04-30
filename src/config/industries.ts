@@ -130,6 +130,25 @@ export const CATEGORY_FOLDERS: Record<string, CategoryFolder> = {
             milestones: ['收到訂金', '專業訪談', '方案規劃', '施作/製作', '確認', '結案交付'],
         },
     },
+
+    // 🏆 新類別：商務開發與競標
+    business_dev: {
+        id: 'business_dev',
+        name: '商務開發與競標',
+        description: '政府標案投標策略、補助計畫申請、提案文件撰寫',
+        icon: 'Trophy',
+        color: '#f59e0b',
+        moduleIds: ['government_tender', 'grant_subsidy'],
+        workflow: {
+            diagram: `graph LR
+    A[機會識別] --> B[資格審查]
+    B --> C[策略規劃]
+    C --> D[文件撰寫]
+    D --> E[提案送件]
+    E --> F[得標/獲補]`,
+            milestones: ['機會識別', '資格審查', '策略規劃', '文件撰寫', '送件', '得標/獲補'],
+        },
+    },
 };
 
 export const CATEGORY_GRADIENTS: Record<string, string> = {
@@ -138,7 +157,8 @@ export const CATEGORY_GRADIENTS: Record<string, string> = {
     design: "from-pink-500 to-purple-600",
     space: "from-emerald-400 to-teal-500",
     consulting: "from-violet-500 to-fuchsia-600",
-    pro_service: "from-sky-500 to-blue-500" // Added for pro_service
+    pro_service: "from-sky-500 to-blue-500",
+    business_dev: "from-amber-400 to-orange-500"
 };
 
 // ============================================================
@@ -173,6 +193,9 @@ import { MODULE_HOME_ORGANIZER } from './modules/consulting/home_organizer';
 import { MODULE_IP_AGENT } from './modules/consulting/ip_agent';
 import { MODULE_AI_AGENT_CONSULTANT } from './modules/consulting/ai_agent_consulting';
 
+import { MODULE_GOVERNMENT_TENDER } from './modules/business_dev/government_tender';
+import { MODULE_GRANT_SUBSIDY } from './modules/business_dev/grant_subsidy';
+
 // Re-export for direct access if needed
 export {
     MODULE_WEB_DEVELOPMENT, MODULE_SOFTWARE_OUTSOURCING, MODULE_SYSTEM_INTEGRATION,
@@ -181,7 +204,8 @@ export {
     MODULE_INTERIOR_DESIGN, MODULE_EVENT_PLANNING, MODULE_EXHIBITION_DESIGN,
     MODULE_BUSINESS_CONSULTING, MODULE_CORPORATE_TRAINING, MODULE_STRATEGY_PLANNING,
     MODULE_ONLINE_COURSE, MODULE_HOME_ORGANIZER, MODULE_IP_AGENT, MODULE_PR_AGENCY,
-    MODULE_AI_AGENT_CONSULTANT
+    MODULE_AI_AGENT_CONSULTANT,
+    MODULE_GOVERNMENT_TENDER, MODULE_GRANT_SUBSIDY
 };
 
 // ============================================================
@@ -221,6 +245,10 @@ export const BUSINESS_MODULES: Record<string, BusinessModule> = {
     home_organizer: MODULE_HOME_ORGANIZER,
     ip_agent: MODULE_IP_AGENT,
     ai_agent_consultant: MODULE_AI_AGENT_CONSULTANT,
+
+    // 🏆 商務開發與競標
+    government_tender: MODULE_GOVERNMENT_TENDER,
+    grant_subsidy: MODULE_GRANT_SUBSIDY,
 };
 
 // ============================================================

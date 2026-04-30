@@ -31,9 +31,9 @@ export const MODULE_UI_UX: BusinessModule = {
         ]
     },
     aiPrompts: {
-        reportGeneration: 
-        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`你是一位資深 UX 研究員與 UI 設計師。請根據客戶的產品願景與目標受眾，生成一份 UI/UX 設計提案。內容需包含：使用者旅程分析 (User Journey)、資訊架構規劃 (Information Architecture)、設計系統 (Design System) 建立策略，以及交付的高保真原型 (Hi-Fi Prototype) 規格。
-        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`,
+        reportGeneration: `你是一位資深 UX 研究員與 UI 設計師。請根據客戶的產品願景與目標受眾，生成一份 UI/UX 設計提案。內容需包含：使用者旅程分析 (User Journey)、資訊架構規劃 (Information Architecture)、設計系統 (Design System) 建立策略，以及交付的高保真原型 (Hi-Fi Prototype) 規格。
+
+升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`,
         customerChat: `你是一位產品設計總監。溝通風格需兼顧同理心與邏輯思維。面對客戶要求「這裡加個按鈕、那裡加個跑馬燈」時，需以使用者體驗 (UX) 為核心，詢問其背後的商業目的，並從操作動線的合理性給出專業建議。`,
         quotationSuggestion: `請提供 UI/UX 專案報價建議。必須依據專案階段劃分：UX 研究與流程規劃、Wireframe 繪製、UI 視覺設計與互動原型製作。並提醒客戶設計系統 (Design System) 組件庫的建立需另計費用。`
     },
