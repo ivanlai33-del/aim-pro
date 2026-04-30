@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
     Loader2, Check, Wand2, FileText, Target, Settings2, Users, LayoutGrid, CalendarRange,
     Globe, Terminal, Layers, Share2, BadgeDollarSign, Search, UserPlus,
     PenTool, Monitor, Video, ImageIcon, Camera, Home, Calendar, Map,
     Lightbulb, GraduationCap, Compass, BookOpen, Box, ShieldCheck,
     Smartphone, Laptop, ShoppingCart, Megaphone as MegaphoneIcon, Rocket, HelpCircle,
-    CheckCircle2, Lock
+    CheckCircle2, Lock, Upload, X, FileSearch, ChevronDown, ChevronUp, Paperclip
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProject, Customer } from '@/context/ProjectContext';
@@ -224,6 +224,106 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
     // Permission Hook
     const { checkAccess } = useModuleAccess();
 
+    // --- 文件解析器 State ---
+    const [parsedDocuments, setParsedDocuments] = useState<Array<{
+        id: string;
+        name: string;
+        type: string;
+        size: string;
+        content: string;
+        parsedAt: string;
+    }>>([]);
+    const [docAnalyzing, setDocAnalyzing] = useState(false);
+    const [docExpanded, setDocExpanded] = useState(true);
+    const [pasteMode, setPasteMode] = useState(false);
+    const [pasteText, setPasteText] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const SUPPORTED_TYPES = [
+        { ext: '.txt', mime: 'text/plain', label: '純文字' },
+        { ext: '.md', mime: 'text/markdown', label: 'Markdown' },
+        { ext: '.csv', mime: 'text/csv', label: 'CSV 試算表' },
+        { ext: '.json', mime: 'application/json', label: 'JSON 資料' },
+        { ext: '.html', mime: 'text/html', label: 'HTML 網頁' },
+        { ext: '.xml', mime: 'text/xml', label: 'XML 文件' },
+    ];
+    const MAX_DOCS = 5;
+    const MAX_SIZE_MB = 2;
+
+    const handleFileUpload = useCallback(async (files: FileList | null) => {
+        if (!files || files.length === 0) return;
+        if (parsedDocuments.length >= MAX_DOCS) {
+            toast.error(`最多支援 ${MAX_DOCS} 份文件同時解析`);
+            return;
+        }
+        const remaining = MAX_DOCS - parsedDocuments.length;
+        const toProcess = Array.from(files).slice(0, remaining);
+
+        setDocAnalyzing(true);
+        const newDocs: typeof parsedDocuments = [];
+
+        for (const file of toProcess) {
+            const sizeMB = file.size / 1024 / 1024;
+            if (sizeMB > MAX_SIZE_MB) {
+                toast.error(`「${file.name}」超過 ${MAX_SIZE_MB}MB 限制，已跳過`);
+                continue;
+            }
+            try {
+                const text = await file.text();
+                const cleanText = text
+                    .replace(/<[^>]*>/g, ' ')  // strip HTML tags
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .slice(0, 8000); // cap at 8000 chars per doc
+
+                newDocs.push({
+                    id: `doc_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+                    name: file.name,
+                    type: file.name.split('.').pop()?.toUpperCase() || 'TXT',
+                    size: sizeMB < 0.1 ? `${Math.round(file.size / 1024)}KB` : `${sizeMB.toFixed(1)}MB`,
+                    content: cleanText,
+                    parsedAt: new Date().toLocaleTimeString('zh-TW')
+                });
+            } catch {
+                toast.error(`無法讀取「${file.name}」，請確認格式正確`);
+            }
+        }
+
+        if (newDocs.length > 0) {
+            setParsedDocuments(prev => [...prev, ...newDocs]);
+            toast.success(`✅ 成功解析 ${newDocs.length} 份文件，AI 將整合分析`);
+        }
+        setDocAnalyzing(false);
+    }, [parsedDocuments]);
+
+    const handlePasteDoc = () => {
+        if (!pasteText.trim()) { toast.warning('請先貼上文字內容'); return; }
+        if (parsedDocuments.length >= MAX_DOCS) { toast.error(`最多支援 ${MAX_DOCS} 份文件`); return; }
+        const doc = {
+            id: `doc_paste_${Date.now()}`,
+            name: `貼上文字 #${parsedDocuments.filter(d => d.name.startsWith('貼上')).length + 1}`,
+            type: 'TEXT',
+            size: `${pasteText.length} 字`,
+            content: pasteText.slice(0, 8000),
+            parsedAt: new Date().toLocaleTimeString('zh-TW')
+        };
+        setParsedDocuments(prev => [...prev, doc]);
+        setPasteText('');
+        setPasteMode(false);
+        toast.success('✅ 文字已加入解析佇列，AI 將整合分析');
+    };
+
+    const removeDoc = (id: string) => setParsedDocuments(prev => prev.filter(d => d.id !== id));
+
+    // Merge document content into submission
+    const getDocumentContext = () => {
+        if (parsedDocuments.length === 0) return '';
+        return `\n\n---\n## 📎 附加參考文件（共 ${parsedDocuments.length} 份，請整合分析）\n` +
+            parsedDocuments.map((d, i) =>
+                `\n### 文件 ${i + 1}：${d.name}\n${d.content}`
+            ).join('\n');
+    };
+
     // ...formData state...
     const [formData, setFormData] = useState<ProjectData>({
         moduleId: currentIndustry?.items?.[0]?.id || 'web_development',
@@ -384,8 +484,13 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        // Inject document context into description
+        const enrichedData = parsedDocuments.length > 0
+            ? { ...formData, description: formData.description + getDocumentContext() }
+            : formData;
+        onSubmit(enrichedData);
     };
+
 
     return (
         <form id="project-setup-form" onSubmit={handleSubmit} className="grid grid-cols-12 gap-8 pb-20">
@@ -503,6 +608,128 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                         });
                     })()}
                 </div>
+            </FormCard>
+
+
+            {/* 📎 文件解析器 */}
+            <FormCard
+                title="文件解析器 (Document Analyzer)"
+                className="col-span-12"
+                icon={FileSearch}
+            >
+                {/* Header Controls */}
+                <div className="flex items-center justify-between mb-4">
+                    <p className="text-[14px] text-slate-400">
+                        上傳參考文件，AI 將整合文件內容與您的專案需求共同分析
+                        <span className="ml-2 text-[12px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
+                            {parsedDocuments.length}/{MAX_DOCS} 份
+                        </span>
+                    </p>
+                    <button type="button" onClick={() => setDocExpanded(p => !p)}
+                        className="text-slate-400 hover:text-primary transition-colors">
+                        {docExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                </div>
+
+                {docExpanded && (
+                    <div className="space-y-4">
+                        {/* Supported Formats */}
+                        <div className="flex flex-wrap gap-2">
+                            {SUPPORTED_TYPES.map(t => (
+                                <span key={t.ext} className="text-[11px] font-bold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-full border border-slate-200">
+                                    {t.ext} {t.label}
+                                </span>
+                            ))}
+                            <span className="text-[11px] font-bold px-2.5 py-1 bg-indigo-50 text-indigo-500 rounded-full border border-indigo-200">
+                                📋 貼上文字
+                            </span>
+                            <span className="text-[11px] text-slate-400 px-2 py-1">
+                                每份最大 {MAX_SIZE_MB}MB，最多 {MAX_DOCS} 份
+                            </span>
+                        </div>
+
+                        {/* Upload / Paste Area */}
+                        <div
+                            className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
+                            onClick={() => fileInputRef.current?.click()}
+                            onDragOver={e => e.preventDefault()}
+                            onDrop={e => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}
+                        >
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                multiple
+                                accept=".txt,.md,.csv,.json,.html,.xml"
+                                className="hidden"
+                                onChange={e => handleFileUpload(e.target.files)}
+                            />
+                            {docAnalyzing ? (
+                                <div className="flex items-center justify-center gap-3 text-primary">
+                                    <Loader2 className="animate-spin" size={20} />
+                                    <span className="text-[15px] font-medium">正在解析文件內容...</span>
+                                </div>
+                            ) : (
+                                <>
+                                    <Upload size={28} className="mx-auto mb-2 text-slate-300 group-hover:text-primary transition-colors" />
+                                    <p className="text-[15px] text-slate-400 group-hover:text-primary transition-colors">
+                                        拖曳文件至此，或<span className="text-primary font-semibold underline underline-offset-2 mx-1">點擊選擇檔案</span>
+                                    </p>
+                                    <p className="text-[12px] text-slate-300 mt-1">支援 .txt .md .csv .json .html .xml</p>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Paste Mode Toggle */}
+                        <div>
+                            <button
+                                type="button"
+                                onClick={() => setPasteMode(p => !p)}
+                                className="flex items-center gap-2 text-[13px] font-semibold text-primary hover:text-primary/70 transition-colors"
+                            >
+                                <Paperclip size={14} />
+                                {pasteMode ? '收起貼上區域' : '或直接貼上文字內容（標案說明、RFP、合約條文等）'}
+                            </button>
+                            {pasteMode && (
+                                <div className="mt-3 space-y-2">
+                                    <textarea
+                                        rows={5}
+                                        value={pasteText}
+                                        onChange={e => setPasteText(e.target.value)}
+                                        placeholder="貼上任何文字：標案規格書、客戶 RFP、合約條文、會議記錄、Email 內容..."
+                                        className="w-full p-4 border border-black/20 rounded-2xl text-[15px] text-slate-700 placeholder:text-slate-300 bg-slate-50 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none resize-none"
+                                    />
+                                    <div className="flex gap-2">
+                                        <button type="button" onClick={handlePasteDoc}
+                                            className="px-4 py-2 bg-primary text-white rounded-xl text-[13px] font-bold hover:bg-primary/90 transition-colors">
+                                            加入解析 →
+                                        </button>
+                                        <span className="text-[12px] text-slate-400 self-center">{pasteText.length} / 8000 字元</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Parsed Documents List */}
+                        {parsedDocuments.length > 0 && (
+                            <div className="space-y-2">
+                                <p className="text-[13px] font-bold text-slate-500">已解析文件（將整合進 AI 分析）</p>
+                                {parsedDocuments.map(doc => (
+                                    <div key={doc.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                        <FileText size={16} className="text-emerald-500 shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-[13px] font-semibold text-slate-700 truncate">{doc.name}</p>
+                                            <p className="text-[11px] text-slate-400">{doc.type} · {doc.size} · 解析於 {doc.parsedAt} · {doc.content.length} 字元已擷取</p>
+                                        </div>
+                                        <button type="button" onClick={() => removeDoc(doc.id)}
+                                            className="text-slate-300 hover:text-red-400 transition-colors shrink-0">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
             </FormCard>
 
             {/* 3. Description Section */}
