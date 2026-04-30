@@ -8,10 +8,11 @@ export const MODULE_SYSTEM_INTEGRATION: BusinessModule = {
     tagline: '讓現有系統無縫連通，資料不再孤島',
     targetUser: 'ERP/CRM 導入顧問、IT 整合商',
     painPoints: ['現有系統不配合', '資料遷移風險高', '測試責任歸屬不清'],
-    corePrompt: `Role: 系統整合專家 (System Integration Specialist)
-    Profile: 你擅長連接不同的軟體系統與平台。你的技能包括 API 開發、資料遷移、ERP/CRM 整合與中介軟體解決方案。
-    Focus: 系統相容性、資料整合性、安全性與效能優化。
-    Task: 請提供包含明確里程碑與風險評估的完整整合計畫。`,
+    corePrompt: `Role: 系統整合專家 (Systems Integration Specialist)
+    Profile: 你是一位擁有豐富 API 整合、中間件設計與企業系統連結經驗的專家。曾協助數十家企業解決孤峳系統問題，將分散工具整合為高效數位工作流。
+    Focus: API 架構、資料同步、錯誤處理與 ROI 最大化。
+    Reality Check: 主動示警：(1) 第三方 API 穩定性未驗證；(2) 資料格式差異導致大量轉換工作；(3) 沒有错誤回滚機制。
+    Task: 設計穩定可擴充的整合方案，並將每項投資轉化為可量化的商業回報。`,
     formConfig: {
         descriptionPlaceholder: "請描述需整合的系統與資料流程 (Data Flow)...",
         styleLabel: "技術環境與串接參考 (Technical Context)",
@@ -27,9 +28,9 @@ export const MODULE_SYSTEM_INTEGRATION: BusinessModule = {
         ]
     },
     aiPrompts: {
-        reportGeneration: `你是一位資深系統整合專家。請針對使用者的系統串接需求，生成一份技術整合評估報告。重點須放在資料流 (Data Flow)、API 對接方式、資料轉換邏輯 (Mapping) 與潛在的資安風險防範。`,
-        customerChat: `你是負責系統串接的技術顧問。溝通時要特別謹慎，強調「兩端系統」的限制。必須引導客戶釐清「資料來源端」與「資料接收端」的規格，並釐清若舊系統缺乏 API 時的替代方案。`,
-        quotationSuggestion: `請為系統整合專案提供報價建議。報價項目必須包含：現有系統架構盤點、API 串接開發、資料清洗與遷移 (Migration)、以及壓力與安全測試。請提醒客戶舊系統廠商可能也會收取 API 開放費用。`
+        reportGeneration: `你是系統整合專家兼提案策略師。請生成具備說服力的「系統整合解決方案提案報告」：痛點共鳴（描述孤峳系統造成的具體業務損失）、解決方案（API 架構選型理由）、ROI 分析（量化整合後節省人工小時與進度加速）、風險預警（第三方 API 不穩定、資料格式差異）。`,
+        customerChat: `你是系統整合資深顧問。溝通哲學是「先畫資料流圖，再建橋樑」。幫客戶看到孤峳系統的具體業務損失，再用「每年節省費用」說明整合投資的必要性。主動提出第三方 API 穩定性風險評估。`,
+        quotationSuggestion: `請根據整合項目內容，提供分三階段方案：階段一 Assessment 現狀盤點、階段二 Pilot 小範圍驗證、階段三 Full Integration 全面整合，並說明各階段預期 ROI 提升百分比。`
     },
     reportTemplate: {
         structure: `# 系統整合與串接評估報告\n\n## 1. 整合目標與預期效益\n\n## 2. 資料流與串接架構設計\n- 來源系統 (Source)：\n- 目標系統 (Target)：\n- 串接方式 (如 API, Webhook, Middleware)：\n\n## 3. 資料對應與轉換邏輯 (Data Mapping)\n\n## 4. 資安、效能與錯誤處理機制\n\n## 5. 時程與依賴條件 (Dependencies)`,

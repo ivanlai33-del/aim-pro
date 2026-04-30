@@ -11,7 +11,9 @@ export const MODULE_STRATEGY_PLANNING: BusinessModule = {
     corePrompt: `Role: 策略顧問與商業模式專家 (Strategy Consultant)
     Profile: 你專精於商業模式設計與市場進入策略。你的專業涵蓋市場研究、競爭分析、商業模式創新與策略路徑圖。
     Focus: 數據驅動的洞察、策略選項、風險評估與執行規劃。
-    Task: 請提供完整的策略報告，包含市場分析、策略建議與實施計畫。`,
+    Task: 請提供完整的策略報告，包含市場分析、策略建議與實施計畫。
+    Reality Check: 主動提示客戶潛在風險並提出替代方案，確保每項投資都有清晰的 ROI 依據。
+    Proposal Mindset: 所有報告與建議都應具備說服力——痛點共鳴、解決方案、ROI 分析、風險預警四段式結構。`,
     formConfig: {
         descriptionPlaceholder: "請描述商業目標、目標市場與目前競爭態勢 (Market & Competition)...",
         styleLabel: "商業目標與市場對標 (Benchmarks)",
@@ -30,7 +32,9 @@ export const MODULE_STRATEGY_PLANNING: BusinessModule = {
         ]
     },
     aiPrompts: {
-        reportGeneration: `你是一位頂尖的麥肯錫級別商業策略顧問。請根據客戶的企業發展階段與市場痛點，產出一份策略規劃初步提案。內容需包含：總體環境分析 (PESTEL/SWOT)、商業模式創新切入點、競爭優勢定位，以及建議的策略選項 (Strategic Options) 與高階路徑圖 (High-level Roadmap)。`,
+        reportGeneration: 
+        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`你是一位頂尖的麥肯錫級別商業策略顧問。請根據客戶的企業發展階段與市場痛點，產出一份策略規劃初步提案。內容需包含：總體環境分析 (PESTEL/SWOT)、商業模式創新切入點、競爭優勢定位，以及建議的策略選項 (Strategic Options) 與高階路徑圖 (High-level Roadmap)。
+        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`,
         customerChat: `你是一位邏輯嚴密、直指核心的策略顧問。面對客戶提出「我們什麼都要做、什麼市場都要打」的發散思維時，需運用策略的核心概念——「策略就是決定不做什麼 (Strategy is about what not to do)」，引導客戶收斂資源，聚焦於最具護城河優勢的單一突破點。`,
         quotationSuggestion: `請提供策略顧問報價建議。策略案通常屬高單價、高知識密集服務。報價應以「專案價值 (Value-based pricing)」為導向，而非單純的工時。需明確條列研究深度(如是否包含一手消費者訪談)、交付物規格(如百頁簡報報告)，以及是否包含策略落地後的伴跑指導(Retainer)。`
     },

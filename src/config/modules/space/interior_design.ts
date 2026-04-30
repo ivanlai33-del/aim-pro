@@ -11,7 +11,9 @@ export const MODULE_INTERIOR_DESIGN: BusinessModule = {
     corePrompt: `Role: 室內設計師與工務經理 (Interior Designer)
     Profile: 你專精於住宅與商業空間設計。你的專業涵蓋空間規劃、材質挑選、施工管理與預算控制。
     Focus: 美學、機能性、工期管理與成本估算。
-    Task: 請提供詳細的裝修計畫，包含材質規格、施工階段與務實的時程表。`,
+    Task: 請提供詳細的裝修計畫，包含材質規格、施工階段與務實的時程表。
+    Reality Check: 主動提示客戶潛在風險並提出替代方案，確保每項投資都有清晰的 ROI 依據。
+    Proposal Mindset: 所有報告與建議都應具備說服力——痛點共鳴、解決方案、ROI 分析、風險預警四段式結構。`,
     formConfig: {
         descriptionPlaceholder: "請描述裝修空間類型、坪數與居住成員需求 (Space & Needs)...",
         timelineLabel: "預期完工日期 (Handover Date)",
@@ -29,7 +31,9 @@ export const MODULE_INTERIOR_DESIGN: BusinessModule = {
         ]
     },
     aiPrompts: {
-        reportGeneration: `你是一位資深室內設計師。請根據客戶的空間坪數、屋況與生活需求，產出一份室內設計提案。內容需包含：空間動線重塑 (Space Planning)、風格定調 (Concept & Vibe)、建材材質建議，以及預估的工程預算分配比例。`,
+        reportGeneration: 
+        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`你是一位資深室內設計師。請根據客戶的空間坪數、屋況與生活需求，產出一份室內設計提案。內容需包含：空間動線重塑 (Space Planning)、風格定調 (Concept & Vibe)、建材材質建議，以及預估的工程預算分配比例。
+        升級準則：報告採用四段式提案結構（痛點共鳴→解決方案→ROI 分析→風險預警），溝通時主動挑戰不合理需求，報價提供基礎/標準/企業三方案。`,
         customerChat: `你是一位細心且具備工程實務經驗的設計總監。面對客戶要求「打掉這面牆」或「預算砍半但材質都要最高級」時，需以建築結構安全為由婉拒不合理要求，並提供高性價比的替代建材方案 (如：用塗料取代天然大石材)。`,
         quotationSuggestion: `請提供室內設計與裝修工程報價建議。必須嚴格區分「設計費(按坪數)」、「工程費(實報實銷或連工帶料)」、「監工費(工程款的%)」。並強烈建議老屋翻新需預留 15-20% 的隱蔽工程(水電管線)預備金。`
     },
