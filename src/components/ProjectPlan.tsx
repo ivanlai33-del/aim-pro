@@ -22,7 +22,7 @@ export default function ProjectPlan() {
     if (!activeProject) return null;
 
     const flow = activeProject.projectFlow || {
-        milestones: currentIndustry.workflow.milestones.map((m, i) => ({
+        milestones: currentIndustry.workflow.milestones.map((m: any, i: number) => ({
             id: `m-${i}`,
             label: m,
             isCompleted: false
@@ -30,25 +30,25 @@ export default function ProjectPlan() {
     };
 
     const handleToggleMilestone = (milestoneId: string) => {
-        const newMilestones = flow.milestones.map(m =>
+        const newMilestones = flow.milestones.map((m: Milestone) =>
             m.id === milestoneId ? { ...m, isCompleted: !m.isCompleted } : m
         );
 
         // Find current milestone (first uncompleted)
-        const firstUncompleted = newMilestones.find(m => !m.isCompleted);
+        const firstUncompleted = newMilestones.find((m: Milestone) => !m.isCompleted);
 
         updateProjectExecution(activeProject.id, activeProject.executionTasks || [], activeProject.paymentSchedule, {
             currentMilestoneId: firstUncompleted?.id,
             milestones: newMilestones
         });
 
-        const m = newMilestones.find(m => m.id === milestoneId);
+        const m = newMilestones.find((m: Milestone) => m.id === milestoneId);
         if (m?.isCompleted) {
             toast.success(`里程碑已達成：${m.label}`);
         }
     };
 
-    const completionRate = Math.round((flow.milestones.filter(m => m.isCompleted).length / flow.milestones.length) * 100);
+    const completionRate = Math.round((flow.milestones.filter((m: Milestone) => m.isCompleted).length / flow.milestones.length) * 100);
 
     const gradients = [
         "from-indigo-500 to-blue-600",
@@ -106,7 +106,7 @@ export default function ProjectPlan() {
                         </div>
 
                         <div className="p-10 space-y-6">
-                            {flow.milestones.map((m, index) => (
+                            {flow.milestones.map((m: any, index: number) => (
                                 <div
                                     key={m.id}
                                     onClick={() => handleToggleMilestone(m.id)}
@@ -131,7 +131,7 @@ export default function ProjectPlan() {
                                         )}>
                                             {m.label}
                                         </h5>
-                                        {!m.isCompleted && index === flow.milestones.findIndex(x => !x.isCompleted) && (
+                                        {!m.isCompleted && index === flow.milestones.findIndex((x: Milestone) => !x.isCompleted) && (
                                             <span className="inline-flex items-center text-[10px] font-black text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md uppercase tracking-widest animate-pulse mt-1">
                                                 <Clock className="w-3 h-3 mr-1" /> NEXT STEP
                                             </span>

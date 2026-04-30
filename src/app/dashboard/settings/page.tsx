@@ -253,7 +253,7 @@ function SettingsContent({
     // Prompt Logic: Default is EMPTY or Template, NOT the core prompt
     // 3-Layer Logic: Core (Hidden) -> Template (Default) -> Custom (Overlay)
     const currentPromptValue = activeModule
-        ? (customPrompts[selectedModuleId] || activeModule.userPromptTemplate || '')
+        ? (customPrompts[selectedModuleId] || (activeModule as any).userPromptTemplate || '')
         : '';
 
     // Core Prompt Display Logic

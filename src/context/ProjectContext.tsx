@@ -454,8 +454,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
                     }
                     setAiQuota(profile.ai_quota || 0);
                     // NEW: Sync unlocked modules from DB
-                    if (profile.unlocked_modules) {
-                        setUnlockedModules(profile.unlocked_modules);
+                    if ((profile as any).unlocked_modules) {
+                        setUnlockedModules((profile as any).unlocked_modules);
                     }
                 }
 
@@ -691,7 +691,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             },
             chatHistory: [],
             createdAt: Date.now(),
-            quotationItems: currentIndustry.items[0]?.defaultItems?.map(item => ({
+            quotationItems: currentIndustry.items[0]?.defaultItems?.map((item: any) => ({
                 id: generateId(),
                 description: item.description,
                 quantity: item.quantity,

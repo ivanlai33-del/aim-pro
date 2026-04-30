@@ -18,11 +18,12 @@ export interface BusinessModule {
     corePrompt: string;
     formConfig: {
         descriptionPlaceholder: string;
-        timelineLabel: string;
-        timelinePlaceholder: string;
-        stylePlaceholder: string;
-        deliverablesLabel: string;
-        deliverablesPlaceholder: string;
+        timelineLabel?: string;
+        timelinePlaceholder?: string;
+        styleLabel?: string;
+        stylePlaceholder?: string;
+        deliverablesLabel?: string;
+        deliverablesPlaceholder?: string;
         customFields: any[];
     };
     aiPrompts: {
@@ -63,6 +64,7 @@ export interface BusinessModule {
     };
     defaultItems: QuotationItemTemplate[];
     projectTypes: { id: string, label: string, description: string }[];
+    maxDocuments?: number;
 }
 
 export interface CategoryFolder {
@@ -70,6 +72,7 @@ export interface CategoryFolder {
     name: string;
     description: string;
     icon: any;
+    color?: string;
     moduleIds: string[];
     workflow: any;
 }

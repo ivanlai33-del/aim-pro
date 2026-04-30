@@ -16,6 +16,10 @@ import {
     QuotationItemTemplate 
 } from '@/types/industries';
 
+// Re-export types for consumers who import from @/config/industries
+export type { BusinessModule, CategoryFolder, IndustryCategory, QuotationItemTemplate };
+
+
 // ============================================================
 // SECTION 4: 五大類資料夾定義
 // ============================================================

@@ -517,7 +517,7 @@ function Dashboard() {
 
                                 {activeTab === 'chat' && (
                                     <div className="animate-in fade-in zoom-in-95 duration-200 h-full">
-                                        <ChatInterface apiKey={useCustomKey ? apiKey : undefined} />
+                                        <ChatInterface apiKey={useCustomKey ? (apiKey || '') : ''} />
                                     </div>
                                 )}
 

@@ -10,10 +10,10 @@ interface UpgradeModalProps {
     onClose: () => void;
     planName: string;
     tierId: string;
-    period: PricingPeriod;
+    period?: PricingPeriod;
 }
 
-export default function UpgradeModal({ isOpen, onClose, planName, tierId, period }: UpgradeModalProps) {
+export default function UpgradeModal({ isOpen, onClose, planName, tierId, period = 'monthly' }: UpgradeModalProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     if (!isOpen) return null;

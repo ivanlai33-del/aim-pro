@@ -769,7 +769,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                     />
                                 ) : (
                                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 p-1">
-                                        {field.options?.map((opt, index) => {
+                                        {field.options?.map((opt: string, index: number) => {
                                             // @ts-ignore
                                             const isSelected = Array.isArray(formData[field.name]) && formData[field.name].includes(opt);
                                             return (
@@ -838,7 +838,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                             <option value="" disabled>
                                                 {field.placeholder || `請選擇${field.label}`}
                                             </option>
-                                            {field.options?.map((opt) => (
+                                            {field.options?.map((opt: any) => (
                                                 <option key={opt} value={opt}>{opt}</option>
                                             ))}
                                         </select>
