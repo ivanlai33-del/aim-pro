@@ -228,5 +228,26 @@ export const MAGIC_TEST_DATA: Record<string, any> = {
         searchDepth: "深度檢索 (含類似音/圖樣)",
         classCount: "2 類 (第 35, 43 類)",
         projectType: "brand_protection"
+    },
+
+    // 🏆 商務開發與競標
+    government_tender: {
+        projectName: "智慧城市大數據平台建置標案",
+        description: "參與地方政府智慧城市標案，提供完整技術服務建議書與報價規劃。",
+        tenderScope: ["系統開發與整合", "軟硬體維護保固", "教育訓練"],
+        budget: "300萬 - 500萬 TWD",
+        timeline: "12個月",
+        targetAgency: "台北市政府資訊局",
+        proposalType: "最有利標",
+        projectType: "tender_service"
+    },
+    grant_subsidy: {
+        projectName: "SBIR 產業創新研發計畫申請",
+        description: "申請經濟部中小企業創新研發計畫，包含計畫書撰寫與經費預算編列。",
+        subsidyType: "SBIR 創新研發 (中央/地方)",
+        projectGoal: "技術創新 / 服務模式開發",
+        fundingTarget: "100萬 - 200萬",
+        clientCompany: "先進生技資訊有限公司",
+        projectType: "subsidy_grant"
     }
 };

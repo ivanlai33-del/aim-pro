@@ -7,7 +7,7 @@ import {
     Palette, Code2, MessageSquare, CalendarDays, ArrowRight, TrendingUp,
     Hammer, Megaphone, Video, Search, Store, Layout, Camera, Monitor,
     Briefcase, GraduationCap, Lightbulb, Presentation, Home, Scale, Award,
-    Mic, Sparkles
+    Mic, Sparkles, Trophy, Landmark
 } from 'lucide-react';
 import { BusinessModule } from '@/types/industries';
 import { getAllItems } from '@/config/industries';
@@ -37,6 +37,9 @@ const ICON_MAP: Record<string, any> = {
     home_organizer: Home,
     ip_agent: Scale,
     ai_agent_consultant: Sparkles,
+    real_estate_agent: Landmark,
+    government_tender: Trophy,
+    grant_subsidy: Landmark,
 };
 
 const CATEGORIES = [
@@ -47,6 +50,7 @@ const CATEGORIES = [
     { id: 'space', name: '空間與活動規劃' },
     { id: 'consulting', name: '專業服務與顧問' },
     { id: 'pro_service', name: '知識產出與專業職人' },
+    { id: 'business_dev', name: '商務開發與競標' },
 ];
 
 // Category mapping with specific gradients and styles
@@ -57,6 +61,7 @@ const CATEGORY_STYLES: Record<string, { color: string, bg: string, border: strin
     space: { color: 'text-white', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', glow: 'rgba(16, 185, 129, 0.5)', gradient: 'from-emerald-400 to-teal-500', themeColor: 'bg-emerald-500' },
     consulting: { color: 'text-white', bg: 'bg-sky-500/10', border: 'border-sky-500/30', glow: 'rgba(14, 165, 233, 0.5)', gradient: 'from-sky-400 to-blue-500', themeColor: 'bg-sky-500' },
     pro_service: { color: 'text-white', bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', glow: 'rgba(6, 182, 212, 0.5)', gradient: 'from-cyan-400 to-teal-500', themeColor: 'bg-cyan-500' },
+    business_dev: { color: 'text-white', bg: 'bg-amber-500/10', border: 'border-amber-500/30', glow: 'rgba(245, 158, 11, 0.5)', gradient: 'from-amber-400 to-orange-500', themeColor: 'bg-amber-500' },
 };
 
 export default function RoleSegmentation() {
@@ -92,7 +97,7 @@ export default function RoleSegmentation() {
                     <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tight drop-shadow-lg">
                         全球專家智庫
                         <br />
-                        賦能 23 種職人核心
+                        賦能 25 種職人核心
                     </h2>
                     <p className="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed font-medium mb-12">
                         我們深度整合全球專業領域大腦，並植入法務、財務、稅務核心基因。

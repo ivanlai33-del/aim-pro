@@ -3,8 +3,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock, Languages, Globe } from 'lucide-react';
+import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock, Languages, Globe, Wand2, ArrowRight } from 'lucide-react';
 import { refineReport, translateDocument, partialRefine } from '../lib/aiService';
+import { useRouter } from 'next/navigation';
 import Turnstile from './Turnstile';
 import { useProject } from '../context/ProjectContext';
 import { toast } from 'sonner';
@@ -53,7 +54,8 @@ const MermaidDiagram = ({ chart }: { chart: string }) => {
 };
 
 export default function ReportView({ reportContent, onSave, apiKey }: ReportViewProps) {
-    const { userTier, aiQuota } = useProject();
+    const { userTier, aiQuota, activeProject } = useProject();
+    const router = useRouter();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const canDownload = userTier !== 'free';
     const reportRef = useRef<HTMLDivElement>(null);
@@ -209,10 +211,20 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
         <>
         <div className="space-y-6 min-h-full flex flex-col">
             <div className="flex justify-between items-center bg-surface p-4 rounded-lg shadow-sm border border-border">
-                <h3 className="text-lg font-black text-foreground flex items-center">
-                    <FileText className="w-5 h-5 mr-2 text-primary" />
-                    專案分析報告
-                </h3>
+                <div className="flex items-center gap-4">
+                    <h3 className="text-lg font-black text-foreground flex items-center">
+                        <FileText className="w-5 h-5 mr-2 text-primary" />
+                        專案分析報告
+                    </h3>
+                    
+                    {/* Security Verification (Turnstile) — Moved next to title */}
+                    {isEditing && !apiKey && (
+                        <div className="flex items-center gap-2 transform scale-75 origin-left">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">安全驗證：</span>
+                            <Turnstile onVerify={(token) => setTurnstileToken(token)} />
+                        </div>
+                    )}
+                </div>
                 <div className="flex space-x-2">
                     {isEditing ? (
                         <>
@@ -318,7 +330,7 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                             onChange={(e) => setEditedContent(e.target.value)}
                             onMouseUp={handleTextSelection}
                             onKeyUp={handleTextSelection}
-                            className="w-full h-full p-8 focus:outline-none resize-none font-sans text-base leading-relaxed text-foreground rounded-lg placeholder:text-muted-foreground bg-surface transition-all"
+                            className="w-full min-h-[600px] p-8 focus:outline-none resize-y font-sans text-base leading-relaxed text-foreground rounded-lg placeholder:text-muted-foreground bg-surface transition-all"
                             placeholder="請在此輸入或修改分析報告內容 (支援 Markdown 語法)..."
                             spellCheck={false}
                         />
@@ -377,13 +389,7 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                         />
                     </div>
 
-                    {/* Security Verification (Turnstile) */}
-                    {!apiKey && (
-                        <div className="flex justify-center items-center gap-4 bg-slate-50 p-4 rounded-xl border border-black/10">
-                            <span className="text-xs font-bold text-slate-400">安全驗證：</span>
-                            <Turnstile onVerify={(token) => setTurnstileToken(token)} />
-                        </div>
-                    )}
+
                 </div>
             ) : (
                 <div
@@ -446,6 +452,30 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                     {/* Footer for the report */}
                     <div className="border-t border-border pt-6 mt-12 text-center text-muted-foreground text-xs">
                         <p>本文件由 Aim pro 自動生成，報價與時程僅供參考。</p>
+                    </div>
+
+                    {/* Visual Studio CTA Banner */}
+                    <div className="mt-8 rounded-[20px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-emerald-500/20 p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-500/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                                <Wand2 className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <p className="font-black text-white text-base">✨ 將報告升級為視覺交付物</p>
+                                <p className="text-slate-400 text-sm mt-0.5">使用 Visual Studio 將此份分析報告，自動產出互動原型、提案簡報或數據儀表板</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => {
+                                const projectId = activeProject?.id;
+                                const url = projectId ? `/visual-studio?projectId=${projectId}` : '/visual-studio';
+                                router.push(url);
+                            }}
+                            className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-emerald-500 to-cyan-500 hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-emerald-500/25 whitespace-nowrap"
+                        >
+                            前往 Visual Studio
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             )}

@@ -93,71 +93,7 @@ export default function FinancePage() {
         setNextDeadlineDate(`${targetYear}/${targetMonth}/15`);
     }, []);
 
-    // Paywall Check - Moved after hooks to satisfy Rules of Hooks
-    if (!plan?.features.financeModule) {
-        return (
-            <div className="min-h-[80vh] flex items-center justify-center p-6">
-                <div className="max-w-2xl w-full bg-white rounded-[2rem] border border-black/10 shadow-2xl overflow-hidden relative">
-                    {/* Background Accent */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
 
-                    <div className="relative p-12 text-center">
-                        <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-indigo-200 rotate-3">
-                            <Lock className="w-10 h-10 text-white" />
-                        </div>
-
-                        <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">解鎖專業財務防禦</h2>
-                        <p className="text-lg text-slate-500 font-medium mb-10 leading-relaxed max-w-md mx-auto">
-                            免費版不具備財務報表與稅務自動化功能。升級至 <span className="text-indigo-600 font-bold">專業版 (Pro)</span>，讓我們為您的利潤把關，自動計算 20% 服務費與營業稅。
-                        </p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 text-left">
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                <TrendingUp className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="font-bold text-sm">獲利趨勢分析</p>
-                                    <p className="text-xs text-slate-400">洞察每一分錢的流向</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                <Receipt className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="font-bold text-sm">401 報表自動化</p>
-                                    <p className="text-xs text-slate-400">複製貼上即可完成報稅</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                <Calculator className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="font-bold text-sm">服務費加價提醒</p>
-                                    <p className="text-xs text-slate-400">確保 20% 利潤不漏接</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                <Wallet className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="font-bold text-sm">現金流水位監測</p>
-                                    <p className="text-xs text-slate-400">預警資金缺口，安心接案</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={() => router.push('/dashboard/settings')}
-                            className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
-                        >
-                            立即升級專業版 — NT$ 2,900 /月
-                        </button>
-
-                        <p className="mt-6 text-xs text-slate-400 font-bold flex items-center justify-center gap-2">
-                            <CheckCircle2 className="w-3 h-3 text-indigo-400" /> 解鎖 14+ 實戰模組與法律護盾
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     // Filters
     const startDate = `${year}-${period.split('-')[0]}-01`;
@@ -361,6 +297,72 @@ export default function FinancePage() {
             title: '報稅截止日將至',
             message: `本期營業稅申報僅剩 ${daysUntilDeadline} 天！截止日期為 ${nextDeadlineDate}，請儘速完成。`
         });
+    }
+
+    // Paywall Check - Moved here after ALL hooks are declared
+    if (!plan?.features.financeModule) {
+        return (
+            <div className="min-h-[80vh] flex items-center justify-center p-6">
+                <div className="max-w-2xl w-full bg-white rounded-[2rem] border border-black/10 shadow-2xl overflow-hidden relative">
+                    {/* Background Accent */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
+
+                    <div className="relative p-12 text-center">
+                        <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-indigo-200 rotate-3">
+                            <Lock className="w-10 h-10 text-white" />
+                        </div>
+
+                        <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">解鎖專業財務防禦</h2>
+                        <p className="text-lg text-slate-500 font-medium mb-10 leading-relaxed max-w-md mx-auto">
+                            免費版不具備財務報表與稅務自動化功能。升級至 <span className="text-indigo-600 font-bold">專業版 (Pro)</span>，讓我們為您的利潤把關，自動計算 20% 服務費與營業稅。
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 text-left">
+                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <TrendingUp className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="font-bold text-sm">獲利趨勢分析</p>
+                                    <p className="text-xs text-slate-400">洞察每一分錢的流向</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <Receipt className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="font-bold text-sm">401 報表自動化</p>
+                                    <p className="text-xs text-slate-400">複製貼上即可完成報稅</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <Calculator className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="font-bold text-sm">服務費加價提醒</p>
+                                    <p className="text-xs text-slate-400">確保 20% 利潤不漏接</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <Wallet className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="font-bold text-sm">現金流水位監測</p>
+                                    <p className="text-xs text-slate-400">預警資金缺口，安心接案</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => router.push('/dashboard/settings')}
+                            className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+                        >
+                            立即升級專業版 — NT$ 2,900 /月
+                        </button>
+
+                        <p className="mt-6 text-xs text-slate-400 font-bold flex items-center justify-center gap-2">
+                            <CheckCircle2 className="w-3 h-3 text-indigo-400" /> 解鎖 14+ 實戰模組與法律護盾
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (

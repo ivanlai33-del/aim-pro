@@ -138,20 +138,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                 </button>
                 <ThemeToggle />
 
-                <div className="relative group">
-                    <button
-                        onClick={onSettings}
-                        className="p-2 text-muted-foreground hover:text-primary hover:bg-surface rounded-lg transition-colors active:scale-[0.98]"
-                        title="個人設定 (Profile)"
-                    >
-                        <User className="w-5 h-5" />
-                    </button>
-                    {userTier !== 'free' && (
-                        <span className="absolute -top-1 -right-1 flex h-4 px-1 items-center justify-center bg-primary text-primary-foreground text-[8px] font-black rounded-full border-2 border-surface shadow-sm pointer-events-none">
-                            PRO
-                        </span>
-                    )}
-                </div>
+
 
                 {/* Category Selection Modal */}
                 {showAddCategory && activeProject && (

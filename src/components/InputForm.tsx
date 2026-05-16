@@ -5,7 +5,8 @@ import {
     PenTool, Monitor, Video, ImageIcon, Camera, Home, Calendar, Map,
     Lightbulb, GraduationCap, Compass, BookOpen, Box, ShieldCheck,
     Smartphone, Laptop, ShoppingCart, Megaphone as MegaphoneIcon, Rocket, HelpCircle,
-    CheckCircle2, Lock, Upload, X, FileSearch, ChevronDown, ChevronUp, Paperclip
+    CheckCircle2, Lock, Upload, X, FileSearch, ChevronDown, ChevronUp, Paperclip,
+    Trophy, Landmark
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProject, Customer } from '@/context/ProjectContext';
@@ -49,7 +50,9 @@ const MODULE_ICONS: Record<string, any> = {
     strategy_planning: Compass,
     online_course_prod: BookOpen,
     home_organizer: Box,
-    ip_agent: ShieldCheck
+    ip_agent: ShieldCheck,
+    government_tender: Trophy,
+    grant_subsidy: Landmark
 };
 
 const TYPE_ICONS: Record<string, any> = {
@@ -85,7 +88,8 @@ const CATEGORY_GRADIENT_MAP: Record<string, string> = {
     design: "bg-gradient-to-br from-pink-500 to-purple-600",
     space: "bg-gradient-to-br from-emerald-400 to-teal-500",
     consulting: "bg-gradient-to-br from-violet-500 to-fuchsia-600",
-    pro_service: "bg-gradient-to-br from-sky-500 to-blue-500"
+    pro_service: "bg-gradient-to-br from-sky-500 to-blue-500",
+    business_dev: "bg-gradient-to-br from-amber-400 to-orange-500"
 };
 
 // --- Helper Component: Big Block Card ---
@@ -216,7 +220,9 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
         toggleModuleVisibility,
         resetModuleVisibility,
         activeProjectId,
-        updateProjectData
+        activeProject,
+        updateProjectData,
+        updateProjectDocuments
     } = useProject();
     const [clientSuggestions, setClientSuggestions] = useState<Customer[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -233,6 +239,13 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
         content: string;
         parsedAt: string;
     }>>([]);
+
+    // Load existing docs on mount or project switch
+    useEffect(() => {
+        if (activeProject?.documents && parsedDocuments.length === 0) {
+            setParsedDocuments(activeProject.documents);
+        }
+    }, [activeProject?.id]);
     const [docAnalyzing, setDocAnalyzing] = useState(false);
     const [docExpanded, setDocExpanded] = useState(true);
     const [pasteMode, setPasteMode] = useState(false);
@@ -290,11 +303,15 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
         }
 
         if (newDocs.length > 0) {
-            setParsedDocuments(prev => [...prev, ...newDocs]);
+            const updated = [...parsedDocuments, ...newDocs];
+            setParsedDocuments(updated);
+            if (activeProjectId) {
+                updateProjectDocuments(activeProjectId, updated);
+            }
             toast.success(`✅ 成功解析 ${newDocs.length} 份文件，AI 將整合分析`);
         }
         setDocAnalyzing(false);
-    }, [parsedDocuments]);
+    }, [parsedDocuments, activeProjectId, updateProjectDocuments]);
 
     const handlePasteDoc = () => {
         if (!pasteText.trim()) { toast.warning('請先貼上文字內容'); return; }
@@ -307,13 +324,23 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
             content: pasteText.slice(0, 8000),
             parsedAt: new Date().toLocaleTimeString('zh-TW')
         };
-        setParsedDocuments(prev => [...prev, doc]);
+        const updated = [...parsedDocuments, doc];
+        setParsedDocuments(updated);
+        if (activeProjectId) {
+            updateProjectDocuments(activeProjectId, updated);
+        }
         setPasteText('');
         setPasteMode(false);
         toast.success('✅ 文字已加入解析佇列，AI 將整合分析');
     };
 
-    const removeDoc = (id: string) => setParsedDocuments(prev => prev.filter(d => d.id !== id));
+    const removeDoc = (id: string) => {
+        const updated = parsedDocuments.filter(d => d.id !== id);
+        setParsedDocuments(updated);
+        if (activeProjectId) {
+            updateProjectDocuments(activeProjectId, updated);
+        }
+    };
 
     // Merge document content into submission
     const getDocumentContext = () => {

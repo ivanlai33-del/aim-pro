@@ -96,6 +96,15 @@ export interface PaymentSchedule {
     dueDate?: string;
 }
 
+export interface ProjectDocument {
+    id: string;
+    name: string;
+    type: string;
+    size: string;
+    content: string;
+    parsedAt: string;
+}
+
 export interface Project {
     id: string;
     teamId?: string;
@@ -117,6 +126,7 @@ export interface Project {
     projectFlow?: ProjectFlow;
     industries?: string[];
     modules: string[]; // List of active module IDs
+    documents?: ProjectDocument[];
 }
 
 export interface Team {
@@ -149,6 +159,7 @@ interface ProjectContextType {
     updateProjectExecution: (id: string, tasks: ExecutionTask[], schedule?: PaymentSchedule[], flow?: ProjectFlow) => void;
     addProjectIndustry: (projectId: string, industryId: string) => void;
     addProjectModule: (projectId: string, moduleId: string) => void;
+    updateProjectDocuments: (projectId: string, documents: ProjectDocument[]) => void;
     addChatMessage: (id: string, message: ChatMessage) => void;
     deleteProject: (id: string) => void;
     importProject: (project: Project) => void;
@@ -818,6 +829,19 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const updateProjectDocuments = async (projectId: string, documents: ProjectDocument[]) => {
+        let updated: Project | undefined;
+        setProjects(prev => prev.map(p => {
+            if (p.id !== projectId) return p;
+            updated = { ...p, documents };
+            return updated;
+        }));
+
+        if (session?.user && updated) {
+            await syncProjectToCloud(projectId, updated);
+        }
+    };
+
     const selectProject = (id: string) => setActiveProjectId(id);
 
     const updateProjectData = async (id: string, data: Partial<ProjectData>) => {
@@ -1040,6 +1064,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             updateProjectExecution,
             addProjectIndustry,
             addProjectModule,
+            updateProjectDocuments,
             addChatMessage,
             deleteProject,
             importProject,

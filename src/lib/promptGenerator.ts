@@ -39,6 +39,7 @@ export const generatePrompt = (data: ProjectData) => {
 - **優化目標**：${data.optimizationGoals || "無"}
 - **現有技術/備註**：${data.existingTech || "無"}
 - **風格參考**：${data.styleReferences || "未指定"}
+${data.websiteContent ? `- **🕷️ Scrapling 提取現有網站架構與內容 (Ground Truth)**：\n${data.websiteContent}` : ""}
             `;
             break;
     }

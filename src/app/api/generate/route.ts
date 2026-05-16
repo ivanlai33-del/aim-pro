@@ -78,11 +78,40 @@ export async function POST(req: NextRequest) {
         let systemPrompt = '';
         let userPrompt = '';
 
+        // Helper to extract URLs from text
+        const extractUrls = (text: string): string[] => {
+            if (!text) return [];
+            const urlRegex = /(https?:\/\/[^\s)]+)/g;
+            const matches = text.match(urlRegex);
+            return matches ? Array.from(new Set(matches)) : [];
+        };
+
         if (mode === 'report') {
             const { projectData, customPrompts } = params;
             const industry = projectData.category || 'web';
             const basePrompt = customPrompts?.[industry] || INDUSTRY_PROMPTS[industry] || INDUSTRY_PROMPTS.web;
             
+            // --- 整合 Scrapling 全域背景情報抓取 (掃描所有欄位網址) ---
+            let scraplingContext = '';
+            const allTextToScan = `${projectData.websiteUrl || ''} ${projectData.description || ''} ${projectData.features || ''} ${projectData.optimizationGoals || ''} ${projectData.styleReferences || ''} ${JSON.stringify(projectData)}`;
+            const foundUrls = extractUrls(allTextToScan);
+
+            if (foundUrls.length > 0 && !projectData.websiteContent) {
+                try {
+                    const { fetchWithScrapling } = await import('@/lib/scraplingClient');
+                    // 抓取第一個找到的網址 (或主要 websiteUrl)
+                    const targetUrl = projectData.websiteUrl || foundUrls[0];
+                    const scrapeRes = await fetchWithScrapling({ url: targetUrl, mode: 'stealth' });
+                    if (scrapeRes.success && scrapeRes.content) {
+                        scraplingContext = `\n\n### 🕷️ Scrapling 提取外部動態網頁情報 (Ground Truth)\n目標網址：${targetUrl}\n${scrapeRes.content}`;
+                    }
+                } catch (err) {
+                    console.warn('[Scrapling API Route] 抓取失敗:', err);
+                }
+            } else if (projectData.websiteContent) {
+                scraplingContext = `\n\n### 🕷️ Scrapling 提取外部動態網頁情報 (Ground Truth)\n${projectData.websiteContent}`;
+            }
+
             systemPrompt = `
 # Role: ${basePrompt}
 你的任務是根據使用者提供的專案需求，產出一份極具專業度的「專案執行建議與報價預估報告」。
@@ -93,7 +122,41 @@ export async function POST(req: NextRequest) {
 3. 保持語氣專業、客觀且具有公信力。
 ${DEFAULT_OUTPUT_FORMAT}
 `;
-            userPrompt = `專案名稱：${projectData.name}\n專案描述：${projectData.description}\n目標預算：${projectData.budget || '未提供'}`;
+            userPrompt = `專案名稱：${projectData.name || projectData.projectName}\n專案描述：${projectData.description}\n目標預算：${projectData.budget || '未提供'}${scraplingContext}`;
+        } else if (mode === 'chat') {
+            const { chatMode, projectContext, reportContext, chatContext, userMessage, isDesign } = params;
+            
+            // --- 整合 Scrapling 聊天訊息即時網址抓取 ---
+            let scraplingChatContext = '';
+            const chatUrls = extractUrls(userMessage);
+            if (chatUrls.length > 0) {
+                try {
+                    const { fetchWithScrapling } = await import('@/lib/scraplingClient');
+                    const scrapeRes = await fetchWithScrapling({ url: chatUrls[0], mode: 'stealth' });
+                    if (scrapeRes.success && scrapeRes.content) {
+                        scraplingChatContext = `\n\n### 🕷️ Scrapling 即時查網情報 (Ground Truth)\n使用者提供的網址：${chatUrls[0]}\n網頁擷取內容：\n${scrapeRes.content}`;
+                    }
+                } catch (err) {
+                    console.warn('[Scrapling Chat Route] 抓取失敗:', err);
+                }
+            }
+
+            const roleTitle = isDesign ? "資深設計總監與品牌策略顧問" : "資深技術專案經理與系統架構師";
+            systemPrompt = `
+# Role: ${roleTitle}
+你的任務是作為 AGI 導航中樞的智能店長與專業顧問，針對使用者的提問給出極具深度、客觀且具備商業公信力的建議。
+
+## 參考背景資訊：
+- **專案背景**：${projectContext || '無'}
+- **當前報價與建議書**：${reportContext || '無'}
+- **歷史對話紀錄**：${chatContext || '無'}
+
+## 對話準則：
+1. **直接回應痛點**：針對使用者的提問給出具體的解決方案或議價策略。
+2. **數據與情報驅動**：若使用者提供外部網址，請務必基於 Scrapling 抓取的即時情報進行客觀分析。
+3. **保持語氣溫暖且專業**：展現職人精神與顧問權威。
+`;
+            userPrompt = `使用者最新提問：\n${userMessage}${scraplingChatContext}`;
         } else if (mode === 'refine') {
             const { currentContent, additionalNotes } = params;
             systemPrompt = `

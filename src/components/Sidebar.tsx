@@ -1,7 +1,7 @@
 'use client';
 
 import { useProject } from "../context/ProjectContext";
-import { Plus, LayoutGrid, Layout, Briefcase, X, Wallet, LayoutDashboard, Settings, ChevronLeft, ChevronRight, Users, LogOut, Moon, Sun, Lock } from "lucide-react";
+import { Plus, LayoutGrid, Layout, Briefcase, X, Wallet, LayoutDashboard, Settings, ChevronLeft, ChevronRight, Users, LogOut, Moon, Sun, Lock, Building2, Wand2, Menu, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -10,6 +10,7 @@ import { PRICING_CONFIG } from "@/config/subscription";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/tracking";
 import Turnstile from "./Turnstile";
+import { useAgi } from "@/agi/context/AgiContext";
 
 export default function Sidebar() {
     const { 
@@ -18,8 +19,13 @@ export default function Sidebar() {
         setUpgradeModalOpen, isSyncing, providerInfo, currentPersona,
         setTurnstileToken
     } = useProject();
+    const { openWindow, closeWindow, healthReport, onboardingItems, completedItems, isOpen } = useAgi();
     const pathname = usePathname();
     const router = useRouter();
+
+    const agiAlerts = healthReport.blockingCount + onboardingItems.filter(
+        i => i.priority !== 'green' && !completedItems.has(i.id)
+    ).length;
 
     const plan = PRICING_CONFIG[userTier as keyof typeof PRICING_CONFIG];
     const maxQuota = plan?.limits?.aiCreditsMonthly || 50;
@@ -46,32 +52,44 @@ export default function Sidebar() {
             "bg-surface h-screen flex flex-col shrink-0 z-[60] relative border-r border-border/50",
             sidebarCollapsed ? "w-[80px]" : "w-[270px]"
         )}>
-            <button
-                onClick={toggleSidebar}
-                className={cn(
-                    "flex items-center transition-all duration-300 overflow-hidden w-full group/logo hover:bg-slate-50 dark:hover:bg-slate-800/50 text-left outline-none border-b border-black/10 dark:border-slate-800",
-                    sidebarCollapsed ? "p-4 justify-center" : "px-6 py-5"
-                )}
-                title={sidebarCollapsed ? "展開側欄" : "縮合側欄"}
-            >
-                {sidebarCollapsed ? (
-                    <div className="flex items-center justify-center shrink-0 transition-transform duration-300 w-10 h-10">
-                        <img 
-                            src="/Logo.png" 
-                            alt="Aim.pro Icon" 
-                            className="w-full h-full object-contain"
-                        />
-                    </div>
-                ) : (
-                    <div className="flex flex-col whitespace-nowrap flex-1">
-                        <img 
-                            src="/Logo_w.png" 
-                            alt="Aim.pro Logo" 
-                            className="h-10 object-contain object-left"
-                        />
-                    </div>
-                )}
-            </button>
+            <div className={cn(
+                "flex items-center border-b border-black/10 dark:border-slate-800 transition-all duration-300 h-20",
+                sidebarCollapsed ? "justify-center" : "px-4 justify-between"
+            )}>
+                <div className="flex items-center gap-2">
+                    <button 
+                        onClick={toggleSidebar}
+                        className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-slate-500 shadow-sm border border-transparent hover:border-border/50"
+                        title={sidebarCollapsed ? "展開側欄" : "縮合側欄"}
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
+                    
+                    {!sidebarCollapsed && (
+                         <Link href="/dashboard" className="hover:opacity-80 transition-opacity ml-1">
+                            <img 
+                                src="/Logo_w.png" 
+                                alt="Aim.pro Logo" 
+                                className="h-8 object-contain object-left"
+                            />
+                        </Link>
+                    )}
+                </div>
+            </div>
+
+            {/* 回到儀表板按鈕 (當不在主儀表板時顯示) */}
+            {pathname !== '/dashboard' && pathname !== '/' && !sidebarCollapsed && (
+                <div className="px-5 pt-4">
+                    <Link 
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-sm font-bold transition-all border border-slate-200 dark:border-slate-700"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        回到儀表板
+                    </Link>
+                </div>
+            )}
+
 
             {/* Navigation Section */}
             <div className={cn(
@@ -112,14 +130,6 @@ export default function Sidebar() {
                         onLockedClick={() => handleLockedClick('客戶管理')}
                     />
                     <SidebarLink
-                        href="/dashboard/profile"
-                        icon={<Briefcase className="w-[18px] h-[18px] shrink-0" />}
-                        label="個人設定"
-                        isActive={pathname === '/dashboard/profile'}
-                        isCollapsed={sidebarCollapsed}
-                        activeClass="bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/30"
-                    />
-                    <SidebarLink
                         href="/dashboard/settings"
                         icon={<Settings className="w-[18px] h-[18px] shrink-0" />}
                         label="系統方案"
@@ -127,6 +137,60 @@ export default function Sidebar() {
                         isCollapsed={sidebarCollapsed}
                         activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
                     />
+
+                    {/* Visual Studio 入口 */}
+                    <div onClick={() => {
+                        if (pathname === '/visual-studio') {
+                            setSidebarCollapsed(!sidebarCollapsed);
+                        }
+                    }}>
+                        <SidebarLink
+                            href="/visual-studio"
+                            icon={<Wand2 className="w-[18px] h-[18px] shrink-0" />}
+                            label="Visual Studio"
+                            isActive={pathname === '/visual-studio'}
+                            isCollapsed={sidebarCollapsed}
+                            badge="NEW"
+                            activeClass="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30"
+                        />
+                    </div>
+
+                    {/* AGI 辦公室入口 */}
+                    <div className="pt-2 mt-1 border-t border-border/30">
+                        <button
+                            onClick={() => isOpen ? closeWindow() : openWindow()}
+                            className={cn(
+                                "group flex items-center transition-all duration-300 relative w-full",
+                                sidebarCollapsed ? "h-[60px] w-[60px] justify-center mx-auto rounded-xl" : "px-5 h-[60px] rounded-xl",
+                                isOpen 
+                                    ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
+                                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-[0.98]"
+                            )}
+                            title="AGI 顧問辦公室"
+                        >
+                            <div className="relative shrink-0">
+                                <Building2 className="w-[18px] h-[18px]" />
+                                {agiAlerts > 0 && (
+                                    <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-[8px] font-black shadow border border-white/30">
+                                        {agiAlerts > 9 ? '9+' : agiAlerts}
+                                    </span>
+                                )}
+                            </div>
+                            {!sidebarCollapsed && (
+                                <span className={cn(
+                                    "ml-4 text-[17px] font-semibold whitespace-nowrap flex-1 text-left",
+                                    isOpen ? "text-white" : "text-slate-600 dark:text-slate-300"
+                                )}>
+                                    AGI 辦公室
+                                </span>
+                            )}
+                            {sidebarCollapsed && (
+                                <div className="absolute left-full ml-4 px-3 py-2 bg-foreground text-background text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none z-[100] shadow-xl transition-all translate-x-1 group-hover:translate-x-0">
+                                    AGI 辦公室
+                                </div>
+                            )}
+                        </button>
+                    </div>
                 </nav>
             </div>
 
@@ -208,11 +272,14 @@ export default function Sidebar() {
                     <ThemeSwitch isCollapsed={sidebarCollapsed} />
                 </div>
 
-                <div className={cn(
-                    "flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700",
-                    sidebarCollapsed ? "justify-center" : "px-3 py-2.5"
-                )}>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-emerald-500 flex items-center justify-center text-white font-bold shrink-0 shadow-md">
+                <Link 
+                    href="/dashboard/profile"
+                    className={cn(
+                        "flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-primary/30 group/profile",
+                        sidebarCollapsed ? "justify-center" : "px-3 py-2.5"
+                    )}
+                >
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-emerald-500 flex items-center justify-center text-white font-bold shrink-0 shadow-md group-hover/profile:scale-110 transition-transform">
                         {currentPersona?.name?.slice(0, 1) || 'U'}
                     </div>
                     {!sidebarCollapsed && (
@@ -238,14 +305,11 @@ export default function Sidebar() {
                         </div>
                     )}
                     {!sidebarCollapsed && (
-                        <button
-                            className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-                            title="登出"
-                        >
-                            <LogOut className="w-4 h-4" />
-                        </button>
+                        <div className="p-1.5 text-muted-foreground group-hover/profile:text-primary transition-colors">
+                            <Settings className="w-4 h-4" />
+                        </div>
                     )}
-            </div>
+                </Link>
         </div>
     </div>
     );

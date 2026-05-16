@@ -23,6 +23,9 @@ import { Settings, Sparkles, Save, FileText, MessageSquare, Sliders, Download, U
 import { cn, generateId } from '@/lib/utils';
 import { toast } from 'sonner';
 import Turnstile from '@/components/Turnstile';
+import AgiHealthPanel from '@/components/AgiHealthPanel';
+import AgiPreflightModal from '@/components/AgiPreflightModal';
+import { useAgiHealthCheck } from '@/hooks/useAgiHealthCheck';
 
 const DEFAULT_WEB_PROMPT = `You are a helpful, professional technical consultant.`;
 
@@ -60,6 +63,16 @@ function Dashboard() {
 
     const [isGenerating, setIsGenerating] = useState(false);
     const [supaUser, setSupaUser] = useState<any>(null);
+
+    // AGI Company Model state
+    const [showPreflightModal, setShowPreflightModal] = useState(false);
+    const agiReport = useAgiHealthCheck(activeProject?.data ?? {
+        moduleId: 'web_development',
+        projectType: 'website',
+        projectName: '',
+        description: '',
+        features: '',
+    });
 
     // Delete Modal State
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -204,6 +217,17 @@ function Dashboard() {
     };
 
     const handleGenerateReport = async () => {
+        if (!activeProject) return;
+
+        // AGI Pre-flight: if there are any red/yellow issues, show the modal first
+        if (agiReport.blockingCount > 0 || agiReport.warningCount > 0) {
+            setShowPreflightModal(true);
+            return;
+        }
+        await executeGenerateReport();
+    };
+
+    const executeGenerateReport = async () => {
         if (!activeProject) return;
 
         // Check and consume quota first
@@ -476,7 +500,7 @@ function Dashboard() {
                                             </div>
                                         </div>
 
-                                        {/* Main Form Blocks */}
+                                        {/* Main Form — AGI 顧問室已移至右下角浮動視窗 */}
                                         <div className="w-full">
                                             <InputForm
                                                 initialData={activeProject.data}
@@ -568,6 +592,18 @@ function Dashboard() {
                 onClose={() => setShowUpgradeModal(false)}
                 planName="專業職人版 (Pro)"
                 tierId="professional"
+            />
+
+            {/* AGI Pre-flight Modal — triggered before report generation when health issues exist */}
+            <AgiPreflightModal
+                isOpen={showPreflightModal}
+                report={agiReport}
+                onFix={() => setShowPreflightModal(false)}
+                onIgnore={async () => {
+                    setShowPreflightModal(false);
+                    await executeGenerateReport();
+                }}
+                onClose={() => setShowPreflightModal(false)}
             />
         </div>
     );

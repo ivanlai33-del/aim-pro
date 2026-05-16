@@ -10,7 +10,8 @@ import {
     Plus, Trash2, Check, CreditCard, Building2, Cpu, LayoutGrid,
     Globe, Terminal, Layers, Share2, BadgeDollarSign, Search, UserPlus,
     PenTool, Monitor, Video, ImageIcon, Camera, Home, Calendar, Map,
-    Lightbulb, GraduationCap, Compass, BookOpen, Box, ShieldCheck
+    Lightbulb, GraduationCap, Compass, BookOpen, Box, ShieldCheck,
+    Trophy, FileText, Award
 } from 'lucide-react';
 import { CATEGORY_FOLDERS, BUSINESS_MODULES, BusinessModule, CATEGORY_GRADIENTS } from '@/config/industries';
 import { BankInfo } from '@/context/ProjectContext';
@@ -22,9 +23,11 @@ import BankBranchSelector from '@/components/BankBranchSelector';
 const CATEGORY_ICONS: Record<string, any> = {
     web: Layout,
     marketing: Megaphone,
-    design: PartyPopper, // Adjusted icon
+    design: PartyPopper,
     space: Hammer,
-    consulting: Briefcase
+    consulting: Briefcase,
+    pro_service: Award,
+    business_dev: Trophy,
 };
 
 
@@ -55,7 +58,12 @@ const MODULE_ICONS: Record<string, any> = {
     strategy_planning: Compass,
     online_course_prod: BookOpen,
     home_organizer: Box,
-    ip_agent: ShieldCheck
+    ip_agent: ShieldCheck,
+    // 🔵 Pro Service (Knowledge)
+    ai_agent_consultant: Cpu,
+    // 🏆 Business Dev
+    government_tender: Trophy,
+    grant_subsidy: FileText,
 };
 
 import { useModuleAccess } from '@/hooks/useModuleAccess';

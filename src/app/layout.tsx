@@ -3,6 +3,8 @@ import { Toaster } from 'sonner';
 import { ProjectProvider } from '@/context/ProjectContext';
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from 'next/script';
+import AgiRoot from '@/agi/components/AgiRoot';
+import { AgiProvider } from '@/agi/context/AgiContext';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -64,8 +66,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ProjectProvider>
-            {children}
-            <Toaster richColors position="top-right" />
+            <AgiProvider>
+              {children}
+              <Toaster richColors position="top-right" />
+              {/* AGI 顧問室浮動 UI — Portal 層，處理渲染不影響其他元件 */}
+              <AgiRoot />
+            </AgiProvider>
           </ProjectProvider>
         </ThemeProvider>
         

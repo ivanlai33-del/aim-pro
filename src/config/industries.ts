@@ -120,10 +120,10 @@ export const CATEGORY_FOLDERS: Record<string, CategoryFolder> = {
     pro_service: {
         id: 'pro_service',
         name: '知識產出與專業職人',
-        description: '線上課程、整理收納、智慧財產權代理',
+        description: '線上課程、整理收納、智慧財產權代理、不動產投資與估價',
         icon: 'Award',
         color: '#0ea5e9',
-        moduleIds: ['online_course_prod', 'home_organizer', 'ip_agent'],
+        moduleIds: ['online_course_prod', 'home_organizer', 'ip_agent', 'real_estate_agent'],
         workflow: {
             diagram: `graph LR
     A[收到訂金] --> B[專業訪談]
@@ -196,6 +196,7 @@ import { MODULE_ONLINE_COURSE } from './modules/consulting/online_course';
 import { MODULE_HOME_ORGANIZER } from './modules/consulting/home_organizer';
 import { MODULE_IP_AGENT } from './modules/consulting/ip_agent';
 import { MODULE_AI_AGENT_CONSULTANT } from './modules/consulting/ai_agent_consulting';
+import { MODULE_REAL_ESTATE_AGENT } from './modules/consulting/real_estate_agent';
 
 import { MODULE_GOVERNMENT_TENDER } from './modules/business_dev/government_tender';
 import { MODULE_GRANT_SUBSIDY } from './modules/business_dev/grant_subsidy';
@@ -208,7 +209,7 @@ export {
     MODULE_INTERIOR_DESIGN, MODULE_EVENT_PLANNING, MODULE_EXHIBITION_DESIGN,
     MODULE_BUSINESS_CONSULTING, MODULE_CORPORATE_TRAINING, MODULE_STRATEGY_PLANNING,
     MODULE_ONLINE_COURSE, MODULE_HOME_ORGANIZER, MODULE_IP_AGENT, MODULE_PR_AGENCY,
-    MODULE_AI_AGENT_CONSULTANT,
+    MODULE_AI_AGENT_CONSULTANT, MODULE_REAL_ESTATE_AGENT,
     MODULE_GOVERNMENT_TENDER, MODULE_GRANT_SUBSIDY
 };
 
@@ -249,6 +250,7 @@ export const BUSINESS_MODULES: Record<string, BusinessModule> = {
     home_organizer: MODULE_HOME_ORGANIZER,
     ip_agent: MODULE_IP_AGENT,
     ai_agent_consultant: MODULE_AI_AGENT_CONSULTANT,
+    real_estate_agent: MODULE_REAL_ESTATE_AGENT,
 
     // 🏆 商務開發與競標
     government_tender: MODULE_GOVERNMENT_TENDER,
