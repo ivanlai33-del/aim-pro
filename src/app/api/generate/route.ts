@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // --- CONFIGURATION ---
-const DEFAULT_MODEL = "gemini-1.5-flash-latest";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 const API_VERSION = "v1beta";
 
 // System instructions and prompts
@@ -190,7 +190,7 @@ ${DEFAULT_OUTPUT_FORMAT}
         }
 
         // --- FETCHING FROM GOOGLE ---
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiUrl, {
             method: 'POST',

@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     try {
         const { message, context } = await req.json();
         
-        const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
         
         if (!apiKey) {
             console.error('CRITICAL: No AI API Key found in environment');
@@ -13,8 +13,8 @@ export async function POST(req: Request) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        // 根據金鑰掃描結果，使用最新版的 Flash 模型
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        // 根據金鑰掃描結果與最新架構，使用最新版的 gemini-2.5-flash 模型
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const systemPrompt = `
 您是 "捷報專案估價 Pro" 的 AI 經營大腦。
