@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { brief, userApiKey }: { brief: DesignBrief; userApiKey?: string } = body;
-    const apiKey = (userApiKey || "AIzaSyC_rSsPsR4dkqKtWqSPO3DSzJoCv48riA8").trim();
+    const apiKey = (userApiKey || process.env.GEMINI_API_KEY || "").trim();
+    if (!apiKey) {
+      throw new Error("Missing GEMINI_API_KEY environment variable or userApiKey");
+    }
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
