@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProject } from "../context/ProjectContext";
-import { Plus, X, Layout, User, Download, Upload, Hammer, Megaphone, PartyPopper, Video, Search, Store, Palette, Code2 } from "lucide-react";
+import { Plus, X, Layout, User, Download, Upload, Hammer, Megaphone, PartyPopper, Video, Search, Store, Palette, Code2, Bot, Sparkles, Save, Check, Edit3, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useModuleAccess } from "@/hooks/useModuleAccess";
 import { INDUSTRY_CATEGORIES } from "@/config/industries";
 import { ThemeToggle } from "./ThemeToggle";
 import Turnstile from "./Turnstile";
+import { toast } from 'sonner';
 
 interface ProjectTabsProps {
     onDeleteRequest: (project: { id: string, name: string }) => void;
@@ -20,6 +21,61 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
     const [showAddCategory, setShowAddCategory] = useState(false);
     const { projects, activeProjectId, selectProject, createProject, addProjectIndustry, activeProject, userTier, setTurnstileToken } = useProject();
     const { checkAccess } = useModuleAccess();
+
+    // --- Open Design #1933: Project Instructions State ---
+    const [customPromptsMap, setCustomPromptsMap] = useState<Record<string, string>>({});
+    const [showInstructionsPanel, setShowInstructionsPanel] = useState(false);
+    const [isEditingInstructions, setIsEditingInstructions] = useState(false);
+    const [instructionInput, setInstructionInput] = useState("");
+
+    // Load custom prompts from localStorage
+    useEffect(() => {
+        const loadPrompts = () => {
+            try {
+                const stored = localStorage.getItem('custom_prompts_map');
+                if (stored) {
+                    setCustomPromptsMap(JSON.parse(stored));
+                }
+            } catch (e) {
+                console.error("Failed to parse custom_prompts_map", e);
+            }
+        };
+        loadPrompts();
+        window.addEventListener('storage', loadPrompts);
+        return () => window.removeEventListener('storage', loadPrompts);
+    }, []);
+
+    // Current active module/industry key
+    const currentModuleKey = activeProject?.industries?.[0] || activeProject?.data?.moduleId || 'web';
+    const currentInstruction = customPromptsMap[currentModuleKey] || "";
+
+    const handleOpenInstructions = () => {
+        if (!currentInstruction) {
+            // Empty state: open editor directly
+            setInstructionInput("");
+            setIsEditingInstructions(true);
+        } else {
+            // Has instructions: open review panel
+            setInstructionInput(currentInstruction);
+            setIsEditingInstructions(false);
+        }
+        setShowInstructionsPanel(true);
+    };
+
+    const handleSaveInstructions = () => {
+        const updated = { ...customPromptsMap };
+        if (instructionInput.trim()) {
+            updated[currentModuleKey] = instructionInput.trim();
+        } else {
+            delete updated[currentModuleKey];
+        }
+        setCustomPromptsMap(updated);
+        localStorage.setItem('custom_prompts_map', JSON.stringify(updated));
+        window.dispatchEvent(new Event('storage'));
+        toast.success("專案專屬指令已儲存");
+        // Saving lands back on the review panel so the stored value is read back immediately
+        setIsEditingInstructions(false);
+    };
 
     const getProjectIcon = (projectType: string) => {
         // Find which industry category/item this project type belongs to
@@ -93,9 +149,6 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         >
                             <X className="w-3 h-3" />
                         </button>
-
-                        {/* Active Indicator Line */}
-                        {/* Removed active top border line as the entire tab is now gradient */}
                     </div>
                 ))}
             </div>
@@ -120,6 +173,114 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                     </button>
                 )}
 
+                {/* --- Open Design #1933: Project Instructions Chip --- */}
+                {activeProject && (
+                    <div className="relative">
+                        {currentInstruction ? (
+                            <button
+                                onClick={handleOpenInstructions}
+                                className="flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200 transition-all shadow-sm active:scale-95 gap-1.5"
+                                title="檢視/編輯專案專屬指令"
+                            >
+                                <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
+                                <span>專案專屬指令</span>
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleOpenInstructions}
+                                className="flex items-center px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-all active:scale-95 gap-1.5 border border-slate-200/60"
+                                title="新增專案專屬指令 (Custom Instructions)"
+                            >
+                                <Edit3 className="w-3.5 h-3.5 text-slate-400" />
+                                <span>自訂指令</span>
+                            </button>
+                        )}
+
+                        {/* Review / Edit Panel Popover */}
+                        {showInstructionsPanel && (
+                            <div className="absolute top-full right-0 mt-3 w-[420px] bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="p-4 bg-slate-50/80 border-b border-slate-200/80 flex justify-between items-center backdrop-blur-sm">
+                                    <div className="flex items-center gap-2">
+                                        <Bot className="w-5 h-5 text-indigo-600" />
+                                        <span className="font-bold text-sm text-slate-800">專案專屬 AI 角色指令</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => setShowInstructionsPanel(false)}
+                                        className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/50 transition-colors"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+
+                                <div className="p-5 space-y-4">
+                                    {!isEditingInstructions ? (
+                                        // Read-only Review Panel
+                                        <div className="space-y-4 animate-in fade-in duration-200">
+                                            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200/80 rounded-xl p-3">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                                                    <span className="text-xs font-bold text-emerald-800">Active</span>
+                                                </div>
+                                                <span className="text-[11px] text-emerald-600 font-medium">於每次 AI 估價/分析時自動注入</span>
+                                            </div>
+
+                                            <div className="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs font-mono whitespace-pre-wrap max-h-[220px] overflow-y-auto shadow-inner border border-slate-800 leading-relaxed">
+                                                {currentInstruction}
+                                            </div>
+
+                                            <div className="flex justify-end gap-2 pt-2">
+                                                <button
+                                                    onClick={() => setIsEditingInstructions(true)}
+                                                    className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition-all shadow-md active:scale-95"
+                                                >
+                                                    <Edit3 className="w-4 h-4" />
+                                                    編輯指令 (Edit Instructions)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        // Edit Mode
+                                        <div className="space-y-4 animate-in fade-in duration-200">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-xs font-bold text-slate-600">自訂指令內容 (Instructions)</label>
+                                                {currentInstruction && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setInstructionInput(currentInstruction);
+                                                            setIsEditingInstructions(false);
+                                                        }}
+                                                        className="text-[11px] text-indigo-600 hover:underline font-medium"
+                                                    >
+                                                        返回檢視 (Cancel)
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            <textarea
+                                                value={instructionInput}
+                                                onChange={(e) => setInstructionInput(e.target.value)}
+                                                placeholder="請輸入給 AI 的專案專屬指示，例如：請以資深架構師的角度審查合約，並嚴格限制修改次數不超過 3 次..."
+                                                className="w-full h-[180px] p-3.5 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none resize-none leading-relaxed bg-slate-50/50 focus:bg-white transition-all font-sans"
+                                            />
+
+                                            <div className="flex justify-end gap-2 pt-2">
+                                                <button
+                                                    onClick={handleSaveInstructions}
+                                                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:brightness-110 transition-all shadow-lg shadow-indigo-500/25 active:scale-95"
+                                                >
+                                                    <Save className="w-4 h-4" />
+                                                    儲存並啟用 (Save & Activate)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <div className="w-px h-6 bg-border mx-2" />
 
                 <button
@@ -137,8 +298,6 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                     <Download className="w-5 h-5" />
                 </button>
                 <ThemeToggle />
-
-
 
                 {/* Category Selection Modal */}
                 {showAddCategory && activeProject && (
@@ -212,5 +371,4 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
             </div>
         </div>
     );
-
 }
