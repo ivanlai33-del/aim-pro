@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock, Languages, Globe, Wand2, ArrowRight } from 'lucide-react';
+import { Download, FileText, Edit, Save, X, Sparkles, Loader2, MessageSquarePlus, Lock, Languages, Globe, Wand2, ArrowRight, Video } from 'lucide-react';
 import { refineReport, translateDocument, partialRefine } from '../lib/aiService';
 import { useRouter } from 'next/navigation';
 import Turnstile from './Turnstile';
@@ -11,6 +11,7 @@ import { useProject } from '../context/ProjectContext';
 import { toast } from 'sonner';
 import UpgradeModal from './landing/UpgradeModal';
 import mermaid from 'mermaid';
+import VideoInsightsBento from './VideoInsightsBento';
 
 // Initialize mermaid
 if (typeof window !== 'undefined') {
@@ -206,6 +207,8 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
             toast.error('PDF 生成失敗，請稍後再試。');
         }
     };
+
+    const isVideoRelated = activeProject?.industries?.includes('video') || activeProject?.modules?.includes('video_production') || reportContent.includes('NVIDIA') || reportContent.includes('多模態') || reportContent.includes('毛片');
 
     return (
         <>
@@ -448,6 +451,14 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                     >
                         {reportContent}
                     </ReactMarkdown>
+
+                    {/* NVIDIA Video Insights Bento Component */}
+                    {isVideoRelated && (
+                        <VideoInsightsBento 
+                            projectName={activeProject?.name || activeProject?.data?.projectName || "商業品牌形象片"}
+                            industry={activeProject?.industries?.[0] || activeProject?.data?.moduleId || "video"}
+                        />
+                    )}
 
                     {/* Footer for the report */}
                     <div className="border-t border-border pt-6 mt-12 text-center text-muted-foreground text-xs">

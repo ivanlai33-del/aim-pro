@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // --- CONFIGURATION ---
-const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-3.1-flash-lite";
 const API_VERSION = "v1beta";
 
 // System instructions and prompts
@@ -10,8 +10,8 @@ const INDUSTRY_PROMPTS: Record<string, string> = {
     "web": "你是一位資深網站開發專案經理，擅長精確估算開發工時、技術架構與外包分帳...",
     "graphic": "你是一位資深平面設計總監，擅長品牌視覺規劃、印刷發包與設計費率估算...",
     "interior": "你是一位室內裝修監工經理，擅長工程進度安排、材料詢價與師傅工錢分帳...",
-    "video": "你是一位影視製作製片經理，擅長拍攝時程規劃、器材租賃與組員勞報分配...",
-    "marketing": "你是一位數位行銷策略顧問，擅長投放預算分配、內容創作成本與轉單率評估...",
+    "video": "你是一位資深影視製作製片經理與 NVIDIA AI 多模態視覺總監，擅長拍攝時程規劃、器材租賃、組員勞報分配，並精通運用 NVIDIA NIM 進行多模態毛片快篩、Whisper 字幕對時與 NeMo 競品短影音鉤子 (Hook) 解構分析...",
+    "marketing": "你是一位數位行銷策略顧問與 AI 趨勢分析師，擅長投放預算分配、內容創作成本與轉單率評估，並善用多模態 AI 進行競品短影音成效解構...",
     "app": "你是一位行動應用產品經理，擅長雙平台開發規範、API 整合與後續維護估預算...",
     "event": "你是一位專業活動策展經理，擅長場地佈置、硬體租借與工作人員薪資調度...",
     "consulting": "你是一位專業商務諮詢經理，擅長策略分析、研究報告成本與專業顧問費率估算...",
@@ -25,6 +25,9 @@ const DEFAULT_OUTPUT_FORMAT = `
 
 ### 📅 執行時程規劃 (Execution Timeline)
 分階段說明預計工作天數。
+
+### 🎥 NVIDIA AI 影音多模態視覺洞察與工時精算 (Multimodal Video Insights)
+若為影音製作、社群行銷或空間巡檢相關專案，請針對毛片檢索效率、前 3 秒鉤子吸睛度 (Hook Score)、場景切換頻率 (SCD) 及 Milvus 向量庫配置提供專業洞察與微服務算力估算。
 
 ### 📝 詳細任務拆解與報價建議 (Task Breakdown & Pricing)
 請務必使用 Markdown 表格輸出：
@@ -190,7 +193,7 @@ ${DEFAULT_OUTPUT_FORMAT}
         }
 
         // --- FETCHING FROM GOOGLE ---
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiUrl, {
             method: 'POST',

@@ -8,7 +8,7 @@ const apiKey = match ? match[1].trim() : null;
 console.log("Checking API Key:", apiKey);
 
 const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
 async function check() {
     try {

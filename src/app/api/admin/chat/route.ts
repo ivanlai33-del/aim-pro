@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         // 根據金鑰掃描結果與最新架構，使用最新版的 gemini-2.5-flash 模型
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
         const systemPrompt = `
 您是 "捷報專案估價 Pro" 的 AI 經營大腦。

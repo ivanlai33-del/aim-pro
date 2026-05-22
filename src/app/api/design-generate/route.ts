@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { DesignBrief, getFullCraftCSS, SKILL_LABELS, PHILOSOPHY_LABELS } from '@/lib/designEngine';
 
-const DEFAULT_MODEL = "gemini-2.5-flash"; 
+const DEFAULT_MODEL = "gemini-3.1-flash-lite"; 
 
 export async function POST(req: NextRequest) {
   try {
