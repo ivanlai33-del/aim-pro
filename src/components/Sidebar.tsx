@@ -49,17 +49,17 @@ export default function Sidebar() {
 
     return (
         <div className={cn(
-            "bg-surface h-screen flex flex-col shrink-0 z-[60] relative border-r border-border/50",
+            "bg-surface h-screen flex flex-col shrink-0 z-[60] relative border-r border-border/50 dark:border-transparent",
             sidebarCollapsed ? "w-[80px]" : "w-[270px]"
         )}>
             <div className={cn(
-                "flex items-center border-b border-border/60 transition-all duration-300 h-20",
+                "flex items-center border-b border-border/60 dark:border-transparent transition-all duration-300 h-20",
                 sidebarCollapsed ? "justify-center" : "px-4 justify-between"
             )}>
                 <div className="flex items-center gap-2">
                     <button 
                         onClick={toggleSidebar}
-                        className="p-2.5 hover:bg-surface-hover rounded-xl transition-colors text-muted-foreground shadow-sm border border-transparent hover:border-border/50"
+                        className="p-2.5 hover:bg-surface-hover rounded-xl transition-colors text-muted-foreground shadow-sm border border-transparent hover:border-border/50 dark:hover:border-white/10"
                         title={sidebarCollapsed ? "展開側欄" : "縮合側欄"}
                     >
                         <Menu className="w-6 h-6" />
@@ -82,7 +82,7 @@ export default function Sidebar() {
                 <div className="px-5 pt-4">
                     <Link 
                         href="/dashboard"
-                        className="flex items-center gap-2 px-4 py-3 bg-muted hover:bg-surface-hover rounded-xl text-foreground text-sm font-bold transition-all border border-border"
+                        className="flex items-center gap-2 px-4 py-3 bg-muted hover:bg-surface-hover rounded-xl text-foreground text-sm font-bold transition-all border border-border dark:border-white/5"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         回到儀表板
@@ -156,47 +156,23 @@ export default function Sidebar() {
                     </div>
 
                     {/* AGI 辦公室入口 */}
-                    <div className="pt-2 mt-1 border-t border-border/30">
-                        <button
-                            onClick={() => isOpen ? closeWindow() : openWindow()}
-                            className={cn(
-                                "group flex items-center transition-all duration-300 relative w-full",
-                                sidebarCollapsed ? "h-[60px] w-[60px] justify-center mx-auto rounded-xl" : "px-5 h-[60px] rounded-xl",
-                                isOpen 
-                                    ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
-                                    : "bg-muted text-muted-foreground hover:bg-surface-hover active:scale-[0.98]"
-                            )}
-                            title="AGI 顧問辦公室"
-                        >
-                            <div className="relative shrink-0">
-                                <Building2 className="w-[18px] h-[18px]" />
-                                {agiAlerts > 0 && (
-                                    <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-[8px] font-black shadow border border-white/30">
-                                        {agiAlerts > 9 ? '9+' : agiAlerts}
-                                    </span>
-                                )}
-                            </div>
-                            {!sidebarCollapsed && (
-                                <span className={cn(
-                                    "ml-4 text-[17px] font-semibold whitespace-nowrap flex-1 text-left",
-                                    isOpen ? "text-white" : "text-foreground"
-                                )}>
-                                    AGI 辦公室
-                                </span>
-                            )}
-                            {sidebarCollapsed && (
-                                <div className="absolute left-full ml-4 px-3 py-2 bg-foreground text-background text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none z-[100] shadow-xl transition-all translate-x-1 group-hover:translate-x-0">
-                                    AGI 辦公室
-                                </div>
-                            )}
-                        </button>
+                    <div className="pt-2 mt-1 border-t border-border/30 dark:border-transparent">
+                        <SidebarLink
+                            href="/dashboard/agi-office"
+                            icon={<Building2 className="w-[18px] h-[18px] shrink-0" />}
+                            label="AGI 辦公室"
+                            isActive={pathname === '/dashboard/agi-office'}
+                            isCollapsed={sidebarCollapsed}
+                            badge={agiAlerts > 0 ? (agiAlerts > 9 ? '9+' : String(agiAlerts)) : undefined}
+                            activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
+                        />
                     </div>
                 </nav>
             </div>
 
             {/* AI Quota Progress Bar & Warning */}
             <div className={cn(
-                "border-t border-border/50 pt-3",
+                "border-t border-border/50 dark:border-transparent pt-3",
                 sidebarCollapsed ? "px-3" : "px-4"
             )}>
                 {!sidebarCollapsed ? (
@@ -259,7 +235,7 @@ export default function Sidebar() {
 
             {/* Theme & Profile Section */}
             <div className={cn(
-                "mt-2 p-4 border-t border-border/50",
+                "mt-2 p-4 border-t border-border/50 dark:border-transparent",
                 sidebarCollapsed ? "flex flex-col items-center gap-4" : "space-y-4"
             )}>
                 {!sidebarCollapsed && <p className="text-[10px] font-bold text-muted-foreground/60 px-2 tracking-wider uppercase">Theme</p>}
@@ -275,7 +251,7 @@ export default function Sidebar() {
                 <Link 
                     href="/dashboard/profile"
                     className={cn(
-                        "flex items-center gap-3 bg-muted/50 p-2.5 rounded-xl border border-border transition-all hover:bg-surface-hover hover:border-primary/30 group/profile",
+                        "flex items-center gap-3 bg-muted/50 p-2.5 rounded-xl border border-border dark:border-white/5 transition-all hover:bg-surface-hover hover:border-primary/30 group/profile",
                         sidebarCollapsed ? "justify-center" : "px-3 py-2.5"
                     )}
                 >
@@ -298,7 +274,7 @@ export default function Sidebar() {
                                     <span className="text-[9px] font-bold text-muted-foreground/80">
                                         {currentPersona?.role === 'owner' ? '所有者' : 
                                          currentPersona?.role === 'admin' ? '管理員' : 
-                                         currentPersona?.role === 'member' ? '成員' : '財務'}
+                                         currentPersona?.role === 'accountant' ? '財務' : '成員'}
                                     </span>
                                 </div>
                             </div>
@@ -330,7 +306,7 @@ function ThemeSwitch({ isCollapsed }: ThemeSwitchProps) {
         <button
             onClick={toggleTheme}
             className={cn(
-                "flex items-center justify-center rounded-full transition-all duration-300 border border-border dark:border-slate-700",
+                "flex items-center justify-center rounded-full transition-all duration-300 border border-border dark:border-white/10",
                 "w-10 h-10",
                 "text-muted-foreground hover:bg-surface-hover shadow-sm"
             )}

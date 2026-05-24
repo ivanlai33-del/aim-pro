@@ -234,7 +234,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const [isInitialized, setIsInitialized] = useState(false);
     const [session, setSession] = useState<any>(null);
 
-    const [userRole, setUserRole] = useState<string>('general');
+    const [userRole, setUserRole] = useState<string>('owner');
     const [userTier, setUserTier] = useState<SubscriptionTier>('free');
     const [aiQuota, setAiQuota] = useState<number>(10);
     const [unlockedModules, setUnlockedModules] = useState<string[]>([]);
@@ -291,7 +291,11 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             }
 
             // Sync local state
-            setAiQuota(data);
+            if (data !== null && data !== undefined) {
+                setAiQuota(data);
+            } else {
+                setAiQuota(prev => Math.max(0, prev - 1));
+            }
             return true;
         } catch (err) {
             console.error('Error consuming AI quota:', err);
@@ -322,6 +326,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         }
         if (updates.role) {
             setUserRole(updates.role);
+            localStorage.setItem('user_role_v1', updates.role);
         }
     };
 
@@ -347,7 +352,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             projectsCount: projects.length,
             aiGenerations: 100 // Mock for simulation UI
         }
-    }), [session, providerInfo, userTier, projects.length]);
+    }), [session, providerInfo, userTier, projects.length, userRole, unlockedModules]);
 
     // Auth Listener & Data Loading
     useEffect(() => {

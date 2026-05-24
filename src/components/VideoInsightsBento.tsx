@@ -28,7 +28,7 @@ const DEFAULT_TIMESTAMPS: TimestampItem[] = [
     { id: '4', time: '06:12 - 06:30', title: '工地管線未收合 (異常缺失)', description: 'VLM 視覺大模型自動偵測天花板管線裸露風險，已標記為待修繕估價項目。', type: 'anomaly', score: 72 },
 ];
 
-export default function VideoInsightsBento({ projectName = "商業品牌形象片", industry = "video_production", initialQuery }: VideoInsightsBentoProps) {
+export default function VideoInsightsBento({ projectName = "商業品牌形象片", industry = "video_production", initialQuery, onImportEquipment }: VideoInsightsBentoProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState('00:00');
     const [activeTab, setActiveTab] = useState<'timestamps' | 'rag' | 'metrics'>('timestamps');

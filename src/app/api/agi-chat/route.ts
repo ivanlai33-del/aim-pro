@@ -88,17 +88,17 @@ export async function POST(req: NextRequest) {
 ## 任務指示
 1. 請以你所扮演的專屬幕僚角色，全心全意「輔助」這位職人。你的唯一目標是提升他的提案成功率、確保利潤，並完善後續的執行計畫。
 2. 請根據上方提供的 [目前專案狀態]，找出能幫助職人的切入點。給予具體、可直接寫入報價單或用來與客戶溝通的建議。
-3. 語氣必須是「自己人」的互助感，而非上對下的指責。回覆請盡量簡短精要（約 50-100 字內），適合在對話視窗中閱讀。
+3. 語氣必須是「自己人」的互助感，而非上對下的指責。
+4. 回覆請盡量具體實用（約 100-300 字內），如果是總經理 (GM) 且被交辦拆解工作項目時，請務必輸出乾淨、無巢狀縮排的 markdown 項目列表（例如 - 項目名稱），方便前端程式自動解析匯入。
 `;
 
         const apiUrl = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
-        // 格式化歷史訊息，幫助 AI 理解對話脈絡 (選用)
         let formattedHistory = '';
         if (history && Array.isArray(history) && history.length > 0) {
-            const recentHistory = history.slice(-5); // 只取最近 5 筆避免 token 爆炸
+            const recentHistory = history.slice(-8); // 只取最近 8 筆避免 token 爆炸
             formattedHistory = "\\n[最近對話紀錄]\\n" + recentHistory.map((msg: any) => 
-                `${msg.sender === 'user' ? 'User' : 'Advisor'}: ${msg.content}`
+                `${msg.sender === 'user' ? 'User' : (msg.advisorId ? msg.advisorId.toUpperCase() : 'Advisor')}: ${msg.content}`
             ).join("\\n");
         }
 

@@ -101,7 +101,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
 
     return (
         <div className={cn(
-            "bg-surface dark:bg-[#1E293B]/60 dark:backdrop-blur-xl p-8 rounded-[24px] border border-border dark:border-0 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-none dark:hover:shadow-none transition-all duration-500",
+            "bg-surface dark:bg-[#1E293B]/60 dark:backdrop-blur-xl p-8 rounded-[24px] border-0 dark:border-0 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-none dark:hover:shadow-none transition-all duration-500",
             colSpan,
             className
         )}>
@@ -154,7 +154,7 @@ function OptionButton({
                 "flex flex-col items-start justify-start px-4 py-3 rounded-2xl border transition-all min-h-[160px] text-left group active:scale-95 relative overflow-hidden",
                 isActive
                     ? `border-transparent ${activeBg} text-white shadow-xl shadow-primary/30 ring-2 ring-primary/20 ring-offset-2`
-                    : 'border border-border dark:border-0 bg-surface dark:bg-surface/50 text-muted-foreground hover:bg-surface-hover hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+                    : 'border-0 dark:border-0 bg-surface dark:bg-surface/50 text-muted-foreground hover:bg-surface-hover hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
                 className
             )}
         >
@@ -565,7 +565,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
                         {/* Upload / Paste Area */}
                         <div
-                            className="border-2 border-dashed border-input dark:border-0 dark:bg-slate-800/80 rounded-2xl p-6 text-center hover:bg-primary/5 dark:hover:bg-slate-700/80 transition-all cursor-pointer group dark:shadow-none dark:hover:shadow-none"
+                            className="border-0 dark:border-0 dark:bg-slate-800/80 bg-input rounded-2xl p-6 text-center hover:bg-primary/5 dark:hover:bg-slate-700/80 transition-all cursor-pointer group dark:shadow-none dark:hover:shadow-none"
                             onClick={() => fileInputRef.current?.click()}
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}

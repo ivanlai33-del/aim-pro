@@ -312,7 +312,7 @@ function Dashboard() {
     return (
         <div className="flex flex-col h-full overflow-hidden bg-background">
             {/* Top Navigation Bar: Project Tabs with Global Controls */}
-            <div className="print:hidden h-[92px] flex items-center w-full border-b border-border">
+            <div className="print:hidden h-[92px] flex items-center w-full border-b border-border dark:border-transparent">
                 <ProjectTabs
                     onDeleteRequest={handleDeleteRequest}
                     onImport={handleImportClick}
@@ -353,7 +353,7 @@ function Dashboard() {
                             {/* Window Tabs */}
                             {/* Window Tabs & Project Info */}
                             {/* Window Tabs & Project Info */}
-                            <div className="w-full bg-surface border-b border-border/20 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] relative z-40 print:hidden">
+                            <div className="w-full bg-surface border-b border-border/20 dark:border-transparent shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] relative z-40 print:hidden">
                                 <div className="px-4 shrink-0 flex items-center justify-center mt-2 py-4 w-full max-w-[1450px] mx-auto">
                                 {/* Tabs (Center) */}
                                 <nav className="flex space-x-2 w-full max-w-[1450px] justify-center whitespace-nowrap overflow-x-auto no-scrollbar" aria-label="Tabs">
@@ -431,7 +431,7 @@ function Dashboard() {
                                 {activeTab === 'setup' && (
                                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1600px] mx-auto">
                                         {/* Project Header Block */}
-                                        <div className="bg-surface p-8 rounded-[24px] border border-border dark:border-0 shadow-sm dark:shadow-none mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                                        <div className="bg-surface p-8 rounded-[24px] border-0 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] dark:shadow-none mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
                                             <div className="flex flex-col gap-2 w-full md:w-auto">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600 shrink-0">
@@ -474,7 +474,7 @@ function Dashboard() {
                                                 <button
                                                     type="submit"
                                                     form="project-setup-form"
-                                                    className="inline-flex items-center px-8 py-4 border border-border dark:border-0 shadow-sm dark:shadow-none text-[16px] font-bold rounded-2xl text-foreground bg-surface hover:bg-surface-hover hover:text-primary transition-all active:scale-95 whitespace-nowrap"
+                                                    className="inline-flex items-center px-8 py-4 border-0 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] dark:shadow-none text-[16px] font-bold rounded-2xl text-foreground bg-surface hover:bg-surface-hover hover:text-primary transition-all active:scale-95 whitespace-nowrap"
                                                 >
                                                     <Save className="-ml-1 mr-2 h-6 w-6 text-muted-foreground" />
                                                     儲存設定環境
@@ -623,7 +623,7 @@ function TabButton({ isActive, onClick, icon, label, isLocked, activeClass }: { 
                 "group flex-1 flex justify-center items-center px-4 lg:px-6 py-4 lg:py-[18px] rounded-xl font-black text-sm lg:text-[15px] transition-all outline-none select-none relative whitespace-nowrap backdrop-blur-sm min-w-[120px]",
                 isActive
                     ? activeStyling
-                    : "text-foreground hover:bg-surface/80 dark:text-muted-foreground dark:hover:bg-slate-800 border border-border/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 active:scale-95"
+                    : "text-foreground hover:bg-surface/80 dark:text-muted-foreground dark:hover:bg-slate-800 border border-border/50 dark:border-white/5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 active:scale-95"
             )}
         >
             <span className={cn("transition-colors flex items-center shrink-0", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary")}>
@@ -633,7 +633,7 @@ function TabButton({ isActive, onClick, icon, label, isLocked, activeClass }: { 
             {isLocked && (
                 <span className={cn(
                     "ml-auto text-[10px] px-1.5 py-0.5 rounded-full border flex items-center ml-2",
-                    isActive ? "bg-surface/20 border-white/20 text-white" : "bg-muted text-muted-foreground border-border"
+                    isActive ? "bg-surface/20 border-white/20 text-white" : "bg-muted text-muted-foreground border-border dark:border-white/5"
                 )}>
                     🔒 PRO
                 </span>

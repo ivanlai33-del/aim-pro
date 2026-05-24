@@ -129,7 +129,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                             "group relative flex items-center min-w-[160px] max-w-[200px] h-12 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all select-none shrink-0 active:scale-[0.98]",
                             activeProjectId === project.id
                                 ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md z-10 border border-white/20 dark:border-white/10"
-                                : "bg-surface/60 text-muted-foreground hover:bg-surface hover:text-cyan-600 border border-border/50"
+                                : "bg-surface/60 text-muted-foreground hover:bg-surface hover:text-cyan-600 border border-border/50 dark:border-transparent"
                         )}
                     >
                         {getProjectIcon(project.data.projectType)}
@@ -193,7 +193,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         ) : (
                             <button
                                 onClick={handleOpenInstructions}
-                                className="flex items-center px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-all active:scale-95 gap-1.5 border border-border"
+                                className="flex items-center px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-all active:scale-95 gap-1.5 border border-border dark:border-transparent"
                                 title="新增專案專屬指令 (Custom Instructions)"
                             >
                                 <Edit3 className="w-3.5 h-3.5 text-muted-foreground" />
@@ -203,8 +203,8 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
 
                         {/* Review / Edit Panel Popover */}
                         {showInstructionsPanel && (
-                            <div className="absolute top-full right-0 mt-3 w-[420px] bg-surface rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1)] border border-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                                <div className="p-4 bg-muted/50 border-b border-border flex justify-between items-center backdrop-blur-sm">
+                            <div className="absolute top-full right-0 mt-3 w-[420px] bg-surface rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1)] border border-border dark:border-transparent overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="p-4 bg-muted/50 border-b border-border dark:border-transparent flex justify-between items-center backdrop-blur-sm">
                                     <div className="flex items-center gap-2">
                                         <Bot className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                         <span className="font-bold text-sm text-foreground">專案專屬 AI 角色指令</span>
@@ -305,8 +305,8 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
 
                 {/* Category Selection Modal */}
                 {showAddCategory && activeProject && (
-                    <div className="absolute top-full right-0 mt-2 w-72 bg-surface rounded-xl shadow-2xl border border-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                        <div className="p-3 bg-muted/50 border-b border-border flex justify-between items-center">
+                    <div className="absolute top-full right-0 mt-2 w-72 bg-surface rounded-xl shadow-2xl border border-border dark:border-transparent overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="p-3 bg-muted/50 border-b border-border dark:border-transparent flex justify-between items-center">
                             <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">新增服務類別</span>
                             <button onClick={() => setShowAddCategory(false)} title="關閉"><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>
                         </div>

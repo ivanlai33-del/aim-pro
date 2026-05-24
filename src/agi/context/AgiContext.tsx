@@ -3,7 +3,8 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { useAgiHealthCheck, AgiHealthReport } from '@/hooks/useAgiHealthCheck';
-import { getProfessionalMemory, getProjectMemory, ProfessionalMemory, ProjectMemory } from '@/lib/memoryService';
+import { getProfessionalMemory, getProjectMemory, saveProjectMemory, ProfessionalMemory, ProjectMemory } from '@/lib/memoryService';
+import { toast } from 'sonner';
 
 export type AgiTab = 'health' | 'meeting' | 'onboarding';
 
@@ -41,6 +42,18 @@ export interface AgiContextValue {
 
     // RBAC
     allowedIds: string[];
+
+    // Workflow & Multi-Agent Dashboard States
+    workflowStatus: 'idle' | 'running' | 'completed' | 'error';
+    currentWorkflowStep: number;
+    lastDeliverables: Record<AdvisorId, { content: string; tasks?: any[] }>;
+    triggerChainAnalysis: (prompt: string) => Promise<void>;
+    commitMeetingResolution: (content: string) => Promise<boolean>;
+    setMessages: React.Dispatch<React.SetStateAction<AdvisorMessage[]>>;
+
+    // Custom Names
+    customNames: Record<AdvisorId, string>;
+    setCustomName: (id: AdvisorId, name: string) => void;
 }
 
 export interface OnboardingItem {
@@ -65,7 +78,7 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
 };
 
 export function AgiProvider({ children }: { children: ReactNode }) {
-    const { activeProject, userTier, currentPersona, currentTeamId } = useProject();
+    const { activeProject, userTier, currentPersona, currentTeamId, consumeAiQuota } = useProject();
     const userRole = currentPersona?.role || 'member';
     const allowedIds = ROLE_PERMISSIONS[userRole] || ROLE_PERMISSIONS.member;
 
@@ -97,6 +110,37 @@ export function AgiProvider({ children }: { children: ReactNode }) {
     // Memory state
     const [profMemory, setProfMemory] = useState<ProfessionalMemory[]>([]);
     const [projMemory, setProjMemory] = useState<ProjectMemory[]>([]);
+
+    // Workflow & Multi-Agent Dashboard States
+    const [workflowStatus, setWorkflowStatus] = useState<'idle' | 'running' | 'completed' | 'error'>('idle');
+    const [currentWorkflowStep, setCurrentWorkflowStep] = useState<number>(0);
+    const [lastDeliverables, setLastDeliverables] = useState<Record<AdvisorId, { content: string; tasks?: any[] }>>({
+        boss: { content: '' },
+        gm: { content: '' },
+        cfo: { content: '' },
+        clo: { content: '' },
+        cso: { content: '' },
+    });
+
+    // Custom Names
+    const [customNames, setCustomNamesState] = useState<Record<AdvisorId, string>>({
+        boss: '', gm: '', cfo: '', clo: '', cso: ''
+    });
+
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('agi_custom_names');
+            if (saved) setCustomNamesState(JSON.parse(saved));
+        } catch (e) {}
+    }, []);
+
+    const setCustomName = useCallback((id: AdvisorId, name: string) => {
+        setCustomNamesState(prev => {
+            const next = { ...prev, [id]: name };
+            localStorage.setItem('agi_custom_names', JSON.stringify(next));
+            return next;
+        });
+    }, []);
 
     // Fetch memory
     useEffect(() => {
@@ -192,7 +236,149 @@ export function AgiProvider({ children }: { children: ReactNode }) {
         setCompletedItems(prev => new Set([...Array.from(prev), id]));
     }, []);
 
+    // Helper: Parse tasks list from GM markdown content
+    const parseTasksFromMarkdown = (text: string): any[] => {
+        const tasks: any[] = [];
+        const lines = text.split('\n');
+        for (const line of lines) {
+            const trimmed = line.trim();
+            // Match markdown bullets: "- [ ] task name", "- task name", "1. task name"
+            const match = trimmed.match(/^[-*+]\s+(?:\[[\s_xX]\]\s+)?(.*)$/) || trimmed.match(/^\d+\.\s+(.*)$/);
+            if (match && match[1]) {
+                const taskName = match[1].trim();
+                if (taskName && taskName.length > 3 && !taskName.includes('|') && !taskName.includes('---')) {
+                    tasks.push({
+                        id: `agi_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                        name: taskName,
+                        description: '由 AGI 總經理分析專案需求生成',
+                        type: 'internal',
+                        assignee: 'GM 推薦',
+                        status: 'pending',
+                        cost: 0,
+                        depositPaid: 0,
+                        splitType: 'fixed',
+                        splitValue: 0,
+                        payoutStatus: 'pending'
+                    });
+                }
+            }
+        }
+        return tasks;
+    };
+
+    // Sequential Workflow Chain Analysis (Option B: consumes quota ONCE)
+    const triggerChainAnalysis = useCallback(async (taskPrompt: string) => {
+        // 1. Consume AI Quota first
+        const hasQuota = await consumeAiQuota();
+        if (!hasQuota) {
+            toast.error('AI 額度不足，無法執行工作流。');
+            return;
+        }
+
+        setWorkflowStatus('running');
+        setCurrentWorkflowStep(0);
+
+        // Sequence of advisors to consult
+        const chain: AdvisorId[] = ['cfo', 'clo', 'cso', 'gm'];
+        let accumulatedContext = `使用者交辦專案任務：「${taskPrompt}」\n\n`;
+        const tempDeliverables = { ...lastDeliverables };
+
+        try {
+            for (let i = 0; i < chain.length; i++) {
+                const advisorId = chain[i];
+                setCurrentWorkflowStep(i + 1); // 1: CFO, 2: CLO, 3: CSO, 4: GM
+
+                // Fetch response
+                const res = await fetch('/api/agi-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: accumulatedContext + `\n請針對上述交辦內容，以你的顧問角色進行深入的經營分析與給出行動建議。如果你是總經理 (GM)，請務必以列表形式 (例如 - 任務名稱) 拆解出具體的專案執行任務清單，方便使用者同步至任務看板。`,
+                        advisorId: advisorId,
+                        projectData: activeProject?.data || null,
+                        history: [], // Let's keep input context clean
+                        profMemory,
+                        projMemory
+                    })
+                });
+
+                if (!res.ok) {
+                    throw new Error(`API call failed for ${advisorId}`);
+                }
+
+                const data = await res.json();
+                
+                // Parse tasks if GM
+                let tasks: any[] = [];
+                if (advisorId === 'gm') {
+                    tasks = parseTasksFromMarkdown(data.content);
+                }
+
+                tempDeliverables[advisorId] = {
+                    content: data.content,
+                    tasks: tasks.length > 0 ? tasks : undefined
+                };
+
+                accumulatedContext += `\n[${advisorId.toUpperCase()} 顧問分析結果]\n${data.content}\n`;
+                
+                // Keep local updates reactive
+                setLastDeliverables({ ...tempDeliverables });
+
+                // Simulate typing / thinking delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            setWorkflowStatus('completed');
+            toast.success('AGI 辦公室已完成本項任務之連鎖會商分析！');
+        } catch (error) {
+            console.error("Chain analysis error:", error);
+            setWorkflowStatus('error');
+            toast.error('工作流會商中斷，請重試。');
+        }
+    }, [activeProject?.data, consumeAiQuota, lastDeliverables, profMemory, projMemory]);
+
+    // Save decision resolutions to project memory
+    const commitMeetingResolution = useCallback(async (content: string) => {
+        const projectId = activeProject?.id;
+        const userId = currentPersona?.id;
+        const teamId = currentTeamId;
+
+        if (!projectId || !userId || userId === 'guest') {
+            toast.warning('請先登入並選定專案以記錄決策。');
+            return false;
+        }
+
+        try {
+            const res = await saveProjectMemory(projectId, userId, content, teamId);
+            if (res) {
+                // Update local memory state
+                setProjMemory(prev => [res, ...prev]);
+                // Append system notification message
+                setMessages(prev => [...prev, {
+                    id: `sys_resol_${Date.now()}`,
+                    advisorId: 'system',
+                    content: `📋 已成功將本項會議決議記錄至專案歷史備忘錄中：「${content}」`,
+                    timestamp: new Date()
+                }]);
+                toast.success('會議決議已成功存入決策備忘錄！');
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.error('Failed to save meeting resolution:', e);
+            toast.error('儲存決議失敗，請稍後再試。');
+            return false;
+        }
+    }, [activeProject?.id, currentPersona?.id, currentTeamId]);
+
     const sendMessage = useCallback(async (content: string) => {
+        // 1. Consume AI Quota first (Option B)
+        const hasQuota = await consumeAiQuota();
+        if (!hasQuota) {
+            toast.error('AI 額度已用盡，請升級方案解鎖更多額度。');
+            return;
+        }
+
         const userMsg: AdvisorMessage = {
             id: `msg_${Date.now()}`,
             advisorId: 'user',
@@ -218,7 +404,7 @@ export function AgiProvider({ children }: { children: ReactNode }) {
                 if (targetAdvisors.length === 0) {
                     setMessages(prev => [...prev, {
                         id: `resp_sys_${Date.now()}`,
-                        advisorId: 'boss',
+                        advisorId: 'system',
                         content: '抱歉，您目前的權限等級無法諮詢該位顧問。',
                         timestamp: new Date(),
                     }]);
@@ -229,6 +415,7 @@ export function AgiProvider({ children }: { children: ReactNode }) {
                 // Prepare short history to send
                 const historyPayload = history.map(msg => ({
                     sender: msg.advisorId === 'user' ? 'user' : 'ai',
+                    advisorId: msg.advisorId,
                     content: msg.content
                 }));
 
@@ -277,7 +464,7 @@ export function AgiProvider({ children }: { children: ReactNode }) {
             }
         };
 
-    }, [activeAdvisor, activeProject?.data, allowedIds, profMemory, projMemory]);
+    }, [activeAdvisor, activeProject?.data, allowedIds, profMemory, projMemory, consumeAiQuota]);
 
     return (
         <AgiContext.Provider value={{
@@ -286,6 +473,9 @@ export function AgiProvider({ children }: { children: ReactNode }) {
             messages, activeAdvisor, setActiveAdvisor, sendMessage, isAdvisorTyping,
             onboardingItems, completedItems, markComplete,
             allowedIds,
+            workflowStatus, currentWorkflowStep, lastDeliverables,
+            triggerChainAnalysis, commitMeetingResolution, setMessages,
+            customNames, setCustomName
         }}>
             {children}
         </AgiContext.Provider>

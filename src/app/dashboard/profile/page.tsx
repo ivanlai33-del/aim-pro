@@ -10,7 +10,7 @@ import { trackEvent } from '@/lib/tracking';
 
 export default function ProfilePage() {
     const router = useRouter();
-    const { userTier } = useProject();
+    const { userTier, currentPersona, setPersona } = useProject();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [user, setUser] = useState<any>(null);
@@ -136,7 +136,7 @@ export default function ProfilePage() {
                 <div className="lg:col-span-7 space-y-8">
                     
                     {/* Account Info */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-8">
+                    <section className="bg-surface rounded-[24px] border border-border/60 dark:border-white/5 shadow-sm p-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-12 h-12 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600">
                                 <User className="w-6 h-6" />
@@ -174,11 +174,29 @@ export default function ProfilePage() {
                                     className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
                                 />
                             </div>
+
+                            <div className="pt-2">
+                                <label className="block text-[13px] font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <Crown className="w-4 h-4 text-muted-foreground" />
+                                    系統團隊身分 (模擬切換權限)
+                                </label>
+                                <select
+                                    value={['owner', 'admin', 'accountant', 'member'].includes(currentPersona?.role) ? currentPersona?.role : 'member'}
+                                    onChange={(e) => setPersona({ role: e.target.value as any })}
+                                    className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-[15px] focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
+                                >
+                                    <option value="owner">所有者 (Owner) - 解鎖全體顧問</option>
+                                    <option value="admin">管理員 (Admin) - 解鎖全體顧問</option>
+                                    <option value="accountant">財務 (Accountant) - 解鎖會計長、法務</option>
+                                    <option value="member">一般成員 (Member) - 解鎖總經理、業務</option>
+                                </select>
+                                <p className="text-[12px] text-muted-foreground mt-2 ml-1">切換後，可以回到 AGI 辦公室查看對應解鎖的顧問。</p>
+                            </div>
                         </div>
                     </section>
 
                     {/* Contact Info */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-8">
+                    <section className="bg-surface rounded-[24px] border border-border/60 dark:border-white/5 shadow-sm p-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
                                 <Building2 className="w-6 h-6" />
@@ -318,12 +336,12 @@ export default function ProfilePage() {
                     </section>
 
                     {/* Account Security */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-6">
+                    <section className="bg-surface rounded-[24px] border border-border/60 dark:border-white/5 shadow-sm p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <Shield className="w-5 h-5 text-emerald-500" />
                             <h2 className="text-lg font-bold text-foreground">帳號安全</h2>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-muted border border-border rounded-xl">
+                        <div className="flex items-center justify-between p-4 bg-muted border border-border dark:border-white/5 rounded-xl">
                             <div className="flex items-center gap-3">
                                 <Key className="w-5 h-5 text-muted-foreground" />
                                 <div>
@@ -350,7 +368,7 @@ export default function ProfilePage() {
                     </section>
 
                     {/* Features Status */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-6">
+                    <section className="bg-surface rounded-[24px] border border-border/60 dark:border-white/5 shadow-sm p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <CheckCircle2 className="w-5 h-5 text-indigo-500" />
                             <h2 className="text-lg font-bold text-foreground">解鎖功能</h2>
@@ -372,7 +390,7 @@ export default function ProfilePage() {
 // Helper for feature list
 function FeatureRow({ label, active }: { label: string, active: boolean }) {
     return (
-        <div className={`flex items-center justify-between p-3 rounded-xl border ${active ? 'bg-emerald-50/50 border-emerald-100' : 'bg-muted border-border opacity-60'}`}>
+        <div className={`flex items-center justify-between p-3 rounded-xl border ${active ? 'bg-emerald-50/50 border-emerald-100 dark:bg-emerald-950/10 dark:border-emerald-800/20' : 'bg-muted border-border dark:border-white/5 opacity-60'}`}>
             <div className="flex items-center gap-3">
                 {active ? (
                     <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">

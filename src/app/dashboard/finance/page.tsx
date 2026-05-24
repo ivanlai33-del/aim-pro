@@ -479,52 +479,52 @@ export default function FinancePage() {
 
             {/* Top Row: Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 dark:from-cyan-900/60 dark:via-cyan-800/60 dark:to-emerald-900/60 dark:border dark:border-cyan-500/30 rounded-2xl p-8 shadow-xl shadow-cyan-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-900/50 dark:to-indigo-900/50 dark:border dark:border-blue-500/20 rounded-2xl p-8 shadow-xl shadow-blue-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <ArrowUpRight className="w-24 h-24" />
                     </div>
                     <div className="relative z-10">
-                        <div className="flex items-center text-cyan-50 font-bold mb-3 text-base uppercase tracking-wider">
+                        <div className="flex items-center text-blue-50 font-bold mb-3 text-base uppercase tracking-wider">
                             <ArrowUpRight className="w-5 h-5 mr-1" />
-                            本期銷項 (Sales)
+                            本期收入 (銷項)
                         </div>
                         <div className="text-3xl font-black tracking-tight">NT$ {totalSales.toLocaleString()}</div>
-                        <div className="text-sm text-cyan-50/70 mt-3 font-medium">
-                            銷項稅額 (5%): <span className="font-black text-white">NT$ {outputTax.toLocaleString()}</span>
+                        <div className="text-sm text-blue-50/70 mt-3 font-medium">
+                            銷項營業稅 (5%): <span className="font-black text-white">NT$ {outputTax.toLocaleString()}</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-900/60 dark:to-teal-900/60 dark:border dark:border-emerald-500/30 rounded-2xl p-8 shadow-xl shadow-emerald-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-orange-500 to-amber-600 dark:from-orange-900/50 dark:to-amber-900/50 dark:border dark:border-orange-500/20 rounded-2xl p-8 shadow-xl shadow-orange-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <ArrowDownLeft className="w-24 h-24" />
                     </div>
                     <div className="relative z-10">
-                        <div className="flex items-center text-amber-100 font-bold mb-3 text-base uppercase tracking-wider">
+                        <div className="flex items-center text-orange-50 font-bold mb-3 text-base uppercase tracking-wider">
                             <ArrowDownLeft className="w-5 h-5 mr-1" />
-                            本期進項 (Expenses)
+                            各項支出 (進項)
                         </div>
                         <div className="text-3xl font-black tracking-tight">NT$ {totalPurchases.toLocaleString()}</div>
-                        <div className="text-sm text-amber-100/70 mt-3 font-medium">
+                        <div className="text-sm text-orange-50/70 mt-3 font-medium">
                             可扣抵稅額 (5%): <span className="font-black text-white">NT$ {inputTax.toLocaleString()}</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-violet-600 to-purple-700 dark:from-violet-900/60 dark:to-purple-900/60 dark:border dark:border-violet-500/30 rounded-2xl p-8 shadow-xl shadow-violet-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-rose-500 to-red-600 dark:from-rose-900/50 dark:to-red-900/50 dark:border dark:border-rose-500/20 rounded-2xl p-8 shadow-xl shadow-rose-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <Wallet className="w-24 h-24" />
                     </div>
                     <div className="relative z-10">
-                        <div className="flex items-center text-blue-100 font-bold mb-3 text-base uppercase tracking-wider">
+                        <div className="flex items-center text-rose-50 font-bold mb-3 text-base uppercase tracking-wider">
                             <Wallet className="w-5 h-5 mr-1" />
-                            應納稅額 (Payable)
+                            預估應納稅額
                         </div>
                         <div className="text-5xl font-black tracking-tighter">
                             NT$ {payableTax.toLocaleString()}
                         </div>
-                        <div className="text-[10px] text-blue-100/80 mt-3 font-black uppercase tracking-widest bg-surface/10 w-fit px-2 py-1 rounded">
-                            需於次月 15 日前繳納
+                        <div className="text-[10px] text-rose-100/80 mt-3 font-black uppercase tracking-widest bg-surface/10 w-fit px-2 py-1 rounded">
+                            需於次月 15 日前申報繳納
                         </div>
                     </div>
                 </div>

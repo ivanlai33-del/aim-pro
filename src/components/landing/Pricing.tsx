@@ -214,7 +214,6 @@ export default function Pricing() {
                 onClose={() => setModalOpen(false)}
                 planName={selectedPlan.name}
                 tierId={selectedPlan.id}
-                period={period}
             />
         </section>
     );

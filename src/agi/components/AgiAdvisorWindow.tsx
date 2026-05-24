@@ -1,9 +1,10 @@
 'use client';
 
 import { useAgi } from '../context/AgiContext';
-import { ShieldCheck, Users, CheckSquare, X, GripHorizontal, Minimize2 } from 'lucide-react';
+import { ShieldCheck, Users, CheckSquare, X, GripHorizontal, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRef, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import AgiHealthTab from '../tabs/AgiHealthTab';
 import AgiMeetingTab from '../tabs/AgiMeetingTab';
 import AgiOnboardingTab from '../tabs/AgiOnboardingTab';
@@ -17,6 +18,7 @@ const TABS: { id: AgiTab; label: string; icon: React.ReactNode }[] = [
 
 export default function AgiAdvisorWindow() {
     const { isOpen, closeWindow, activeTab, setActiveTab, healthReport, onboardingItems, completedItems } = useAgi();
+    const router = useRouter();
 
     // Draggable state
     const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -70,6 +72,16 @@ export default function AgiAdvisorWindow() {
             >
                 <GripHorizontal className="w-4 h-4 text-white/50" />
                 <span className="text-sm font-black text-white flex-1 tracking-wide">🏢 AGI 顧問室</span>
+                <button
+                    onClick={() => {
+                        router.push('/dashboard/agi-office');
+                        closeWindow();
+                    }}
+                    className="p-1.5 rounded-lg text-slate-900/60 hover:text-slate-900 hover:bg-black/5 transition-all mr-1"
+                    title="進入完整辦公室"
+                >
+                    <Maximize2 className="w-4 h-4" />
+                </button>
                 <button
                     onClick={closeWindow}
                     className="p-1.5 rounded-lg text-slate-900/60 hover:text-slate-900 hover:bg-black/5 transition-all"

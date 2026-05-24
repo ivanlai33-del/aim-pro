@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useProject, ExecutionTask, QuotationItem } from '@/context/ProjectContext';
+import { useAgi } from '@/agi/context/AgiContext';
 import {
     CheckCircle2,
     Clock,
@@ -23,7 +24,8 @@ import {
     Play,
     Pause,
     History,
-    Sparkles
+    Sparkles,
+    Building2
 } from 'lucide-react';
 import { cn, generateId } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -32,6 +34,7 @@ import ManualTimerModal from './ManualTimerModal';
 
 export default function ExecutionManager() {
     const { activeProject, updateProjectExecution, currentTeamRole } = useProject();
+    const { lastDeliverables } = useAgi();
 
     // RBAC Checks
     const canSeeRevenue = ['owner', 'admin', 'accountant', 'sales'].includes(currentTeamRole);
@@ -254,6 +257,28 @@ export default function ExecutionManager() {
         }
     };
 
+    const handleImportFromAgi = () => {
+        const gmTasks = lastDeliverables.gm?.tasks;
+        if (!gmTasks || gmTasks.length === 0) {
+            toast.warning('AGI 總經理目前尚無已拆解完成的任務。請先至「AGI 辦公室」發派任務進行會商分析！');
+            return;
+        }
+
+        const existingTasks = activeProject?.executionTasks || [];
+        const filteredNewTasks = gmTasks.filter(
+            nt => !existingTasks.some(et => et.name === nt.name)
+        );
+
+        if (filteredNewTasks.length === 0) {
+            toast.info('AGI 總經理規劃的所有任務皆已存在於執行清單中。');
+            return;
+        }
+
+        const updatedTasks = [...existingTasks, ...filteredNewTasks];
+        updateProjectExecution(activeProject.id, updatedTasks);
+        toast.success(`✅ 已自 AGI 辦公室導入 ${filteredNewTasks.length} 個執行任務！`);
+    };
+
     const handleDeleteTimeLog = (taskId: string, logId: string) => {
         const task = tasks.find(t => t.id === taskId);
         if (!task) return;
@@ -419,6 +444,13 @@ export default function ExecutionManager() {
                                     >
                                         <Plus className="w-6 h-6 mr-2" />
                                         手動新增
+                                    </button>
+                                    <button
+                                        onClick={handleImportFromAgi}
+                                        className="bg-indigo-50 border-2 border-indigo-500 text-indigo-600 px-6 py-5 rounded-2xl hover:bg-indigo-100/50 transition-all font-black text-[17px] flex items-center shadow-md active:scale-95 h-[67px] dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-500/40"
+                                    >
+                                        <Building2 className="w-5 h-5 mr-2" />
+                                        AGI 辦公室導入
                                     </button>
                                     <button
                                         onClick={() => {
