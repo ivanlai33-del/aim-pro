@@ -101,7 +101,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
 
     return (
         <div className={cn(
-            "bg-surface dark:bg-[#1E293B]/60 dark:backdrop-blur-xl p-8 rounded-[24px] border border-border dark:border-transparent shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] dark:hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] transition-all duration-500",
+            "bg-surface dark:bg-[#1E293B]/60 dark:backdrop-blur-xl p-8 rounded-[24px] border border-border dark:border-0 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-none dark:hover:shadow-none transition-all duration-500",
             colSpan,
             className
         )}>
@@ -154,7 +154,7 @@ function OptionButton({
                 "flex flex-col items-start justify-start px-4 py-3 rounded-2xl border transition-all min-h-[160px] text-left group active:scale-95 relative overflow-hidden",
                 isActive
                     ? `border-transparent ${activeBg} text-white shadow-xl shadow-primary/30 ring-2 ring-primary/20 ring-offset-2`
-                    : 'border-border bg-surface text-muted-foreground hover:border-primary/40 hover:bg-surface-hover hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+                    : 'border border-border dark:border-0 bg-surface dark:bg-surface/50 text-muted-foreground hover:bg-surface-hover hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
                 className
             )}
         >
@@ -529,7 +529,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
             {/* 📎 文件解析器 */}
             <FormCard
                 title="文件解析器 (Document Analyzer)"
-                className="col-span-12 bg-gradient-to-br from-indigo-50/40 via-surface to-blue-50/40 dark:from-transparent dark:via-transparent dark:to-transparent dark:bg-[#1E293B]/60 dark:backdrop-blur-xl border-indigo-100/50 dark:border-transparent dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+                className="col-span-12 bg-gradient-to-br from-indigo-50/40 via-surface to-blue-50/40 dark:from-transparent dark:via-transparent dark:to-transparent dark:bg-[#1E293B]/60 dark:backdrop-blur-xl border-indigo-100/50 dark:border-0 dark:shadow-none"
                 icon={FileSearch}
             >
                 {/* Header Controls */}
@@ -565,7 +565,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
                         {/* Upload / Paste Area */}
                         <div
-                            className="border-2 border-dashed border-input dark:border-transparent dark:bg-[#0F172A]/30 rounded-2xl p-6 text-center hover:border-primary/40 dark:hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer group dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] dark:hover:shadow-[inset_0_0_20px_rgba(129,140,248,0.15),inset_0_0_0_1px_rgba(129,140,248,0.3)]"
+                            className="border-2 border-dashed border-input dark:border-0 dark:bg-slate-800/80 rounded-2xl p-6 text-center hover:bg-primary/5 dark:hover:bg-slate-700/80 transition-all cursor-pointer group dark:shadow-none dark:hover:shadow-none"
                             onClick={() => fileInputRef.current?.click()}
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}
@@ -743,7 +743,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                     }
 
                     {Object.values(INDUSTRY_CATEGORIES).flatMap(cat => cat.items).filter(m => checkAccess(m.id)).length === 0 && (
-                        <div className="w-full p-8 border-2 border-dashed border-input dark:border-transparent dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] dark:bg-[#0F172A]/30 rounded-2xl text-center bg-input">
+                        <div className="w-full p-8 border-2 border-dashed border-input dark:border-0 dark:shadow-none dark:bg-slate-800/80 rounded-2xl text-center bg-input">
                             <p className="text-muted-foreground font-bold">尚未訂閱任何模組</p>
                             <a href="/dashboard/settings" className="text-primary text-sm underline mt-2 block font-bold">
                                 前往系統設定啟動功能
