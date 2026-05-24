@@ -1,125 +1,24 @@
-'use client';
+const fs = require('fs');
+const path = './src/app/dashboard/profile/page.tsx';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
-import { User, Mail, Building2, Phone, MapPin, LogOut, Shield, Key, Crown, CheckCircle2, Lock, Calendar, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import { useProject } from '@/context/ProjectContext';
-import { trackEvent } from '@/lib/tracking';
+let content = fs.readFileSync(path, 'utf-8');
 
-export default function ProfilePage() {
-    const router = useRouter();
-    const { userTier } = useProject();
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [user, setUser] = useState<any>(null);
-    const [subscription, setSubscription] = useState<any>(null);
-    const [profile, setProfile] = useState({
-        email: '',
-        full_name: '',
-        company: '',
-        phone: '',
-        address: ''
-    });
+// Find the start of the return statement
+const returnIndex = content.indexOf('return (');
+if (returnIndex === -1) {
+    console.error('Could not find return statement');
+    process.exit(1);
+}
 
-    useEffect(() => {
-        loadUserProfile();
-        trackEvent('VIEW_SETTINGS', { source: 'personal_settings' });
-    }, []);
+const beforeReturn = content.substring(0, returnIndex);
 
-    async function loadUserProfile() {
-        try {
-            const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-
-            if (authError || !authUser) {
-                router.push('/login');
-                return;
-            }
-
-            setUser(authUser);
-            setProfile({
-                email: authUser.email || '',
-                full_name: authUser.user_metadata?.full_name || '',
-                company: authUser.user_metadata?.company || '',
-                phone: authUser.user_metadata?.phone || '',
-                address: authUser.user_metadata?.address || ''
-            });
-
-            try {
-                const { data: subData, error: subError } = await supabase
-                    .from('subscriptions')
-                    .select('*')
-                    .eq('user_id', authUser.id)
-                    .single();
-
-                if (!subError && subData) {
-                    setSubscription(subData);
-                } else if (subError && subError.code !== 'PGRST116') {
-                    console.debug('Subscription table notice:', subError.message);
-                }
-            } catch (e) {
-                console.debug('Subscription table not ready');
-            }
-        } catch (error) {
-            console.error('Error loading profile:', error);
-            toast.error('載入個人資料失敗');
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function handleSave() {
-        setSaving(true);
-        try {
-            const { error } = await supabase.auth.updateUser({
-                data: {
-                    full_name: profile.full_name,
-                    company: profile.company,
-                    phone: profile.phone,
-                    address: profile.address
-                }
-            });
-
-            if (error) throw error;
-            toast.success('個人資料已更新');
-        } catch (error: any) {
-            console.error('Error updating profile:', error);
-            toast.error('更新失敗: ' + error.message);
-        } finally {
-            setSaving(false);
-        }
-    }
-
-    async function handleLogout() {
-        try {
-            await supabase.auth.signOut();
-            router.push('/login');
-            toast.success('已登出');
-        } catch (error) {
-            console.error('Error logging out:', error);
-            toast.error('登出失敗');
-        }
-    }
-
-    if (loading) {
-        return (
-            <div className="container mx-auto p-6 max-w-4xl">
-                <div className="text-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">載入中...</p>
-                </div>
-            </div>
-        );
-    }
-
-    return (
+const newJSX = `return (
         <div className="container mx-auto p-6 max-w-6xl animate-in fade-in pb-24">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">個人設定</h1>
-                    <p className="text-muted-foreground">Personal Settings</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">個人設定</h1>
+                    <p className="text-slate-500">Personal Settings</p>
                 </div>
                 <button
                     onClick={handleLogout}
@@ -136,30 +35,30 @@ export default function ProfilePage() {
                 <div className="lg:col-span-7 space-y-8">
                     
                     {/* Account Info */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-8">
+                    <section className="bg-white rounded-[24px] border border-slate-200/60 shadow-sm p-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-12 h-12 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600">
                                 <User className="w-6 h-6" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-foreground">帳號資訊</h2>
-                                <p className="text-sm text-muted-foreground">管理您的基本登入資訊</p>
+                                <h2 className="text-xl font-bold text-slate-800">帳號資訊</h2>
+                                <p className="text-sm text-slate-500">管理您的基本登入資訊</p>
                             </div>
                         </div>
                         
                         <div className="space-y-5">
                             <div>
                                 <label className="block text-[13px] font-bold text-slate-700 mb-2 flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-muted-foreground" />
+                                    <Mail className="w-4 h-4 text-slate-400" />
                                     電子郵件 (Email)
                                 </label>
                                 <input
                                     type="email"
                                     value={profile.email}
                                     disabled
-                                    className="w-full px-4 py-3 border border-border rounded-xl bg-muted/50 text-muted-foreground cursor-not-allowed text-[15px]"
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-500 cursor-not-allowed text-[15px]"
                                 />
-                                <p className="text-[12px] text-muted-foreground mt-2 ml-1">作為帳號唯一識別，無法修改</p>
+                                <p className="text-[12px] text-slate-400 mt-2 ml-1">作為帳號唯一識別，無法修改</p>
                             </div>
 
                             <div>
@@ -171,28 +70,28 @@ export default function ProfilePage() {
                                     value={profile.full_name}
                                     onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
                                     placeholder="您的真實姓名或暱稱"
-                                    className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
+                                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
                                 />
                             </div>
                         </div>
                     </section>
 
                     {/* Contact Info */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-8">
+                    <section className="bg-white rounded-[24px] border border-slate-200/60 shadow-sm p-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
                                 <Building2 className="w-6 h-6" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-foreground">聯絡與發票資訊</h2>
-                                <p className="text-sm text-muted-foreground">用於自動帶入報價單與合約</p>
+                                <h2 className="text-xl font-bold text-slate-800">聯絡與發票資訊</h2>
+                                <p className="text-sm text-slate-500">用於自動帶入報價單與合約</p>
                             </div>
                         </div>
 
                         <div className="space-y-5">
                             <div>
                                 <label className="block text-[13px] font-bold text-slate-700 mb-2 flex items-center gap-2">
-                                    <Building2 className="w-4 h-4 text-muted-foreground" />
+                                    <Building2 className="w-4 h-4 text-slate-400" />
                                     公司名稱
                                 </label>
                                 <input
@@ -200,14 +99,14 @@ export default function ProfilePage() {
                                     value={profile.company}
                                     onChange={(e) => setProfile({ ...profile, company: e.target.value })}
                                     placeholder="填寫公司名稱，若無可留白"
-                                    className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
+                                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
                                     <label className="block text-[13px] font-bold text-slate-700 mb-2 flex items-center gap-2">
-                                        <Phone className="w-4 h-4 text-muted-foreground" />
+                                        <Phone className="w-4 h-4 text-slate-400" />
                                         聯絡電話
                                     </label>
                                     <input
@@ -215,13 +114,13 @@ export default function ProfilePage() {
                                         value={profile.phone}
                                         onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                                         placeholder="0912-345-678"
-                                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
                                     />
                                 </div>
 
                                 <div>
                                     <label className="block text-[13px] font-bold text-slate-700 mb-2 flex items-center gap-2">
-                                        <MapPin className="w-4 h-4 text-muted-foreground" />
+                                        <MapPin className="w-4 h-4 text-slate-400" />
                                         聯絡地址
                                     </label>
                                     <input
@@ -229,7 +128,7 @@ export default function ProfilePage() {
                                         value={profile.address}
                                         onChange={(e) => setProfile({ ...profile, address: e.target.value })}
                                         placeholder="發票或聯絡地址"
-                                        className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-[15px] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-400 transition-all"
                                     />
                                 </div>
                             </div>
@@ -259,25 +158,25 @@ export default function ProfilePage() {
                 <div className="lg:col-span-5 space-y-6">
                     
                     {/* Premium Subscription Card */}
-                    <section className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 rounded-[24px] border border-white/20 shadow-2xl shadow-cyan-500/25 p-8 relative overflow-hidden text-white">
+                    <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-[24px] border border-white/10 shadow-2xl p-8 relative overflow-hidden text-white">
                         {/* Decorative background flair */}
-                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-surface/20 blur-3xl rounded-full pointer-events-none"></div>
-                        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-300/20 blur-3xl rounded-full pointer-events-none"></div>
+                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-cyan-500/20 blur-3xl rounded-full pointer-events-none"></div>
+                        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/20 blur-3xl rounded-full pointer-events-none"></div>
                         
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
-                                    <Crown className="w-8 h-8 text-white drop-shadow-md" />
-                                    <span className="text-xl font-bold tracking-wider drop-shadow-md">AIM PRO</span>
+                                    <Crown className="w-8 h-8 text-cyan-400" />
+                                    <span className="text-xl font-bold tracking-wider">AIM PRO</span>
                                 </div>
-                                <span className="text-[11px] font-black tracking-widest text-cyan-50 uppercase border border-white/40 bg-surface/10 px-2 py-1 rounded-md backdrop-blur-sm">
+                                <span className="text-[11px] font-black tracking-widest text-slate-400 uppercase border border-slate-600 px-2 py-1 rounded-md">
                                     Subscription
                                 </span>
                             </div>
 
                             <div className="mb-8">
-                                <p className="text-cyan-50 text-sm mb-1 font-medium">當前訂閱方案</p>
-                                <p className="text-4xl font-black text-white drop-shadow-lg">
+                                <p className="text-slate-400 text-sm mb-1">當前訂閱方案</p>
+                                <p className="text-4xl font-black bg-gradient-to-r from-cyan-300 via-white to-purple-200 bg-clip-text text-transparent">
                                     {
                                         userTier === 'starter' ? 'Starter' :
                                         userTier === 'professional' ? 'Professional' :
@@ -290,23 +189,23 @@ export default function ProfilePage() {
                             {userTier === 'free' ? (
                                 <button
                                     onClick={() => toast.info('升級功能即將推出')}
-                                    className="w-full py-4 bg-surface text-foreground rounded-xl font-bold hover:bg-slate-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95"
+                                    className="w-full py-4 bg-white text-slate-900 rounded-xl font-bold hover:bg-slate-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95"
                                 >
                                     解鎖專業版功能
                                 </button>
                             ) : (
-                                <div className="space-y-3 bg-surface/20 p-4 rounded-xl backdrop-blur-md border border-white/30 shadow-inner">
+                                <div className="space-y-3 bg-white/5 p-4 rounded-xl backdrop-blur-sm border border-white/10">
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-white flex items-center gap-2"><Calendar className="w-4 h-4"/> 狀態</span>
-                                        <span className="font-bold text-white drop-shadow-md">
+                                        <span className="text-slate-300 flex items-center gap-2"><Calendar className="w-4 h-4"/> 狀態</span>
+                                        <span className="font-bold text-emerald-400">
                                             {subscription?.status === 'active' ? '✅ 啟用中' :
                                              subscription?.status === 'trial' ? '🎯 試用期' :
                                              subscription?.status === 'expired' ? '⚠️ 已過期' : 'Pro (團隊授權)'}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-white flex items-center gap-2"><AlertCircle className="w-4 h-4"/> 到期日</span>
-                                        <span className="font-bold text-white drop-shadow-md">
+                                        <span className="text-slate-300 flex items-center gap-2"><AlertCircle className="w-4 h-4"/> 到期日</span>
+                                        <span className="font-medium text-white">
                                             {subscription?.trial_end_date
                                                 ? new Date(subscription?.trial_end_date).toLocaleDateString('zh-TW')
                                                 : '無期限'}
@@ -318,24 +217,24 @@ export default function ProfilePage() {
                     </section>
 
                     {/* Account Security */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-6">
+                    <section className="bg-white rounded-[24px] border border-slate-200/60 shadow-sm p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <Shield className="w-5 h-5 text-emerald-500" />
-                            <h2 className="text-lg font-bold text-foreground">帳號安全</h2>
+                            <h2 className="text-lg font-bold text-slate-800">帳號安全</h2>
                         </div>
-                        <div className="flex items-center justify-between p-4 bg-muted border border-border rounded-xl">
+                        <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
                             <div className="flex items-center gap-3">
-                                <Key className="w-5 h-5 text-muted-foreground" />
+                                <Key className="w-5 h-5 text-slate-400" />
                                 <div>
                                     <p className="text-sm font-bold text-slate-700">密碼設定</p>
-                                    <p className="text-[12px] text-muted-foreground">重設您的登入密碼</p>
+                                    <p className="text-[12px] text-slate-500">重設您的登入密碼</p>
                                 </div>
                             </div>
                             <button
                                 onClick={async () => {
                                     try {
                                         await supabase.auth.resetPasswordForEmail(profile.email, {
-                                            redirectTo: `${window.location.origin}/reset-password`
+                                            redirectTo: \`\${window.location.origin}/reset-password\`
                                         });
                                         toast.success('密碼重設信已發送至您的 Email');
                                     } catch (error) {
@@ -350,10 +249,10 @@ export default function ProfilePage() {
                     </section>
 
                     {/* Features Status */}
-                    <section className="bg-surface rounded-[24px] border border-border/60 shadow-sm p-6">
+                    <section className="bg-white rounded-[24px] border border-slate-200/60 shadow-sm p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <CheckCircle2 className="w-5 h-5 text-indigo-500" />
-                            <h2 className="text-lg font-bold text-foreground">解鎖功能</h2>
+                            <h2 className="text-lg font-bold text-slate-800">解鎖功能</h2>
                         </div>
                         <div className="space-y-2">
                             <FeatureRow label="專案設定與 AI 分析" active={true} />
@@ -372,7 +271,7 @@ export default function ProfilePage() {
 // Helper for feature list
 function FeatureRow({ label, active }: { label: string, active: boolean }) {
     return (
-        <div className={`flex items-center justify-between p-3 rounded-xl border ${active ? 'bg-emerald-50/50 border-emerald-100' : 'bg-muted border-border opacity-60'}`}>
+        <div className={\`flex items-center justify-between p-3 rounded-xl border \${active ? 'bg-emerald-50/50 border-emerald-100' : 'bg-slate-50 border-slate-100 opacity-60'}\`}>
             <div className="flex items-center gap-3">
                 {active ? (
                     <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -380,12 +279,16 @@ function FeatureRow({ label, active }: { label: string, active: boolean }) {
                     </div>
                 ) : (
                     <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
-                        <Lock className="w-3 h-3 text-muted-foreground" />
+                        <Lock className="w-3 h-3 text-slate-500" />
                     </div>
                 )}
-                <span className={`text-sm font-medium ${active ? 'text-slate-700' : 'text-muted-foreground'}`}>{label}</span>
+                <span className={\`text-sm font-medium \${active ? 'text-slate-700' : 'text-slate-500'}\`}>{label}</span>
             </div>
             {!active && <span className="text-[10px] font-black bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">PRO</span>}
         </div>
     );
 }
+`;
+
+fs.writeFileSync(path, beforeReturn + newJSX, 'utf-8');
+console.log('Profile page UI rewritten successfully.');

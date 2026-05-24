@@ -101,7 +101,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
 
     return (
         <div className={cn(
-            "bg-white p-8 rounded-[24px] border border-slate-200/60 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] transition-all duration-500",
+            "bg-surface p-8 rounded-[24px] border border-border shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-none transition-all duration-500",
             colSpan,
             className
         )}>
@@ -109,7 +109,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
                 <div className="mb-6 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         {Icon && <Icon className="w-10 h-10 text-indigo-600 flex-shrink-0" />}
-                        <h3 className={cn("text-[27px] font-bold text-slate-800 tracking-tight flex items-baseline flex-wrap gap-x-2", titleClassName)}>
+                        <h3 className={cn("text-[27px] font-bold text-foreground tracking-tight flex items-baseline flex-wrap gap-x-2", titleClassName)}>
                             <span>{mainTitle}</span>
                             {subTitle && (
                                 <span className="text-[15px] text-slate-400 font-normal">({subTitle})</span>
@@ -154,7 +154,7 @@ function OptionButton({
                 "flex flex-col items-start justify-start px-4 py-3 rounded-2xl border transition-all min-h-[160px] text-left group active:scale-95 relative overflow-hidden",
                 isActive
                     ? `border-transparent ${activeBg} text-white shadow-xl shadow-primary/30 ring-2 ring-primary/20 ring-offset-2`
-                    : 'border-slate-200 bg-white text-slate-500 hover:border-primary/40 hover:bg-slate-50 hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+                    : 'border-border bg-surface text-muted-foreground hover:border-primary/40 hover:bg-surface-hover hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
                 className
             )}
         >
@@ -163,7 +163,7 @@ function OptionButton({
             {subText && (
                 <span className={cn(
                     "text-[16px] font-medium mt-1 block tracking-tight",
-                    isActive ? "text-white/70" : "text-slate-400"
+                    isActive ? "text-white/70" : "text-muted-foreground"
                 )}>
                     {subText}
                 </span>
@@ -176,9 +176,9 @@ function OptionButton({
                         "flex items-center text-[14.5px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md border shadow-sm",
                         isActive
                             ? "bg-white/20 text-yellow-300 border-white/20"
-                            : "bg-slate-100 text-slate-400 border-black/10"
+                            : "bg-muted text-muted-foreground border-border"
                     )}>
-                        <CheckCircle2 className={cn("w-[18px] h-[18px] mr-1.5", isActive ? "text-yellow-300 fill-yellow-300/20" : "text-slate-400")} />
+                        <CheckCircle2 className={cn("w-[18px] h-[18px] mr-1.5", isActive ? "text-yellow-300 fill-yellow-300/20" : "text-muted-foreground")} />
                         已啟用
                     </div>
                 </div>
@@ -551,7 +551,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                         {/* Supported Formats */}
                         <div className="flex flex-wrap gap-2">
                             {SUPPORTED_TYPES.map(t => (
-                                <span key={t.ext} className="text-[11px] font-bold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-full border border-slate-200">
+                                <span key={t.ext} className="text-[11px] font-bold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-full border border-input">
                                     {t.ext} {t.label}
                                 </span>
                             ))}
@@ -565,7 +565,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
                         {/* Upload / Paste Area */}
                         <div
-                            className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
+                            className="border-2 border-dashed border-input rounded-2xl p-6 text-center hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
                             onClick={() => fileInputRef.current?.click()}
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}
@@ -585,11 +585,11 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 </div>
                             ) : (
                                 <>
-                                    <Upload size={28} className="mx-auto mb-2 text-slate-300 group-hover:text-primary transition-colors" />
+                                    <Upload size={28} className="mx-auto mb-2 text-muted-foreground group-hover:text-primary transition-colors" />
                                     <p className="text-[15px] text-slate-400 group-hover:text-primary transition-colors">
                                         拖曳文件至此，或<span className="text-primary font-semibold underline underline-offset-2 mx-1">點擊選擇檔案</span>
                                     </p>
-                                    <p className="text-[12px] text-slate-300 mt-1">支援 .txt .md .csv .json .html .xml</p>
+                                    <p className="text-[12px] text-muted-foreground mt-1">支援 .txt .md .csv .json .html .xml</p>
                                 </>
                             )}
                         </div>
@@ -611,7 +611,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         value={pasteText}
                                         onChange={e => setPasteText(e.target.value)}
                                         placeholder="貼上任何文字：標案規格書、客戶 RFP、合約條文、會議記錄、Email 內容..."
-                                        className="w-full p-4 border border-slate-200 rounded-2xl text-[15px] text-slate-700 placeholder:text-slate-300 bg-slate-50 focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none resize-none"
+                                        className="w-full p-4 border border-input rounded-2xl text-[15px] text-slate-700 placeholder:text-muted-foreground bg-input focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none resize-none"
                                     />
                                     <div className="flex gap-2">
                                         <button type="button" onClick={handlePasteDoc}
@@ -636,7 +636,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                             <p className="text-[11px] text-slate-400">{doc.type} · {doc.size} · 解析於 {doc.parsedAt} · {doc.content.length} 字元已擷取</p>
                                         </div>
                                         <button type="button" onClick={() => removeDoc(doc.id)}
-                                            className="text-slate-300 hover:text-red-400 transition-colors shrink-0">
+                                            className="text-muted-foreground hover:text-red-400 transition-colors shrink-0">
                                             <X size={16} />
                                         </button>
                                     </div>
@@ -688,14 +688,14 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 return (
                                     <div
                                         key={module.id}
-                                        className="relative flex flex-col items-start justify-start px-4 py-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 text-slate-400 min-h-[200px] cursor-not-allowed grayscale opacity-70 hover:opacity-90 transition-all group"
+                                        className="relative flex flex-col items-start justify-start px-4 py-3 rounded-2xl border border-dashed border-slate-300 bg-input text-slate-400 min-h-[200px] cursor-not-allowed grayscale opacity-70 hover:opacity-90 transition-all group"
                                         title={`升級方案以解鎖「${module.name}」`}
                                         onClick={() => toast.info(`「${module.name}」需升級至更高方案才能解鎖`, {
                                             description: '前往「系統方案」升級以解鎖所有行業模組',
                                             action: { label: '前往升級', onClick: () => window.location.href = '/dashboard/settings' }
                                         })}
                                     >
-                                        <div className="mb-2 text-slate-300">
+                                        <div className="mb-2 text-muted-foreground">
                                             <ModIcon className="w-8 h-8" />
                                         </div>
                                         <span className="text-[20px] font-bold leading-tight block text-slate-400">
@@ -743,7 +743,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                     }
 
                     {Object.values(INDUSTRY_CATEGORIES).flatMap(cat => cat.items).filter(m => checkAccess(m.id)).length === 0 && (
-                        <div className="w-full p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center bg-slate-50/80">
+                        <div className="w-full p-8 border-2 border-dashed border-input rounded-2xl text-center bg-input">
                             <p className="text-slate-500 font-bold">尚未訂閱任何模組</p>
                             <a href="/dashboard/settings" className="text-primary text-sm underline mt-2 block font-bold">
                                 前往系統設定啟動功能
@@ -799,7 +799,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                     rows={4}
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                    className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                     placeholder={formConfig?.descriptionPlaceholder || "請描述專案核心需求..."}
                 />
             </FormCard>
@@ -822,7 +822,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         // @ts-ignore
                                         value={formData[field.name as keyof ProjectData] || ''}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                                        className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                                         placeholder={field.placeholder}
                                     />
                                 ) : (
@@ -858,7 +858,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             rows={3}
                             value={formData.styleReferences}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                            className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                             placeholder={formConfig?.stylePlaceholder || "例如：現代極簡、品牌風格..."}
                         />
                     </div>
@@ -884,7 +884,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                             // @ts-ignore
                                             value={formData[field.name as keyof ProjectData] || ''}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 pr-[45px] border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 bg-slate-50/80 hover:bg-white appearance-none"
+                                            className="w-full px-4 py-3 pr-[45px] border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 bg-input hover:bg-surface appearance-none"
                                             title={field.label}
                                             style={{
                                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -909,7 +909,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         // @ts-ignore
                                         value={formData[field.name as keyof ProjectData] || ''}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                                        className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                                         placeholder={field.placeholder}
                                     />
                                 )}
@@ -929,7 +929,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             rows={4}
                             value={formData.features}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                            className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                             placeholder={formConfig?.deliverablesPlaceholder || "製作項目與規格..."}
                         />
                     </div>
@@ -943,7 +943,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 name="budget"
                                 value={formData.budget}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                                className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                                 placeholder="例如：30萬 - 50萬 TWD"
                             />
                         </div>
@@ -958,7 +958,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 name="timeline"
                                 value={formData.timeline}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                                className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                                 placeholder={formConfig?.timelinePlaceholder || "例如：3個月內上線"}
                             />
                         </div>
@@ -984,7 +984,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 onBlur={() => {
                                     setTimeout(() => setShowSuggestions(false), 200);
                                 }}
-                                className="flex-1 px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                                className="flex-1 px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                                 placeholder="輸入名稱搜尋現有客戶..."
                                 autoComplete="off"
                             />
@@ -997,7 +997,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         toast.warning('請先輸入公司名稱');
                                     }
                                 }}
-                                className="px-6 py-3 bg-white text-slate-600 rounded-2xl hover:bg-slate-50 hover:text-primary hover:border-primary/50 text-sm whitespace-nowrap transition-all border border-slate-200 font-bold shadow-sm"
+                                className="px-6 py-3 bg-white text-slate-600 rounded-2xl hover:bg-input hover:text-primary hover:border-primary/50 text-sm whitespace-nowrap transition-all border border-input font-bold shadow-sm"
                                 title="查詢工商登記"
                             >
                                 🔍 查詢工商
@@ -1013,7 +1013,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientTaxId"
                             value={formData.clientTaxId || ''}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                            className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                             placeholder="例如：12345678"
                         />
                     </div>
@@ -1025,7 +1025,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientContact"
                             value={formData.clientContact || ''}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                            className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                             placeholder="例如：陳經理"
                         />
                     </div>
@@ -1037,7 +1037,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientPhone"
                             value={formData.clientPhone || ''}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                            className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                             placeholder="例如：0912-345-678"
                         />
                     </div>
@@ -1049,7 +1049,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientAddress"
                             value={formData.clientAddress || ''}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
+                            className="w-full px-4 py-3 border border-input rounded-2xl focus:ring-4 focus:ring-ring/20 focus:border-ring outline-none transition-all text-[16px] text-slate-800 placeholder:text-muted-foreground bg-input hover:bg-surface"
                             placeholder="例如：台北市信義區..."
                         />
                     </div>

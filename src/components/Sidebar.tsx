@@ -59,7 +59,7 @@ export default function Sidebar() {
                 <div className="flex items-center gap-2">
                     <button 
                         onClick={toggleSidebar}
-                        className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-slate-500 shadow-sm border border-transparent hover:border-border/50"
+                        className="p-2.5 hover:bg-surface-hover rounded-xl transition-colors text-muted-foreground shadow-sm border border-transparent hover:border-border/50"
                         title={sidebarCollapsed ? "展開側欄" : "縮合側欄"}
                     >
                         <Menu className="w-6 h-6" />
@@ -82,7 +82,7 @@ export default function Sidebar() {
                 <div className="px-5 pt-4">
                     <Link 
                         href="/dashboard"
-                        className="flex items-center gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-sm font-bold transition-all border border-slate-200 dark:border-slate-700"
+                        className="flex items-center gap-2 px-4 py-3 bg-muted hover:bg-surface-hover rounded-xl text-foreground text-sm font-bold transition-all border border-border"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         回到儀表板
@@ -164,7 +164,7 @@ export default function Sidebar() {
                                 sidebarCollapsed ? "h-[60px] w-[60px] justify-center mx-auto rounded-xl" : "px-5 h-[60px] rounded-xl",
                                 isOpen 
                                     ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
-                                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-[0.98]"
+                                    : "bg-muted text-muted-foreground hover:bg-surface-hover active:scale-[0.98]"
                             )}
                             title="AGI 顧問辦公室"
                         >
@@ -179,7 +179,7 @@ export default function Sidebar() {
                             {!sidebarCollapsed && (
                                 <span className={cn(
                                     "ml-4 text-[17px] font-semibold whitespace-nowrap flex-1 text-left",
-                                    isOpen ? "text-white" : "text-slate-600 dark:text-slate-300"
+                                    isOpen ? "text-white" : "text-foreground"
                                 )}>
                                     AGI 辦公室
                                 </span>
@@ -219,17 +219,17 @@ export default function Sidebar() {
                         )}
 
                         <div
-                            className="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group"
+                            className="bg-muted/50 rounded-xl p-3 cursor-pointer hover:bg-surface-hover transition-all group"
                             onClick={() => quotaPercent < 20 && setUpgradeModalOpen(true)}
                             title="AI 點數餘額"
                         >
                             <div className="flex justify-between items-center mb-1.5">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">⚡ AI 點數</span>
-                                <span className={`text-[11px] font-black ${quotaPercent < 20 ? 'text-red-500' : 'text-slate-500'}`}>
+                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">⚡ AI 點數</span>
+                                <span className={`text-[11px] font-black ${quotaPercent < 20 ? 'text-red-500' : 'text-muted-foreground'}`}>
                                     {aiQuota} / {maxQuota === -1 ? '無限' : maxQuota}
                                 </span>
                             </div>
-                            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+                            <div className="w-full bg-border rounded-full h-1.5">
                                 <div
                                     className={`${quotaColor} h-1.5 rounded-full transition-all duration-700`}
                                     style={{ width: `${quotaPercent}%` }}
@@ -268,14 +268,14 @@ export default function Sidebar() {
                     "flex items-center",
                     sidebarCollapsed ? "justify-center" : "px-2 justify-between"
                 )}>
-                    {!sidebarCollapsed && <span className="text-[15px] font-bold text-slate-800 dark:text-slate-200">Theme</span>}
+                    {!sidebarCollapsed && <span className="text-[15px] font-bold text-foreground">Theme</span>}
                     <ThemeSwitch isCollapsed={sidebarCollapsed} />
                 </div>
 
                 <Link 
                     href="/dashboard/profile"
                     className={cn(
-                        "flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-primary/30 group/profile",
+                        "flex items-center gap-3 bg-muted/50 p-2.5 rounded-xl border border-border transition-all hover:bg-surface-hover hover:border-primary/30 group/profile",
                         sidebarCollapsed ? "justify-center" : "px-3 py-2.5"
                     )}
                 >
@@ -288,7 +288,7 @@ export default function Sidebar() {
                                 <p className="text-[10px] font-black text-cyan-600 dark:text-cyan-400 uppercase tracking-tighter truncate leading-tight">
                                     {providerInfo?.name || '個人工作者'}
                                 </p>
-                                <p className="text-sm font-bold truncate text-slate-900 dark:text-white leading-tight mt-0.5">
+                                <p className="text-sm font-bold truncate text-foreground leading-tight mt-0.5">
                                     {currentPersona?.name || '使用者'}
                                 </p>
                                 <div className="flex items-center gap-1.5 mt-1">
@@ -332,7 +332,7 @@ function ThemeSwitch({ isCollapsed }: ThemeSwitchProps) {
             className={cn(
                 "flex items-center justify-center rounded-full transition-all duration-300 border border-slate-200 dark:border-slate-700",
                 "w-10 h-10",
-                "text-muted-foreground hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm"
+                "text-muted-foreground hover:bg-surface-hover shadow-sm"
             )}
             title={theme === 'dark' ? '切換至淺色模式' : '切換至深色模式'}
         >
@@ -367,7 +367,7 @@ function SidebarLink({ href, icon, label, isActive, isCollapsed, badge, activeCl
                 className={cn(
                     "group flex items-center transition-all duration-200 relative cursor-pointer",
                     isCollapsed ? "h-[60px] w-[60px] justify-center mx-auto rounded-xl" : "px-5 h-[60px] w-full rounded-xl",
-                    "text-[#262626]/40 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800/60 grayscale opacity-60"
+                    "text-muted-foreground/60 hover:bg-surface-hover grayscale opacity-60"
                 )}
             >
                 <div className="transition-transform scale-110">
@@ -379,7 +379,7 @@ function SidebarLink({ href, icon, label, isActive, isCollapsed, badge, activeCl
                         <span className="ml-4 text-[17px] font-semibold whitespace-nowrap flex-1 line-through">
                             {label}
                         </span>
-                        <Lock className="w-4 h-4 text-slate-400" />
+                        <Lock className="w-4 h-4 text-muted-foreground" />
                     </>
                 ) : (
                     <div className="absolute left-full ml-4 px-3 py-2 bg-foreground text-background text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none z-[100] shadow-xl transition-all translate-x-1 group-hover:translate-x-0">
@@ -398,7 +398,7 @@ function SidebarLink({ href, icon, label, isActive, isCollapsed, badge, activeCl
                 isCollapsed ? "h-[60px] w-[60px] justify-center mx-auto rounded-xl" : "px-5 h-[60px] w-full rounded-xl",
                 isActive
                     ? activeStyling
-                    : "text-[#262626] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                    : "text-foreground hover:bg-surface-hover"
             )}
         >
             <div className={cn(

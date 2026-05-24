@@ -23,12 +23,16 @@
         --background: #F4F7FB;
         --foreground: #2A3547;
         --surface: #FFFFFF;
+        --surface-hover: #F8FAFC;
         --primary: #5D87FF;
         --primary-foreground: #FFFFFF;
         --success: #13DEB9;
-        --border: rgba(0, 0, 0, 0.3);
+        --border: #E2E8F0;
+        --border-light: #F1F5F9;
         --muted: #F8FAFC;
         --muted-foreground: #5A6A85;
+        --input: #F8FAFC;
+        --ring: #5D87FF;
 
         --radius-xl: 12px;
         --radius-2xl: 16px;
@@ -36,15 +40,19 @@
 
     .dark {
         /* Dark Mode 深色模式 */
-        --background: #25293C;
-        --foreground: #EAEFF4;
-        --surface: #2F3349;
-        --primary: #7367F0;
+        --background: #0F172A;      /* Slate 900 for absolute bg */
+        --foreground: #F8FAFC;      /* Slate 50 for main text */
+        --surface: #1E293B;         /* Slate 800 for cards */
+        --surface-hover: #334155;   /* Slate 700 for hovers */
+        --primary: #818CF8;         /* Indigo 400 for primary actions */
         --primary-foreground: #FFFFFF;
-        --success: #13DEB9;
-        --border: #33394D;
-        --muted: #2F3349;
-        --muted-foreground: #7C8FAC;
+        --success: #10B981;         /* Emerald 500 */
+        --border: #334155;          /* Slate 700 for general borders */
+        --border-light: rgba(255, 255, 255, 0.05); /* Subtle borders for dark cards */
+        --muted: #0F172A;           /* Slate 900 (same as bg or darker) for input fields */
+        --muted-foreground: #94A3B8;/* Slate 400 for secondary text */
+        --input: #0F172A;           /* Darkest bg for inputs */
+        --ring: #818CF8;
     }
 }
 

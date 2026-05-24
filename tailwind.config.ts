@@ -13,16 +13,20 @@ const config: Config = {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
                 surface: "var(--surface)",
+                "surface-hover": "var(--surface-hover)",
                 primary: {
                     DEFAULT: "var(--primary)",
                     foreground: "var(--primary-foreground)",
                 },
                 success: "var(--success)",
                 border: "var(--border)",
+                "border-light": "var(--border-light)",
                 muted: {
                     DEFAULT: "var(--muted)",
                     foreground: "var(--muted-foreground)",
                 },
+                input: "var(--input)",
+                ring: "var(--ring)",
             },
             borderRadius: {
                 xl: "var(--radius-xl)",

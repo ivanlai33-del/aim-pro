@@ -128,8 +128,8 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         className={cn(
                             "group relative flex items-center min-w-[160px] max-w-[200px] h-12 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all select-none shrink-0 active:scale-[0.98]",
                             activeProjectId === project.id
-                                ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md z-10 border border-white/20"
-                                : "bg-white/60 text-slate-500 hover:bg-white hover:text-cyan-600 border border-black/5"
+                                ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md z-10 border border-white/20 dark:border-white/10"
+                                : "bg-surface/60 text-muted-foreground hover:bg-surface hover:text-cyan-600 border border-border/50"
                         )}
                     >
                         {getProjectIcon(project.data.projectType)}
@@ -183,7 +183,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         {currentInstruction ? (
                             <button
                                 onClick={handleOpenInstructions}
-                                className="flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200 transition-all shadow-sm active:scale-95 gap-1.5"
+                                className="flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 transition-all shadow-sm dark:shadow-none active:scale-95 gap-1.5"
                                 title="檢視/編輯專案專屬指令"
                             >
                                 <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
@@ -193,25 +193,25 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         ) : (
                             <button
                                 onClick={handleOpenInstructions}
-                                className="flex items-center px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-all active:scale-95 gap-1.5 border border-slate-200/60"
+                                className="flex items-center px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-all active:scale-95 gap-1.5 border border-border"
                                 title="新增專案專屬指令 (Custom Instructions)"
                             >
-                                <Edit3 className="w-3.5 h-3.5 text-slate-400" />
+                                <Edit3 className="w-3.5 h-3.5 text-muted-foreground" />
                                 <span>自訂指令</span>
                             </button>
                         )}
 
                         {/* Review / Edit Panel Popover */}
                         {showInstructionsPanel && (
-                            <div className="absolute top-full right-0 mt-3 w-[420px] bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] border border-slate-200/80 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                                <div className="p-4 bg-slate-50/80 border-b border-slate-200/80 flex justify-between items-center backdrop-blur-sm">
+                            <div className="absolute top-full right-0 mt-3 w-[420px] bg-surface rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1)] border border-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="p-4 bg-muted/50 border-b border-border flex justify-between items-center backdrop-blur-sm">
                                     <div className="flex items-center gap-2">
-                                        <Bot className="w-5 h-5 text-indigo-600" />
-                                        <span className="font-bold text-sm text-slate-800">專案專屬 AI 角色指令</span>
+                                        <Bot className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                                        <span className="font-bold text-sm text-foreground">專案專屬 AI 角色指令</span>
                                     </div>
                                     <button 
                                         onClick={() => setShowInstructionsPanel(false)}
-                                        className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/50 transition-colors"
+                                        className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-surface-hover transition-colors"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -247,14 +247,14 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                                         // Edit Mode
                                         <div className="space-y-4 animate-in fade-in duration-200">
                                             <div className="flex items-center justify-between">
-                                                <label className="text-xs font-bold text-slate-600">自訂指令內容 (Instructions)</label>
+                                                <label className="text-xs font-bold text-foreground">自訂指令內容 (Instructions)</label>
                                                 {currentInstruction && (
                                                     <button
                                                         onClick={() => {
                                                             setInstructionInput(currentInstruction);
                                                             setIsEditingInstructions(false);
                                                         }}
-                                                        className="text-[11px] text-indigo-600 hover:underline font-medium"
+                                                        className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
                                                     >
                                                         返回檢視 (Cancel)
                                                     </button>
@@ -265,7 +265,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                                                 value={instructionInput}
                                                 onChange={(e) => setInstructionInput(e.target.value)}
                                                 placeholder="請輸入給 AI 的專案專屬指示，例如：請以資深架構師的角度審查合約，並嚴格限制修改次數不超過 3 次..."
-                                                className="w-full h-[180px] p-3.5 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none resize-none leading-relaxed bg-slate-50/50 focus:bg-white transition-all font-sans"
+                                                className="w-full h-[180px] p-3.5 border border-input rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/20 focus:border-ring outline-none resize-none leading-relaxed bg-input focus:bg-surface transition-all font-sans"
                                             />
 
                                             <div className="flex justify-end gap-2 pt-2">
