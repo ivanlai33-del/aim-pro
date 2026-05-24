@@ -60,6 +60,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
             setIsEditingInstructions(false);
         }
         setShowInstructionsPanel(true);
+        setShowAddCategory(false);
     };
 
     const handleSaveInstructions = () => {
@@ -159,7 +160,10 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                 {/* Add Category Button (Only visible if active project) */}
                 {activeProjectId && (
                     <button
-                        onClick={() => setShowAddCategory(!showAddCategory)}
+                        onClick={() => {
+                            setShowAddCategory(!showAddCategory);
+                            setShowInstructionsPanel(false);
+                        }}
                         className={cn(
                             "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all",
                             showAddCategory
