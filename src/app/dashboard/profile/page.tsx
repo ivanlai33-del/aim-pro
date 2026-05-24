@@ -46,7 +46,6 @@ export default function ProfilePage() {
                 address: authUser.user_metadata?.address || ''
             });
 
-            // Fetch subscription data (Defensive check to avoid 406 if table missing)
             try {
                 const { data: subData, error: subError } = await supabase
                     .from('subscriptions')
@@ -57,12 +56,9 @@ export default function ProfilePage() {
                 if (!subError && subData) {
                     setSubscription(subData);
                 } else if (subError && subError.code !== 'PGRST116') {
-                    // PGRST116 is just "no rows", which is fine. 
-                    // We only log if it's something else, but we keep it quiet to avoid 406 noise.
                     console.debug('Subscription table notice:', subError.message);
                 }
             } catch (e) {
-                // Table might not exist yet
                 console.debug('Subscription table not ready');
             }
         } catch (error) {
@@ -108,6 +104,16 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
+            <div className="container mx-auto p-6 max-w-4xl">
+                <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">載入中...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
         <div className="container mx-auto p-6 max-w-6xl animate-in fade-in pb-24">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
