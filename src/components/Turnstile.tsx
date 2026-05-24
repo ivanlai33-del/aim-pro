@@ -18,6 +18,7 @@ declare global {
                     'expired-callback'?: () => void;
                     'error-callback'?: () => void;
                     theme?: 'light' | 'dark' | 'auto';
+                    appearance?: 'always' | 'execute' | 'interaction-only';
                 }
             ) => string;
             reset: (widgetId: string) => void;
@@ -41,7 +42,8 @@ export default function Turnstile({ onVerify, className }: TurnstileProps) {
                     callback: (token: string) => {
                         onVerify(token);
                     },
-                    theme: 'auto',
+                    theme: 'light',
+                    appearance: 'interaction-only',
                 });
             }
         };

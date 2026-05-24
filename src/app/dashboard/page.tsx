@@ -467,7 +467,7 @@ function Dashboard() {
                                             </div>
 
                                             <div className="flex items-center gap-4 w-full md:w-auto justify-end border-t md:border-t-0 pt-6 md:pt-0 border-black/20">
-                                                <div className="scale-[0.85] origin-right mr-2">
+                                                <div className="absolute top-0 right-0 z-[100]">
                                                     <Turnstile onVerify={(token) => setTurnstileToken(token)} />
                                                 </div>
 
