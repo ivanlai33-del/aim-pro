@@ -101,7 +101,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
 
     return (
         <div className={cn(
-            "bg-surface p-8 rounded-[24px] border border-border shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] dark:hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-500",
+            "bg-surface dark:bg-[#1E293B]/60 dark:backdrop-blur-xl p-8 rounded-[24px] border border-border dark:border-white/5 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] dark:hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] transition-all duration-500",
             colSpan,
             className
         )}>
@@ -529,7 +529,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
             {/* 📎 文件解析器 */}
             <FormCard
                 title="文件解析器 (Document Analyzer)"
-                className="col-span-12 bg-gradient-to-br from-indigo-50/40 via-surface to-blue-50/40 dark:from-transparent dark:via-transparent dark:to-transparent dark:bg-surface-hover/50 border-indigo-100/50 dark:border-white/10"
+                className="col-span-12 bg-gradient-to-br from-indigo-50/40 via-surface to-blue-50/40 dark:from-transparent dark:via-transparent dark:to-transparent dark:bg-[#1E293B]/60 dark:backdrop-blur-xl border-indigo-100/50 dark:border-white/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
                 icon={FileSearch}
             >
                 {/* Header Controls */}
@@ -565,7 +565,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
                         {/* Upload / Paste Area */}
                         <div
-                            className="border-2 border-dashed border-input dark:border-white/10 rounded-2xl p-6 text-center hover:border-primary/40 dark:hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer group dark:hover:shadow-[0_0_20px_rgba(129,140,248,0.15)]"
+                            className="border-2 border-dashed border-input dark:border-white/5 dark:bg-[#0F172A]/30 rounded-2xl p-6 text-center hover:border-primary/40 dark:hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer group dark:hover:shadow-[inset_0_0_20px_rgba(129,140,248,0.15)]"
                             onClick={() => fileInputRef.current?.click()}
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}
@@ -743,7 +743,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                     }
 
                     {Object.values(INDUSTRY_CATEGORIES).flatMap(cat => cat.items).filter(m => checkAccess(m.id)).length === 0 && (
-                        <div className="w-full p-8 border-2 border-dashed border-input dark:border-white/10 rounded-2xl text-center bg-input">
+                        <div className="w-full p-8 border-2 border-dashed border-input dark:border-white/5 dark:bg-[#0F172A]/30 rounded-2xl text-center bg-input">
                             <p className="text-muted-foreground font-bold">尚未訂閱任何模組</p>
                             <a href="/dashboard/settings" className="text-primary text-sm underline mt-2 block font-bold">
                                 前往系統設定啟動功能

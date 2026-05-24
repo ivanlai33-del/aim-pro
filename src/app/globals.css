@@ -47,8 +47,8 @@
         --primary: #818CF8;         /* Indigo 400 for primary actions */
         --primary-foreground: #FFFFFF;
         --success: #10B981;         /* Emerald 500 */
-        --border: rgba(255, 255, 255, 0.08); /* Ultra-subtle borders */
-        --border-light: rgba(255, 255, 255, 0.03); /* Subtle borders for dark cards */
+        --border: rgba(255, 255, 255, 0.03); /* Ultra-subtle borders */
+        --border-light: rgba(255, 255, 255, 0.02); /* Subtle borders for dark cards */
         --muted: #0F172A;           /* Slate 900 (same as bg or darker) for input fields */
         --muted-foreground: #94A3B8;/* Slate 400 for secondary text */
         --input: #0F172A;           /* Darkest bg for inputs */
