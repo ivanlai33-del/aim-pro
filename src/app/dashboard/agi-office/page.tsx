@@ -19,12 +19,14 @@ const ADVISORS = [
 ];
 
 export default function AgiOfficePage() {
-  const { activeProject, userTier } = useProject();
+  const { activeProject, userTier, aiQuota } = useProject();
   const { 
     messages, activeAdvisor, setActiveAdvisor, sendMessage, isAdvisorTyping,
     workflowStatus, triggerChainAnalysis, commitMeetingResolution, lastDeliverables,
     allowedIds, customNames, setCustomName
   } = useAgi();
+
+  const isQuotaExhausted = (aiQuota <= 0);
 
   const [inputMessage, setInputMessage] = useState('');
   const [meetingMode, setMeetingMode] = useState<'debate' | 'chain'>('debate');
