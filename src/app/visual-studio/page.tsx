@@ -153,7 +153,7 @@ export default function VisualStudioPage() {
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div className="ml-3">
-              <h1 className="text-base font-black tracking-tight text-white leading-none">Visual Studio</h1>
+              <h1 className="text-base font-black tracking-tight text-white leading-none">提案視覺化</h1>
               <p className="text-[9px] uppercase tracking-widest text-emerald-500/70 mt-1 font-bold">Open Design</p>
             </div>
           </div>

@@ -147,7 +147,7 @@ export default function Sidebar() {
                         <SidebarLink
                             href="/visual-studio"
                             icon={<Wand2 className="w-[18px] h-[18px] shrink-0" />}
-                            label="Visual Studio"
+                            label="提案視覺化"
                             isActive={pathname === '/visual-studio'}
                             isCollapsed={sidebarCollapsed}
                             badge="NEW"
