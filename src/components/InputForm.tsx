@@ -175,7 +175,7 @@ function OptionButton({
                     <div className={cn(
                         "flex items-center text-[14.5px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md border shadow-sm",
                         isActive
-                            ? "bg-white/20 text-yellow-300 border-white/20"
+                            ? "bg-surface/20 text-yellow-300 border-white/20"
                             : "bg-muted text-muted-foreground border-border"
                     )}>
                         <CheckCircle2 className={cn("w-[18px] h-[18px] mr-1.5", isActive ? "text-yellow-300 fill-yellow-300/20" : "text-muted-foreground")} />
@@ -997,7 +997,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         toast.warning('請先輸入公司名稱');
                                     }
                                 }}
-                                className="px-6 py-3 bg-white text-slate-600 rounded-2xl hover:bg-input hover:text-primary hover:border-primary/50 text-sm whitespace-nowrap transition-all border border-input font-bold shadow-sm"
+                                className="px-6 py-3 bg-surface text-slate-600 rounded-2xl hover:bg-input hover:text-primary hover:border-primary/50 text-sm whitespace-nowrap transition-all border border-input font-bold shadow-sm"
                                 title="查詢工商登記"
                             >
                                 🔍 查詢工商

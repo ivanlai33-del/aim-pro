@@ -312,7 +312,7 @@ function Dashboard() {
     return (
         <div className="flex flex-col h-full overflow-hidden bg-background">
             {/* Top Navigation Bar: Project Tabs with Global Controls */}
-            <div className="print:hidden h-[92px] flex items-center w-full border-b border-black/20">
+            <div className="print:hidden h-[92px] flex items-center w-full border-b border-border">
                 <ProjectTabs
                     onDeleteRequest={handleDeleteRequest}
                     onImport={handleImportClick}
@@ -353,7 +353,7 @@ function Dashboard() {
                             {/* Window Tabs */}
                             {/* Window Tabs & Project Info */}
                             {/* Window Tabs & Project Info */}
-                            <div className="w-full bg-white border-b border-slate-200/20 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] relative z-40 print:hidden">
+                            <div className="w-full bg-surface border-b border-border/20 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] relative z-40 print:hidden">
                                 <div className="px-4 shrink-0 flex items-center justify-center mt-2 py-4 w-full max-w-[1450px] mx-auto">
                                 {/* Tabs (Center) */}
                                 <nav className="flex space-x-2 w-full max-w-[1450px] justify-center whitespace-nowrap overflow-x-auto no-scrollbar" aria-label="Tabs">
@@ -427,23 +427,23 @@ function Dashboard() {
                         </div>
 
                             {/* Content Area */}
-                            <div className="flex-1 overflow-y-auto py-8 px-[50px] relative print:p-0 print:overflow-visible print:h-auto bg-[#f8fafc]">
+                            <div className="flex-1 overflow-y-auto py-8 px-[50px] relative print:p-0 print:overflow-visible print:h-auto bg-background">
                                 {activeTab === 'setup' && (
                                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1600px] mx-auto">
                                         {/* Project Header Block */}
-                                        <div className="bg-white p-8 rounded-[24px] border border-black/20 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                                        <div className="bg-surface p-8 rounded-[24px] border border-border shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
                                             <div className="flex flex-col gap-2 w-full md:w-auto">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600 shrink-0">
                                                         <Sliders className="w-7 h-7" />
                                                     </div>
                                                     <div className="flex flex-col flex-1">
-                                                        <label className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-1 px-1">專案名稱 (Project Name)</label>
+                                                        <label className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-1 px-1">專案名稱 (Project Name)</label>
                                                         <input
                                                             type="text"
                                                             value={activeProject.data.projectName || ''}
                                                             onChange={(e) => updateProjectData(activeProject.id, { projectName: e.target.value })}
-                                                            className="w-full md:w-[450px] px-0 py-0 border-none focus:ring-0 outline-none text-2xl font-black text-slate-800 placeholder:text-slate-300 bg-transparent"
+                                                            className="w-full md:w-[450px] px-0 py-0 border-none focus:ring-0 outline-none text-2xl font-black text-foreground placeholder:text-muted-foreground bg-transparent"
                                                             placeholder="輸入專案名稱..."
                                                         />
                                                     </div>
@@ -466,7 +466,7 @@ function Dashboard() {
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-4 w-full md:w-auto justify-end border-t md:border-t-0 pt-6 md:pt-0 border-black/20">
+                                            <div className="flex items-center gap-4 w-full md:w-auto justify-end border-t md:border-t-0 pt-6 md:pt-0 border-border">
                                                 <div className="absolute top-0 right-0 z-[100]">
                                                     <Turnstile onVerify={(token) => setTurnstileToken(token)} />
                                                 </div>
@@ -474,9 +474,9 @@ function Dashboard() {
                                                 <button
                                                     type="submit"
                                                     form="project-setup-form"
-                                                    className="inline-flex items-center px-8 py-4 border border-black/20 shadow-sm text-[16px] font-bold rounded-2xl text-slate-700 bg-white hover:bg-slate-50 hover:text-primary transition-all active:scale-95 whitespace-nowrap"
+                                                    className="inline-flex items-center px-8 py-4 border border-border shadow-sm text-[16px] font-bold rounded-2xl text-foreground bg-surface hover:bg-surface-hover hover:text-primary transition-all active:scale-95 whitespace-nowrap"
                                                 >
-                                                    <Save className="-ml-1 mr-2 h-6 w-6 text-slate-400" />
+                                                    <Save className="-ml-1 mr-2 h-6 w-6 text-muted-foreground" />
                                                     儲存設定環境
                                                 </button>
                                                 
@@ -623,17 +623,17 @@ function TabButton({ isActive, onClick, icon, label, isLocked, activeClass }: { 
                 "group flex-1 flex justify-center items-center px-4 lg:px-6 py-4 lg:py-[18px] rounded-xl font-black text-sm lg:text-[15px] transition-all outline-none select-none relative whitespace-nowrap backdrop-blur-sm min-w-[120px]",
                 isActive
                     ? activeStyling
-                    : "text-slate-600 hover:bg-white/80 dark:text-slate-400 dark:hover:bg-slate-800 border border-slate-100/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 active:scale-95"
+                    : "text-foreground hover:bg-surface/80 dark:text-muted-foreground dark:hover:bg-slate-800 border border-border/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 active:scale-95"
             )}
         >
-            <span className={cn("transition-colors flex items-center shrink-0", isActive ? "text-white" : "text-slate-500 group-hover:text-primary")}>
+            <span className={cn("transition-colors flex items-center shrink-0", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary")}>
                 {icon}
             </span>
             <span className="ml-2">{label}</span>
             {isLocked && (
                 <span className={cn(
                     "ml-auto text-[10px] px-1.5 py-0.5 rounded-full border flex items-center ml-2",
-                    isActive ? "bg-white/20 border-white/20 text-white" : "bg-slate-100 text-slate-500 border-black/20"
+                    isActive ? "bg-surface/20 border-white/20 text-white" : "bg-muted text-muted-foreground border-border"
                 )}>
                     🔒 PRO
                 </span>
@@ -666,7 +666,7 @@ function GenerationOverlay() {
 
     return (
         <div className="absolute inset-0 z-[100] flex items-center justify-center bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-500">
-            <div className="relative p-12 rounded-[3rem] bg-white dark:bg-slate-900 border border-white/20 shadow-2xl flex flex-col items-center gap-8 max-w-md w-full mx-4">
+            <div className="relative p-12 rounded-[3rem] bg-surface dark:bg-slate-900 border border-white/20 shadow-2xl flex flex-col items-center gap-8 max-w-md w-full mx-4">
                 {/* Pulsing AI Brain Icon */}
                 <div className="relative">
                     <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse" />
@@ -676,7 +676,7 @@ function GenerationOverlay() {
                 </div>
 
                 <div className="text-center space-y-4">
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">
+                    <h3 className="text-2xl font-black text-foreground dark:text-white tracking-tight">
                         AI 智能店長正在思考...
                     </h3>
                     <div className="h-6 flex items-center justify-center">
@@ -686,11 +686,11 @@ function GenerationOverlay() {
                     </div>
                 </div>
 
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-muted dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                     <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full w-[60%] animate-[shimmer_2s_infinite_linear] bg-[length:200%_100%]" />
                 </div>
 
-                <p className="text-[10px] text-slate-400 font-medium">預計耗時 10-15 秒，請勿關閉視窗</p>
+                <p className="text-[10px] text-muted-foreground font-medium">預計耗時 10-15 秒，請勿關閉視窗</p>
             </div>
             
             <style jsx>{`

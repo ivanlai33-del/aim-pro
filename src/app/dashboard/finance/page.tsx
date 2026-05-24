@@ -303,7 +303,7 @@ export default function FinancePage() {
     if (!plan?.features.financeModule) {
         return (
             <div className="min-h-[80vh] flex items-center justify-center p-6">
-                <div className="max-w-2xl w-full bg-white rounded-[2rem] border border-black/10 shadow-2xl overflow-hidden relative">
+                <div className="max-w-2xl w-full bg-surface rounded-[2rem] border border-border shadow-2xl overflow-hidden relative">
                     {/* Background Accent */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
@@ -313,34 +313,34 @@ export default function FinancePage() {
                             <Lock className="w-10 h-10 text-white" />
                         </div>
 
-                        <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">解鎖專業財務防禦</h2>
+                        <h2 className="text-3xl font-black text-foreground mb-4 tracking-tight">解鎖專業財務防禦</h2>
                         <p className="text-lg text-slate-500 font-medium mb-10 leading-relaxed max-w-md mx-auto">
                             免費版不具備財務報表與稅務自動化功能。升級至 <span className="text-indigo-600 font-bold">專業版 (Pro)</span>，讓我們為您的利潤把關，自動計算 20% 服務費與營業稅。
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 text-left">
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                            <div className="flex items-start gap-3 p-4 bg-surface-hover rounded-xl border border-slate-100">
                                 <TrendingUp className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
                                 <div>
                                     <p className="font-bold text-sm">獲利趨勢分析</p>
                                     <p className="text-xs text-slate-400">洞察每一分錢的流向</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                            <div className="flex items-start gap-3 p-4 bg-surface-hover rounded-xl border border-slate-100">
                                 <Receipt className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                                 <div>
                                     <p className="font-bold text-sm">401 報表自動化</p>
                                     <p className="text-xs text-slate-400">複製貼上即可完成報稅</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                            <div className="flex items-start gap-3 p-4 bg-surface-hover rounded-xl border border-slate-100">
                                 <Calculator className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                                 <div>
                                     <p className="font-bold text-sm">服務費加價提醒</p>
                                     <p className="text-xs text-slate-400">確保 20% 利潤不漏接</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                            <div className="flex items-start gap-3 p-4 bg-surface-hover rounded-xl border border-slate-100">
                                 <Wallet className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
                                 <div>
                                     <p className="font-bold text-sm">現金流水位監測</p>
@@ -403,7 +403,7 @@ export default function FinancePage() {
             {/* Header & Controls */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">財務與稅務</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">財務與稅務</h1>
                     <p className="text-slate-500">財務儀表板 (Finance Dashboard)</p>
                 </div>
 
@@ -412,13 +412,13 @@ export default function FinancePage() {
                     <div className="flex items-center space-x-2 mr-4">
                         <button
                             onClick={handleExportData}
-                            className="bg-white border border-black/30 text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors h-12"
+                            className="bg-surface border border-border text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors h-12"
                             title="匯出備份 (Export)"
                         >
                             <Download className="w-5 h-5 mr-2" />
                             備份資料
                         </button>
-                        <label className="bg-white border border-black/30 text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors cursor-pointer h-12">
+                        <label className="bg-surface border border-border text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors cursor-pointer h-12">
                             <Upload className="w-5 h-5 mr-2" />
                             還原資料
                             <input
@@ -449,7 +449,7 @@ export default function FinancePage() {
                         </label>
                     </div>
 
-                    <div className="flex items-center space-x-3 bg-white p-3 rounded-xl border shadow-sm h-12">
+                    <div className="flex items-center space-x-3 bg-surface p-3 rounded-xl border shadow-sm h-12">
                         <Calendar className="w-5 h-5 text-gray-500 ml-2" />
                         <select
                             title="年份"
@@ -523,7 +523,7 @@ export default function FinancePage() {
                         <div className="text-5xl font-black tracking-tighter">
                             NT$ {payableTax.toLocaleString()}
                         </div>
-                        <div className="text-[10px] text-blue-100/80 mt-3 font-black uppercase tracking-widest bg-white/10 w-fit px-2 py-1 rounded">
+                        <div className="text-[10px] text-blue-100/80 mt-3 font-black uppercase tracking-widest bg-surface/10 w-fit px-2 py-1 rounded">
                             需於次月 15 日前繳納
                         </div>
                     </div>
@@ -532,10 +532,10 @@ export default function FinancePage() {
 
             {/* Performance Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-10">
-                <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-black/30 shadow-xl shadow-indigo-900/10 relative overflow-hidden">
+                <div className="lg:col-span-2 bg-surface p-8 rounded-3xl border border-border shadow-xl shadow-indigo-900/10 relative overflow-hidden">
                     <div className="flex justify-between items-center mb-8">
                         <div>
-                            <h3 className="text-lg font-black text-slate-900 flex items-center uppercase tracking-tight">
+                            <h3 className="text-lg font-black text-foreground flex items-center uppercase tracking-tight">
                                 <TrendingUp className="w-5 h-5 mr-2 text-indigo-500" />
                                 獲利趨勢分析 (Profit & Loss)
                             </h3>
@@ -580,8 +580,8 @@ export default function FinancePage() {
                     </div>
                 </div>
 
-                <div className="bg-white p-8 rounded-3xl border border-black/30 shadow-sm">
-                    <h3 className="text-lg font-black text-slate-900 flex items-center uppercase tracking-tight mb-6">
+                <div className="bg-surface p-8 rounded-3xl border border-border shadow-sm">
+                    <h3 className="text-lg font-black text-foreground flex items-center uppercase tracking-tight mb-6">
                         <BarChart3 className="w-5 h-5 mr-2 text-rose-500" />
                         專案營收分佈 (Revenue Breakdown)
                     </h3>
@@ -623,7 +623,7 @@ export default function FinancePage() {
 
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 mb-6">
-                            <span className="p-2 bg-white/10 rounded-xl"><Calculator className="w-5 h-5 text-cyan-200" /></span>
+                            <span className="p-2 bg-surface/10 rounded-xl"><Calculator className="w-5 h-5 text-cyan-200" /></span>
                             <span className="text-xs font-black uppercase tracking-widest text-cyan-50">Annual Tax Estimate</span>
                         </div>
                         <p className="text-sm font-bold text-cyan-100/70 mb-1 leading-none">年度累計預估純利</p>
@@ -634,7 +634,7 @@ export default function FinancePage() {
                                 <span className="text-xs font-bold text-cyan-100/70">營所稅估算 (20%)</span>
                                 <span className="text-xl font-black text-white">${estimatedAnnualTax.toLocaleString()}</span>
                             </div>
-                            <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                            <div className="w-full bg-surface/10 rounded-full h-1.5 overflow-hidden">
                                 <div className="bg-gradient-to-r from-rose-400 to-pink-500 h-full shadow-[0_0_12px_rgba(244,63,94,0.4)]" style={{ width: '20%' }} />
                             </div>
                             <p className="text-[10px] text-cyan-50/60 leading-relaxed font-bold">
@@ -643,7 +643,7 @@ export default function FinancePage() {
                         </div>
                     </div>
 
-                    <div className="mt-8 bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between group cursor-pointer hover:bg-white/20 transition-all border border-white/10 shadow-lg">
+                    <div className="mt-8 bg-surface/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between group cursor-pointer hover:bg-surface/20 transition-all border border-white/10 shadow-lg">
                         <span className="text-sm font-black tracking-tight">查看年度稅務規劃</span>
                         <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
@@ -656,7 +656,7 @@ export default function FinancePage() {
                     <div className={cn(
                         "rounded-xl p-6 border relative overflow-hidden h-full flex flex-col justify-center transition-all duration-300",
                         daysUntilDeadline <= 5
-                            ? "bg-gradient-to-br from-rose-50 to-red-100 border-rose-200 shadow-xl shadow-rose-900/10 text-slate-900"
+                            ? "bg-gradient-to-br from-rose-50 to-red-100 border-rose-200 shadow-xl shadow-rose-900/10 text-foreground"
                             : "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 border-transparent shadow-xl shadow-cyan-900/10 text-white"
                     )}>
                         <div className="flex items-center justify-between mb-4">
@@ -664,7 +664,7 @@ export default function FinancePage() {
                                 <Clock className="w-4 h-4 mr-2" />
                                 報稅倒數
                             </h3>
-                            {daysUntilDeadline <= 5 && <span className="text-[10px] font-bold bg-white/50 text-rose-600 px-2 py-1 rounded-full animate-pulse border border-rose-200">Coming Soon</span>}
+                            {daysUntilDeadline <= 5 && <span className="text-[10px] font-bold bg-surface/50 text-rose-600 px-2 py-1 rounded-full animate-pulse border border-rose-200">Coming Soon</span>}
                         </div>
                         <div className="text-center">
                             <div className={cn("text-[72px] leading-none font-black mb-2 mt-4", daysUntilDeadline <= 5 ? "text-rose-900" : "text-white")}>
@@ -693,28 +693,28 @@ export default function FinancePage() {
                                     提醒：若應納稅額為 0，仍需進行「零稅額申報」，以免受罰喔！
                                 </div>
                             </div>
-                            <div className="bg-white/10 text-white text-[10px] font-black px-2 py-1 rounded border border-white/20 uppercase tracking-widest backdrop-blur-sm">
+                            <div className="bg-surface/10 text-white text-[10px] font-black px-2 py-1 rounded border border-white/20 uppercase tracking-widest backdrop-blur-sm">
                                 Data for {period}
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="flex flex-col">
                                 <p className="text-[10px] text-orange-100 font-black mb-2 uppercase tracking-wide">欄位 [31]+[35] 銷售額</p>
-                                <div className="text-2xl font-black text-slate-900 bg-white border border-transparent p-4 rounded-xl shadow-sm flex justify-between items-center group cursor-pointer hover:shadow-md transition-all" onClick={() => { navigator.clipboard.writeText(totalSales.toString()); toast.success('已複製'); }}>
+                                <div className="text-2xl font-black text-foreground bg-surface border border-transparent p-4 rounded-xl shadow-sm flex justify-between items-center group cursor-pointer hover:shadow-md transition-all" onClick={() => { navigator.clipboard.writeText(totalSales.toString()); toast.success('已複製'); }}>
                                     {totalSales}
                                     <Copy className="w-4 h-4 text-slate-300 group-hover:text-orange-500" />
                                 </div>
                             </div>
                             <div className="flex flex-col">
                                 <p className="text-[10px] text-orange-100 font-black mb-2 uppercase tracking-wide">欄位 [Output Tax] 銷項稅額</p>
-                                <div className="text-2xl font-black text-slate-900 bg-white border border-transparent p-4 rounded-xl shadow-sm flex justify-between items-center group cursor-pointer hover:shadow-md transition-all" onClick={() => { navigator.clipboard.writeText(outputTax.toString()); toast.success('已複製'); }}>
+                                <div className="text-2xl font-black text-foreground bg-surface border border-transparent p-4 rounded-xl shadow-sm flex justify-between items-center group cursor-pointer hover:shadow-md transition-all" onClick={() => { navigator.clipboard.writeText(outputTax.toString()); toast.success('已複製'); }}>
                                     {outputTax}
                                     <Copy className="w-4 h-4 text-slate-300 group-hover:text-orange-500" />
                                 </div>
                             </div>
                             <div className="flex flex-col">
                                 <p className="text-[10px] text-orange-100 font-black mb-2 uppercase tracking-wide">欄位 [48] 扣抵進項稅額</p>
-                                <div className="text-2xl font-black text-slate-900 bg-white border border-transparent p-4 rounded-xl shadow-sm flex justify-between items-center group cursor-pointer hover:shadow-md transition-all" onClick={() => { navigator.clipboard.writeText(inputTax.toString()); toast.success('已複製'); }}>
+                                <div className="text-2xl font-black text-foreground bg-surface border border-transparent p-4 rounded-xl shadow-sm flex justify-between items-center group cursor-pointer hover:shadow-md transition-all" onClick={() => { navigator.clipboard.writeText(inputTax.toString()); toast.success('已複製'); }}>
                                     {inputTax}
                                     <Copy className="w-4 h-4 text-slate-300 group-hover:text-orange-500" />
                                 </div>
@@ -732,7 +732,7 @@ export default function FinancePage() {
                 <div className="lg:col-span-4 mb-6">
                     <button
                         onClick={() => setShowGuide(!showGuide)}
-                        className="flex items-center text-sm font-black text-slate-700 bg-white border border-black/30 rounded-lg px-4 py-2 hover:bg-slate-50 transition-colors shadow-sm mb-4"
+                        className="flex items-center text-sm font-black text-foreground bg-surface border border-border rounded-lg px-4 py-2 hover:bg-surface-hover transition-colors shadow-sm mb-4"
                     >
                         <Info className="w-4 h-4 mr-2 text-indigo-500" />
                         {showGuide ? "隱藏新手申辦指南" : "顯示新手「全線上」辦理指南"}
@@ -747,18 +747,18 @@ export default function FinancePage() {
                     </button>
 
                     {showGuide && (
-                        <div className="bg-white rounded-xl border border-black/30 shadow-sm p-6 animate-in slide-in-from-top-2 duration-300">
+                        <div className="bg-surface rounded-xl border border-border shadow-sm p-6 animate-in slide-in-from-top-2 duration-300">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative mt-4">
                                 {/* Connector Line (Desktop) */}
                                 <div className="hidden md:block absolute top-[30px] left-[16%] right-[16%] h-1 bg-slate-100 -z-0 rounded-full">
-                                    <div className="absolute left-[33%] top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white rounded-full p-0.5"><ChevronRight className="w-5 h-5 text-slate-300" /></div>
-                                    <div className="absolute left-[66%] top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white rounded-full p-0.5"><ChevronRight className="w-5 h-5 text-slate-300" /></div>
+                                    <div className="absolute left-[33%] top-1/2 -translate-y-1/2 -translate-x-1/2 bg-surface rounded-full p-0.5"><ChevronRight className="w-5 h-5 text-slate-300" /></div>
+                                    <div className="absolute left-[66%] top-1/2 -translate-y-1/2 -translate-x-1/2 bg-surface rounded-full p-0.5"><ChevronRight className="w-5 h-5 text-slate-300" /></div>
                                 </div>
 
                                 {/* Step -1 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
                                     <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white flex items-center justify-center text-sm font-black tracking-widest mb-5 shadow-xl shadow-cyan-900/20 border-4 border-white uppercase">Pro</div>
-                                    <h4 className="text-[22px] font-black text-slate-900 mb-2">辦理工商憑證</h4>
+                                    <h4 className="text-[22px] font-black text-foreground mb-2">辦理工商憑證</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white font-bold mb-4 tracking-widest shadow-md uppercase">建議線上</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed mb-3 font-medium">全線上辦理的「總鑰匙」。</p>
                                     <a href="https://moaca.nat.gov.tw/" target="_blank" rel="noopener noreferrer" className="text-[18px] text-indigo-600 font-black hover:text-indigo-800 transition-colors flex items-center group">
@@ -769,7 +769,7 @@ export default function FinancePage() {
                                 {/* Step 0 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
                                     <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-emerald-900/20 border-4 border-white">1</div>
-                                    <h4 className="text-[22px] font-black text-slate-900 mb-2">電子發票申請</h4>
+                                    <h4 className="text-[22px] font-black text-foreground mb-2">電子發票申請</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold mb-4 tracking-widest shadow-md uppercase">線上辦理</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed mb-3 font-medium">自動配號，完全無紙化。</p>
                                     <a href="https://www.einvoice.nat.gov.tw/" target="_blank" rel="noopener noreferrer" className="text-[18px] text-indigo-600 font-black hover:text-indigo-800 transition-colors flex items-center group">
@@ -780,7 +780,7 @@ export default function FinancePage() {
                                 {/* Step 1 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
                                     <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-violet-600 to-purple-700 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-violet-900/20 border-4 border-white">2</div>
-                                    <h4 className="text-[22px] font-black text-slate-900 mb-2">整理單據</h4>
+                                    <h4 className="text-[22px] font-black text-foreground mb-2">整理單據</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-violet-600 to-purple-700 text-white font-bold mb-4 tracking-widest shadow-md flex items-center uppercase">
                                         <span className="mr-1">✨</span>本系統操作
                                     </span>
@@ -790,14 +790,14 @@ export default function FinancePage() {
                                 {/* Step 4 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
                                     <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-rose-900/20 border-4 border-white">3</div>
-                                    <h4 className="text-[22px] font-black text-slate-900 mb-2">申報上傳</h4>
+                                    <h4 className="text-[22px] font-black text-foreground mb-2">申報上傳</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white font-bold mb-4 tracking-widest shadow-md uppercase">線上辦理</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed font-medium">國稅局 401 線上申報系統。</p>
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-dashed border-black/30">
-                                <div className="flex items-start text-[14px] text-slate-900 bg-rose-50 p-4 rounded-xl border border-rose-200 shadow-sm leading-relaxed">
+                            <div className="mt-6 pt-4 border-t border-dashed border-border">
+                                <div className="flex items-start text-[14px] text-foreground bg-rose-50 p-4 rounded-xl border border-rose-200 shadow-sm leading-relaxed">
                                     <Building2 className="w-5 h-5 mr-3 shrink-0 mt-0.5 text-rose-600" />
                                     <div>
                                         <span className="font-black block mb-1">臨櫃親跑重點提示：</span>
@@ -825,7 +825,7 @@ export default function FinancePage() {
                                     "flex-1 py-4 text-lg font-black rounded-xl transition-all duration-300",
                                     activeTab === 'expenses'
                                         ? "bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-[0_8px_20px_-4px_rgba(79,70,229,0.4)] scale-y-105"
-                                        : "bg-black/20 text-slate-700 hover:bg-black/30 hover:text-slate-900 hover:scale-y-105"
+                                        : "bg-black/20 text-foreground hover:bg-black/30 hover:text-foreground hover:scale-y-105"
                                 )}
                             >
                                 支出管家 (Expense Logger)
@@ -836,7 +836,7 @@ export default function FinancePage() {
                                     "flex-1 py-4 text-lg font-black rounded-xl transition-all duration-300",
                                     activeTab === 'income'
                                         ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-[0_8px_20px_-4px_rgba(16,185,129,0.4)] scale-y-105"
-                                        : "bg-black/20 text-slate-700 hover:bg-black/30 hover:text-slate-900 hover:scale-y-105"
+                                        : "bg-black/20 text-foreground hover:bg-black/30 hover:text-foreground hover:scale-y-105"
                                 )}
                             >
                                 收入列表 (Invoices)
@@ -847,7 +847,7 @@ export default function FinancePage() {
                         {activeTab === 'expenses' && (
                             <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
                                 {/* Add Expense Form */}
-                                <div className="bg-white rounded-xl border border-black/30 shadow-sm p-6">
+                                <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
                                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                                         <div className="md:col-span-1">
                                             <label className="text-xs font-bold text-gray-500 mb-1 block">日期</label>
@@ -856,7 +856,7 @@ export default function FinancePage() {
                                                 type="date"
                                                 value={newExpense.date}
                                                 onChange={e => setNewExpense({ ...newExpense, date: e.target.value })}
-                                                className="w-full text-sm border-black/30 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
+                                                className="w-full text-sm border-border rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
                                             />
                                         </div>
                                         <div className="md:col-span-2">
@@ -867,7 +867,7 @@ export default function FinancePage() {
                                                 placeholder="例如：Adobe 訂閱費"
                                                 value={newExpense.description}
                                                 onChange={e => setNewExpense({ ...newExpense, description: e.target.value })}
-                                                className="w-full text-sm border-black/30 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
+                                                className="w-full text-sm border-border rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
                                             />
                                         </div>
                                         <div className="md:col-span-1">
@@ -876,7 +876,7 @@ export default function FinancePage() {
                                                 title="類別"
                                                 value={newExpense.category}
                                                 onChange={e => setNewExpense({ ...newExpense, category: e.target.value as any })}
-                                                className="w-full text-sm border-black/30 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border bg-white"
+                                                className="w-full text-sm border-border rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border bg-surface"
                                             >
                                                 <option value="office">辦公雜支</option>
                                                 <option value="software">軟體訂閱</option>
@@ -909,7 +909,7 @@ export default function FinancePage() {
                                                         setNewExpense({ ...newExpense, amount: val });
                                                     }
                                                 }}
-                                                className="w-full text-sm border-black/30 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border font-black"
+                                                className="w-full text-sm border-border rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border font-black"
                                                 placeholder="NT$"
                                             />
                                         </div>
@@ -939,7 +939,7 @@ export default function FinancePage() {
                                 </div>
 
                                 {/* Expense List */}
-                                <div className="bg-white rounded-xl shadow-sm border border-black/30 overflow-hidden">
+                                <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
                                     <table className="w-full text-base text-left">
                                         <thead className="bg-gray-50 text-gray-500 border-b">
                                             <tr>
@@ -1005,7 +1005,7 @@ export default function FinancePage() {
                                     這裡列出所有專案。請將「已開發票」的專案標記起來，系統才會計算稅額。
                                 </p>
 
-                                <div className="bg-white rounded-xl shadow-sm border border-black/30 overflow-hidden">
+                                <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
                                     <table className="w-full text-sm text-left">
                                         <thead className="bg-gray-50 text-gray-500 border-b">
                                             <tr>
@@ -1063,7 +1063,7 @@ export default function FinancePage() {
                                                                         type="date"
                                                                         value={project.invoiceDate || ''}
                                                                         onChange={e => updateProjectInvoiceStatus(project.id, project.invoiceStatus || 'billed', project.invoiceNumber, e.target.value)}
-                                                                        className="text-xs border-black/30 rounded px-2 py-1 h-7 border"
+                                                                        className="text-xs border-border rounded px-2 py-1 h-7 border"
                                                                     />
                                                                     <input
                                                                         title="發票號碼"
@@ -1071,7 +1071,7 @@ export default function FinancePage() {
                                                                         placeholder="發票號碼"
                                                                         value={project.invoiceNumber || ''}
                                                                         onChange={e => updateProjectInvoiceStatus(project.id, project.invoiceStatus || 'billed', e.target.value, project.invoiceDate)}
-                                                                        className="text-xs border-black/30 rounded px-2 py-1 h-7 uppercase border"
+                                                                        className="text-xs border-border rounded px-2 py-1 h-7 uppercase border"
                                                                     />
                                                                 </div>
                                                             ) : (
@@ -1091,7 +1091,7 @@ export default function FinancePage() {
             </div>
 
             {/* Disclaimer / Legal Shield */}
-            <div className="bg-gray-100 rounded-xl p-5 text-[13.5px] leading-relaxed text-gray-600 mt-12 mb-8 border border-black/30">
+            <div className="bg-gray-100 rounded-xl p-5 text-[13.5px] leading-relaxed text-gray-600 mt-12 mb-8 border border-border">
                 <h4 className="text-[15px] font-bold flex items-center mb-3 text-gray-800">
                     <ShieldCheck className="w-5 h-5 mr-2" />
                     免責聲明 (Disclaimer)
