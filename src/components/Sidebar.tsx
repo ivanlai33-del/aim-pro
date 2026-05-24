@@ -53,7 +53,7 @@ export default function Sidebar() {
             sidebarCollapsed ? "w-[80px]" : "w-[270px]"
         )}>
             <div className={cn(
-                "flex items-center border-b border-black/10 dark:border-slate-800 transition-all duration-300 h-20",
+                "flex items-center border-b border-border/60 transition-all duration-300 h-20",
                 sidebarCollapsed ? "justify-center" : "px-4 justify-between"
             )}>
                 <div className="flex items-center gap-2">
@@ -330,7 +330,7 @@ function ThemeSwitch({ isCollapsed }: ThemeSwitchProps) {
         <button
             onClick={toggleTheme}
             className={cn(
-                "flex items-center justify-center rounded-full transition-all duration-300 border border-slate-200 dark:border-slate-700",
+                "flex items-center justify-center rounded-full transition-all duration-300 border border-border dark:border-slate-700",
                 "w-10 h-10",
                 "text-muted-foreground hover:bg-surface-hover shadow-sm"
             )}

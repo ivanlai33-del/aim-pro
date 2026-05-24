@@ -101,7 +101,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
 
     return (
         <div className={cn(
-            "bg-surface p-8 rounded-[24px] border border-border shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-none transition-all duration-500",
+            "bg-surface p-8 rounded-[24px] border border-border shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] dark:hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-500",
             colSpan,
             className
         )}>
@@ -565,7 +565,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
                         {/* Upload / Paste Area */}
                         <div
-                            className="border-2 border-dashed border-input rounded-2xl p-6 text-center hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
+                            className="border-2 border-dashed border-input dark:border-white/10 rounded-2xl p-6 text-center hover:border-primary/40 dark:hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer group dark:hover:shadow-[0_0_20px_rgba(129,140,248,0.15)]"
                             onClick={() => fileInputRef.current?.click()}
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}
@@ -688,7 +688,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 return (
                                     <div
                                         key={module.id}
-                                        className="relative flex flex-col items-start justify-start px-4 py-3 rounded-2xl border border-dashed border-slate-300 bg-input text-muted-foreground min-h-[200px] cursor-not-allowed grayscale opacity-70 hover:opacity-90 transition-all group"
+                                        className="relative flex flex-col items-start justify-start px-4 py-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/5 bg-input text-muted-foreground min-h-[200px] cursor-not-allowed grayscale opacity-70 hover:opacity-90 transition-all group"
                                         title={`升級方案以解鎖「${module.name}」`}
                                         onClick={() => toast.info(`「${module.name}」需升級至更高方案才能解鎖`, {
                                             description: '前往「系統方案」升級以解鎖所有行業模組',
@@ -743,7 +743,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                     }
 
                     {Object.values(INDUSTRY_CATEGORIES).flatMap(cat => cat.items).filter(m => checkAccess(m.id)).length === 0 && (
-                        <div className="w-full p-8 border-2 border-dashed border-input rounded-2xl text-center bg-input">
+                        <div className="w-full p-8 border-2 border-dashed border-input dark:border-white/10 rounded-2xl text-center bg-input">
                             <p className="text-muted-foreground font-bold">尚未訂閱任何模組</p>
                             <a href="/dashboard/settings" className="text-primary text-sm underline mt-2 block font-bold">
                                 前往系統設定啟動功能

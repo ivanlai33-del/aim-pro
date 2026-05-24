@@ -757,7 +757,7 @@ export default function FinancePage() {
 
                                 {/* Step -1 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white flex items-center justify-center text-sm font-black tracking-widest mb-5 shadow-xl shadow-cyan-900/20 border-4 border-white uppercase">Pro</div>
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white flex items-center justify-center text-sm font-black tracking-widest mb-5 shadow-xl shadow-cyan-900/20 border-4 border-white dark:border-surface uppercase">Pro</div>
                                     <h4 className="text-[22px] font-black text-foreground mb-2">辦理工商憑證</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white font-bold mb-4 tracking-widest shadow-md uppercase">建議線上</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed mb-3 font-medium">全線上辦理的「總鑰匙」。</p>
@@ -768,7 +768,7 @@ export default function FinancePage() {
 
                                 {/* Step 0 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-emerald-900/20 border-4 border-white">1</div>
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-emerald-900/20 border-4 border-white dark:border-surface">1</div>
                                     <h4 className="text-[22px] font-black text-foreground mb-2">電子發票申請</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold mb-4 tracking-widest shadow-md uppercase">線上辦理</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed mb-3 font-medium">自動配號，完全無紙化。</p>
@@ -779,7 +779,7 @@ export default function FinancePage() {
 
                                 {/* Step 1 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-violet-600 to-purple-700 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-violet-900/20 border-4 border-white">2</div>
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-violet-600 to-purple-700 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-violet-900/20 border-4 border-white dark:border-surface">2</div>
                                     <h4 className="text-[22px] font-black text-foreground mb-2">整理單據</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-violet-600 to-purple-700 text-white font-bold mb-4 tracking-widest shadow-md flex items-center uppercase">
                                         <span className="mr-1">✨</span>本系統操作
@@ -789,7 +789,7 @@ export default function FinancePage() {
 
                                 {/* Step 4 */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-rose-900/20 border-4 border-white">3</div>
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center text-3xl font-black mb-5 shadow-xl shadow-rose-900/20 border-4 border-white dark:border-surface">3</div>
                                     <h4 className="text-[22px] font-black text-foreground mb-2">申報上傳</h4>
                                     <span className="text-[15px] px-4 py-1.5 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white font-bold mb-4 tracking-widest shadow-md uppercase">線上辦理</span>
                                     <p className="text-[18px] text-slate-500 leading-relaxed font-medium">國稅局 401 線上申報系統。</p>
