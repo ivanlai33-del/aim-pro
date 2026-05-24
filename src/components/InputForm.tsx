@@ -653,9 +653,24 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                 className="col-span-12" 
                 icon={LayoutGrid}
                 headerRight={
-                    <button type="button" onClick={() => setCategoryExpanded(p => !p)} className="text-slate-400 hover:text-primary transition-colors flex items-center gap-2 text-sm font-medium">
-                        {categoryExpanded ? '收起' : '展開'} {categoryExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </button>
+                    <div className="flex items-center gap-4">
+                        {!categoryExpanded && (() => {
+                            const selectedMod = Object.values(INDUSTRY_CATEGORIES)
+                                .flatMap(cat => cat.items)
+                                .find(m => m.id === formData.moduleId);
+                            if (!selectedMod) return null;
+                            const ModIcon = MODULE_ICONS[selectedMod.id] || LayoutGrid;
+                            return (
+                                <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-700 px-3 py-1.5 rounded-xl shadow-sm">
+                                    <ModIcon className="w-4 h-4" />
+                                    <span className="text-sm font-bold">{selectedMod.name}</span>
+                                </div>
+                            );
+                        })()}
+                        <button type="button" onClick={() => setCategoryExpanded(p => !p)} className="text-slate-400 hover:text-primary transition-colors flex items-center gap-2 text-sm font-medium">
+                            {categoryExpanded ? '收起' : '展開'} {categoryExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                        </button>
+                    </div>
                 }
             >
                 {categoryExpanded && (
