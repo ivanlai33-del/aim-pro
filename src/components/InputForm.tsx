@@ -93,7 +93,7 @@ const CATEGORY_GRADIENT_MAP: Record<string, string> = {
 };
 
 // --- Helper Component: Big Block Card ---
-function FormCard({ title, children, className, colSpan = "col-span-12", titleClassName, icon: Icon }: { title?: string, children: React.ReactNode, className?: string, colSpan?: string, titleClassName?: string, icon?: any }) {
+function FormCard({ title, children, className, colSpan = "col-span-12", titleClassName, icon: Icon, headerRight }: { title?: string, children: React.ReactNode, className?: string, colSpan?: string, titleClassName?: string, icon?: any, headerRight?: React.ReactNode }) {
     // Logic to split title "Chinese (English)"
     const match = title?.match(/^([^(]+)(?:\s*\((.*)\))?$/);
     const mainTitle = match ? match[1].trim() : title;
@@ -106,14 +106,17 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
             className
         )}>
             {title && (
-                <div className="mb-6 flex items-center gap-4">
-                    {Icon && <Icon className="w-10 h-10 text-indigo-600 flex-shrink-0" />}
-                    <h3 className={cn("text-[27px] font-bold text-slate-800 tracking-tight flex items-baseline flex-wrap gap-x-2", titleClassName)}>
-                        <span>{mainTitle}</span>
-                        {subTitle && (
-                            <span className="text-[15px] text-slate-400 font-normal">({subTitle})</span>
-                        )}
-                    </h3>
+                <div className="mb-6 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        {Icon && <Icon className="w-10 h-10 text-indigo-600 flex-shrink-0" />}
+                        <h3 className={cn("text-[27px] font-bold text-slate-800 tracking-tight flex items-baseline flex-wrap gap-x-2", titleClassName)}>
+                            <span>{mainTitle}</span>
+                            {subTitle && (
+                                <span className="text-[15px] text-slate-400 font-normal">({subTitle})</span>
+                            )}
+                        </h3>
+                    </div>
+                    {headerRight && <div>{headerRight}</div>}
                 </div>
             )}
             {children}
@@ -248,6 +251,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
     }, [activeProject?.id]);
     const [docAnalyzing, setDocAnalyzing] = useState(false);
     const [docExpanded, setDocExpanded] = useState(true);
+    const [categoryExpanded, setCategoryExpanded] = useState(false);
     const [pasteMode, setPasteMode] = useState(false);
     const [pasteText, setPasteText] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -644,8 +648,18 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
             </FormCard>
 
 
-            <FormCard title="選擇專案範疇 (Industry Category)" className="col-span-12" icon={LayoutGrid}>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <FormCard 
+                title="選擇專案範疇 (Industry Category)" 
+                className="col-span-12" 
+                icon={LayoutGrid}
+                headerRight={
+                    <button type="button" onClick={() => setCategoryExpanded(p => !p)} className="text-slate-400 hover:text-primary transition-colors flex items-center gap-2 text-sm font-medium">
+                        {categoryExpanded ? '收起' : '展開'} {categoryExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                }
+            >
+                {categoryExpanded && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {Object.values(INDUSTRY_CATEGORIES)
                         .flatMap(cat => cat.items)
                         .filter(m => !tempHiddenModules.includes(m.id)) // Only filter by dev hidden, not access
@@ -721,7 +735,8 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             </a>
                         </div>
                     )}
-                </div>
+                    </div>
+                )}
             </FormCard>
 
             {/* 2. Project Type */}
