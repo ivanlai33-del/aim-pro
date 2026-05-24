@@ -101,7 +101,7 @@ function FormCard({ title, children, className, colSpan = "col-span-12", titleCl
 
     return (
         <div className={cn(
-            "bg-white p-8 rounded-[24px] border border-black/20 shadow-sm hover:shadow-md transition-all duration-300",
+            "bg-white p-8 rounded-[24px] border border-slate-200/60 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] transition-all duration-500",
             colSpan,
             className
         )}>
@@ -148,15 +148,15 @@ function OptionButton({
             type="button"
             onClick={onClick}
             className={cn(
-                "flex flex-col items-start justify-start p-[15px] rounded-2xl border transition-all min-h-[160px] text-left group active:scale-95 relative overflow-hidden",
+                "flex flex-col items-start justify-start px-4 py-3 rounded-2xl border transition-all min-h-[160px] text-left group active:scale-95 relative overflow-hidden",
                 isActive
-                    ? `border-transparent ${activeBg} text-white shadow-lg shadow-primary/20`
-                    : 'border-black/20 bg-white text-slate-500 hover:border-primary/50 hover:bg-slate-50 hover:text-primary hover:shadow-md',
+                    ? `border-transparent ${activeBg} text-white shadow-xl shadow-primary/30 ring-2 ring-primary/20 ring-offset-2`
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-primary/40 hover:bg-slate-50 hover:text-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
                 className
             )}
         >
             {icon && <div className={cn("mb-2", isActive ? "text-white/80" : "text-slate-400 group-hover:text-primary/70")}>{icon}</div>}
-            <span className="text-[22px] font-bold leading-tight block">{mainText || "未命名模組"}</span>
+            <span className="text-[16px] font-bold leading-tight block">{mainText || "未命名模組"}</span>
             {subText && (
                 <span className={cn(
                     "text-[16px] font-medium mt-1 block tracking-tight",
@@ -522,126 +522,10 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
     return (
         <form id="project-setup-form" onSubmit={handleSubmit} className="grid grid-cols-12 gap-8 pb-20">
 
-            <FormCard title="選擇專案範疇 (Industry Category)" className="col-span-12" icon={LayoutGrid}>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {Object.values(INDUSTRY_CATEGORIES)
-                        .flatMap(cat => cat.items)
-                        .filter(m => !tempHiddenModules.includes(m.id)) // Only filter by dev hidden, not access
-                        .map((module) => {
-                            const isActive = formData.moduleId === module.id;
-                            const hasAccess = checkAccess(module.id);
-                            const ModIcon = MODULE_ICONS[module.id] || LayoutGrid;
-
-                            // 🔒 Locked Module: show greyed-out with lock overlay
-                            if (!hasAccess) {
-                                return (
-                                    <div
-                                        key={module.id}
-                                        className="relative flex flex-col items-start justify-start p-[15px] rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 text-slate-400 min-h-[200px] cursor-not-allowed grayscale opacity-70 hover:opacity-90 transition-all group"
-                                        title={`升級方案以解鎖「${module.name}」`}
-                                        onClick={() => toast.info(`「${module.name}」需升級至更高方案才能解鎖`, {
-                                            description: '前往「系統方案」升級以解鎖所有行業模組',
-                                            action: { label: '前往升級', onClick: () => window.location.href = '/dashboard/settings' }
-                                        })}
-                                    >
-                                        <div className="mb-2 text-slate-300">
-                                            <ModIcon className="w-8 h-8" />
-                                        </div>
-                                        <span className="text-[20px] font-bold leading-tight block text-slate-400">
-                                            {module.name}
-                                        </span>
-                                        <span className="text-[14px] font-medium mt-1 block text-slate-400">
-                                            {module.tagline}
-                                        </span>
-                                        {/* Lock Badge */}
-                                        <div className="absolute top-3 right-3 flex items-center gap-1 bg-slate-200 text-slate-500 text-[10px] font-black px-2 py-1 rounded-lg border border-slate-300">
-                                            <Lock className="w-3 h-3" /> 需升級
-                                        </div>
-                                    </div>
-                                );
-                            }
-
-                            return (
-                                <OptionButton
-                                    key={module.id}
-                                    label={`${module.name} (${module.tagline})`}
-                                    isActive={isActive}
-                                    icon={<ModIcon className="w-8 h-8" />}
-                                    showBadge={true}
-                                    activeBg={CATEGORY_GRADIENT_MAP[module.categoryId]}
-                                    className="min-h-[200px]"
-                                    onClick={() => {
-                                        if (devMode && isActive) {
-                                            toggleModuleVisibility(module.id);
-                                            toast.info(`已暫時隱藏模組：${module.name}`);
-                                            return;
-                                        }
-
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            moduleId: module.id,
-                                            projectType: module.projectTypes?.[0]?.id || 'general'
-                                        }));
-                                        if (currentIndustry.id !== module.categoryId) {
-                                            switchIndustry(module.categoryId);
-                                        }
-                                    }}
-                                />
-                            );
-                        })
-                    }
-
-                    {Object.values(INDUSTRY_CATEGORIES).flatMap(cat => cat.items).filter(m => checkAccess(m.id)).length === 0 && (
-                        <div className="w-full p-8 border-2 border-dashed border-black/20 rounded-2xl text-center bg-slate-50/50">
-                            <p className="text-slate-500 font-bold">尚未訂閱任何模組</p>
-                            <a href="/dashboard/settings" className="text-primary text-sm underline mt-2 block font-bold">
-                                前往系統設定啟動功能
-                            </a>
-                        </div>
-                    )}
-                </div>
-            </FormCard>
-
-            {/* 2. Project Type */}
-            <FormCard title="專案類型 (Project Type)" colSpan="col-span-12 lg:col-span-5" icon={FileText}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {(() => {
-                        const globalActiveModule = Object.values(INDUSTRY_CATEGORIES)
-                            .flatMap(c => c.items)
-                            .find(m => m.id === formData.moduleId);
-
-                        return globalActiveModule?.projectTypes?.map((type, index) => {
-                            // Extract emoji prefix if it exists (e.g., "🏠 居家裝潢" -> emoji: "🏠", text: "居家裝潢")
-                            const match = type.label.match(/^([^\x00-\x7F]+)\s*(.*)$/);
-                            let emoji = null;
-                            let labelText = type.label;
-
-                            // additional check to see if the first non-ascii match is actually an emoji
-                            if (match && match[1] && match[1].length <= 4 && !(/^[\u4e00-\u9fa5]+$/.test(match[1]))) {
-                                emoji = match[1];
-                                labelText = match[2];
-                            }
-
-                            return (
-                                <OptionButton
-                                    key={type.id}
-                                    label={labelText}
-                                    isActive={formData.projectType === type.id}
-                                    icon={emoji ? <span className="text-[28px] leading-none block">{emoji}</span> : null}
-                                    activeBg={TYPE_GRADIENTS[index % TYPE_GRADIENTS.length]}
-                                    onClick={() => handleTypeChange(type.id)}
-                                />
-                            );
-                        });
-                    })()}
-                </div>
-            </FormCard>
-
-
             {/* 📎 文件解析器 */}
             <FormCard
                 title="文件解析器 (Document Analyzer)"
-                className="col-span-12"
+                className="col-span-12 bg-gradient-to-br from-indigo-50/40 via-white to-blue-50/40 border-indigo-100/50"
                 icon={FileSearch}
             >
                 {/* Header Controls */}
@@ -723,7 +607,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         value={pasteText}
                                         onChange={e => setPasteText(e.target.value)}
                                         placeholder="貼上任何文字：標案規格書、客戶 RFP、合約條文、會議記錄、Email 內容..."
-                                        className="w-full p-4 border border-black/20 rounded-2xl text-[15px] text-slate-700 placeholder:text-slate-300 bg-slate-50 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none resize-none"
+                                        className="w-full p-4 border border-slate-200 rounded-2xl text-[15px] text-slate-700 placeholder:text-slate-300 bg-slate-50 focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none resize-none"
                                     />
                                     <div className="flex gap-2">
                                         <button type="button" onClick={handlePasteDoc}
@@ -759,7 +643,124 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                 )}
             </FormCard>
 
-            {/* 3. Description Section */}
+
+            <FormCard title="選擇專案範疇 (Industry Category)" className="col-span-12" icon={LayoutGrid}>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    {Object.values(INDUSTRY_CATEGORIES)
+                        .flatMap(cat => cat.items)
+                        .filter(m => !tempHiddenModules.includes(m.id)) // Only filter by dev hidden, not access
+                        .map((module) => {
+                            const isActive = formData.moduleId === module.id;
+                            const hasAccess = checkAccess(module.id);
+                            const ModIcon = MODULE_ICONS[module.id] || LayoutGrid;
+
+                            // 🔒 Locked Module: show greyed-out with lock overlay
+                            if (!hasAccess) {
+                                return (
+                                    <div
+                                        key={module.id}
+                                        className="relative flex flex-col items-start justify-start px-4 py-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 text-slate-400 min-h-[200px] cursor-not-allowed grayscale opacity-70 hover:opacity-90 transition-all group"
+                                        title={`升級方案以解鎖「${module.name}」`}
+                                        onClick={() => toast.info(`「${module.name}」需升級至更高方案才能解鎖`, {
+                                            description: '前往「系統方案」升級以解鎖所有行業模組',
+                                            action: { label: '前往升級', onClick: () => window.location.href = '/dashboard/settings' }
+                                        })}
+                                    >
+                                        <div className="mb-2 text-slate-300">
+                                            <ModIcon className="w-8 h-8" />
+                                        </div>
+                                        <span className="text-[20px] font-bold leading-tight block text-slate-400">
+                                            {module.name}
+                                        </span>
+                                        <span className="text-[14px] font-medium mt-1 block text-slate-400">
+                                            {module.tagline}
+                                        </span>
+                                        {/* Lock Badge */}
+                                        <div className="absolute top-3 right-3 flex items-center gap-1 bg-slate-200 text-slate-500 text-[10px] font-black px-2 py-1 rounded-lg border border-slate-300">
+                                            <Lock className="w-3 h-3" /> 需升級
+                                        </div>
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <OptionButton
+                                    key={module.id}
+                                    label={`${module.name} (${module.tagline})`}
+                                    isActive={isActive}
+                                    icon={<ModIcon className="w-8 h-8" />}
+                                    showBadge={true}
+                                    activeBg={CATEGORY_GRADIENT_MAP[module.categoryId]}
+                                    className="min-h-[200px]"
+                                    onClick={() => {
+                                        if (devMode && isActive) {
+                                            toggleModuleVisibility(module.id);
+                                            toast.info(`已暫時隱藏模組：${module.name}`);
+                                            return;
+                                        }
+
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            moduleId: module.id,
+                                            projectType: module.projectTypes?.[0]?.id || 'general'
+                                        }));
+                                        if (currentIndustry.id !== module.categoryId) {
+                                            switchIndustry(module.categoryId);
+                                        }
+                                    }}
+                                />
+                            );
+                        })
+                    }
+
+                    {Object.values(INDUSTRY_CATEGORIES).flatMap(cat => cat.items).filter(m => checkAccess(m.id)).length === 0 && (
+                        <div className="w-full p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center bg-slate-50/80">
+                            <p className="text-slate-500 font-bold">尚未訂閱任何模組</p>
+                            <a href="/dashboard/settings" className="text-primary text-sm underline mt-2 block font-bold">
+                                前往系統設定啟動功能
+                            </a>
+                        </div>
+                    )}
+                </div>
+            </FormCard>
+
+            {/* 2. Project Type */}
+            <FormCard title="專案類型 (Project Type)" colSpan="col-span-12 lg:col-span-5" icon={FileText}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {(() => {
+                        const globalActiveModule = Object.values(INDUSTRY_CATEGORIES)
+                            .flatMap(c => c.items)
+                            .find(m => m.id === formData.moduleId);
+
+                        return globalActiveModule?.projectTypes?.map((type, index) => {
+                            // Extract emoji prefix if it exists (e.g., "🏠 居家裝潢" -> emoji: "🏠", text: "居家裝潢")
+                            const match = type.label.match(/^([^\x00-\x7F]+)\s*(.*)$/);
+                            let emoji = null;
+                            let labelText = type.label;
+
+                            // additional check to see if the first non-ascii match is actually an emoji
+                            if (match && match[1] && match[1].length <= 4 && !(/^[\u4e00-\u9fa5]+$/.test(match[1]))) {
+                                emoji = match[1];
+                                labelText = match[2];
+                            }
+
+                            return (
+                                <OptionButton
+                                    key={type.id}
+                                    label={labelText}
+                                    isActive={formData.projectType === type.id}
+                                    icon={emoji ? <span className="text-[28px] leading-none block">{emoji}</span> : null}
+                                    activeBg={TYPE_GRADIENTS[index % TYPE_GRADIENTS.length]}
+                                    onClick={() => handleTypeChange(type.id)}
+                                />
+                            );
+                        });
+                    })()}
+                </div>
+            </FormCard>
+
+
+                        {/* 3. Description Section */}
             <FormCard title="專案描述與核心目標 (Project Description)" colSpan="col-span-12 lg:col-span-7" icon={Target}>
                 <textarea
                     id="description"
@@ -768,7 +769,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                     rows={4}
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                     placeholder={formConfig?.descriptionPlaceholder || "請描述專案核心需求..."}
                 />
             </FormCard>
@@ -791,7 +792,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         // @ts-ignore
                                         value={formData[field.name as keyof ProjectData] || ''}
                                         onChange={handleChange}
-                                        className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                                         placeholder={field.placeholder}
                                     />
                                 ) : (
@@ -827,7 +828,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             rows={3}
                             value={formData.styleReferences}
                             onChange={handleChange}
-                            className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                             placeholder={formConfig?.stylePlaceholder || "例如：現代極簡、品牌風格..."}
                         />
                     </div>
@@ -841,7 +842,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
             >
                 <div className="space-y-[50px]">
                     {/* Part A: Dropdowns moved from left to fill space */}
-                    <div className="grid grid-cols-1 gap-y-[50px]">
+                    <div className="grid grid-cols-1 gap-y-6">
                         {formConfig?.customFields?.filter(f => f.type === 'select' || (f.type !== 'textarea' && f.type !== 'multi-select')).map((field) => (
                             <div key={field.name} className="flex flex-col">
                                 <FormFieldLabel htmlFor={field.name} label={`${field.label} (選填)`} />
@@ -853,7 +854,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                             // @ts-ignore
                                             value={formData[field.name as keyof ProjectData] || ''}
                                             onChange={handleChange}
-                                            className="w-full p-[15px] pr-[45px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 bg-slate-50/50 hover:bg-white appearance-none"
+                                            className="w-full px-4 py-3 pr-[45px] border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 bg-slate-50/80 hover:bg-white appearance-none"
                                             title={field.label}
                                             style={{
                                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -878,7 +879,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         // @ts-ignore
                                         value={formData[field.name as keyof ProjectData] || ''}
                                         onChange={handleChange}
-                                        className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                                         placeholder={field.placeholder}
                                     />
                                 )}
@@ -898,12 +899,12 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             rows={4}
                             value={formData.features}
                             onChange={handleChange}
-                            className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                             placeholder={formConfig?.deliverablesPlaceholder || "製作項目與規格..."}
                         />
                     </div>
 
-                    <div className="grid grid-cols-1 gap-y-[50px]">
+                    <div className="grid grid-cols-1 gap-y-6">
                         <div>
                             <FormFieldLabel htmlFor="budget" label="預算範圍 (Budget Range)" />
                             <input
@@ -912,7 +913,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 name="budget"
                                 value={formData.budget}
                                 onChange={handleChange}
-                                className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                                className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                                 placeholder="例如：30萬 - 50萬 TWD"
                             />
                         </div>
@@ -927,7 +928,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 name="timeline"
                                 value={formData.timeline}
                                 onChange={handleChange}
-                                className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                                className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                                 placeholder={formConfig?.timelinePlaceholder || "例如：3個月內上線"}
                             />
                         </div>
@@ -937,7 +938,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
             {/* 6. Client Information Block */}
             <FormCard title="客戶資料 (Client Information)" className="col-span-12" icon={Users}>
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-[50px]">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-6">
                     <div className="md:col-span-6 relative">
                         <FormFieldLabel htmlFor="clientCompany" label="公司名稱 (Company Name)" />
                         <div className="flex space-x-2">
@@ -953,7 +954,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                 onBlur={() => {
                                     setTimeout(() => setShowSuggestions(false), 200);
                                 }}
-                                className="flex-1 p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                                className="flex-1 px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                                 placeholder="輸入名稱搜尋現有客戶..."
                                 autoComplete="off"
                             />
@@ -966,7 +967,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                         toast.warning('請先輸入公司名稱');
                                     }
                                 }}
-                                className="px-6 py-3 bg-white text-slate-600 rounded-2xl hover:bg-slate-50 hover:text-primary hover:border-primary/50 text-sm whitespace-nowrap transition-all border border-black/20 font-bold shadow-sm"
+                                className="px-6 py-3 bg-white text-slate-600 rounded-2xl hover:bg-slate-50 hover:text-primary hover:border-primary/50 text-sm whitespace-nowrap transition-all border border-slate-200 font-bold shadow-sm"
                                 title="查詢工商登記"
                             >
                                 🔍 查詢工商
@@ -982,7 +983,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientTaxId"
                             value={formData.clientTaxId || ''}
                             onChange={handleChange}
-                            className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                             placeholder="例如：12345678"
                         />
                     </div>
@@ -994,7 +995,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientContact"
                             value={formData.clientContact || ''}
                             onChange={handleChange}
-                            className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                             placeholder="例如：陳經理"
                         />
                     </div>
@@ -1006,7 +1007,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientPhone"
                             value={formData.clientPhone || ''}
                             onChange={handleChange}
-                            className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                             placeholder="例如：0912-345-678"
                         />
                     </div>
@@ -1018,7 +1019,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                             name="clientAddress"
                             value={formData.clientAddress || ''}
                             onChange={handleChange}
-                            className="w-full p-[15px] border border-black/20 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-[22px] text-slate-800 placeholder:text-slate-400 bg-slate-50/50 hover:bg-white"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/20 focus:border-sky-400 outline-none transition-all text-[16px] text-slate-800 placeholder:text-slate-400 bg-slate-50/80 hover:bg-white"
                             placeholder="例如：台北市信義區..."
                         />
                     </div>
