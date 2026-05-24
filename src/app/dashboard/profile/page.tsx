@@ -259,7 +259,7 @@ export default function ProfilePage() {
                 <div className="lg:col-span-5 space-y-6">
                     
                     {/* Premium Subscription Card */}
-                    <section className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 rounded-[24px] border border-white/20 shadow-2xl shadow-cyan-500/25 p-8 relative overflow-hidden text-white">
+                    <section className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 dark:from-cyan-900/60 dark:via-cyan-800/60 dark:to-emerald-900/60 rounded-[24px] border border-white/20 dark:border-cyan-500/30 shadow-2xl shadow-cyan-500/25 dark:shadow-none p-8 relative overflow-hidden text-white">
                         {/* Decorative background flair */}
                         <div className="absolute -top-24 -right-24 w-64 h-64 bg-surface/20 blur-3xl rounded-full pointer-events-none"></div>
                         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-300/20 blur-3xl rounded-full pointer-events-none"></div>

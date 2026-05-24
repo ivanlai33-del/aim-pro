@@ -412,13 +412,13 @@ export default function FinancePage() {
                     <div className="flex items-center space-x-2 mr-4">
                         <button
                             onClick={handleExportData}
-                            className="bg-surface border border-border text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors h-12"
+                            className="bg-surface border border-border text-foreground hover:bg-muted px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors h-12"
                             title="匯出備份 (Export)"
                         >
                             <Download className="w-5 h-5 mr-2" />
                             備份資料
                         </button>
-                        <label className="bg-surface border border-border text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors cursor-pointer h-12">
+                        <label className="bg-surface border border-border text-foreground hover:bg-muted px-4 py-3 rounded-xl text-base font-medium flex items-center shadow-sm transition-colors cursor-pointer h-12">
                             <Upload className="w-5 h-5 mr-2" />
                             還原資料
                             <input
@@ -450,7 +450,7 @@ export default function FinancePage() {
                     </div>
 
                     <div className="flex items-center space-x-3 bg-surface p-3 rounded-xl border shadow-sm h-12">
-                        <Calendar className="w-5 h-5 text-gray-500 ml-2" />
+                        <Calendar className="w-5 h-5 text-muted-foreground ml-2" />
                         <select
                             title="年份"
                             value={year}
@@ -479,7 +479,7 @@ export default function FinancePage() {
 
             {/* Top Row: Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 rounded-2xl p-8 shadow-xl shadow-cyan-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 dark:from-cyan-900/60 dark:via-cyan-800/60 dark:to-emerald-900/60 dark:border dark:border-cyan-500/30 rounded-2xl p-8 shadow-xl shadow-cyan-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <ArrowUpRight className="w-24 h-24" />
                     </div>
@@ -495,7 +495,7 @@ export default function FinancePage() {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-8 shadow-xl shadow-emerald-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-900/60 dark:to-teal-900/60 dark:border dark:border-emerald-500/30 rounded-2xl p-8 shadow-xl shadow-emerald-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <ArrowDownLeft className="w-24 h-24" />
                     </div>
@@ -511,7 +511,7 @@ export default function FinancePage() {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-8 shadow-xl shadow-violet-900/10 text-white relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-violet-600 to-purple-700 dark:from-violet-900/60 dark:to-purple-900/60 dark:border dark:border-violet-500/30 rounded-2xl p-8 shadow-xl shadow-violet-900/10 text-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <Wallet className="w-24 h-24" />
                     </div>
@@ -616,7 +616,7 @@ export default function FinancePage() {
                     </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col justify-between shadow-2xl shadow-rose-900/20">
+                <div className="bg-gradient-to-br from-rose-500 to-pink-600 dark:from-rose-900/60 dark:to-pink-900/60 dark:border dark:border-rose-500/30 rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col justify-between shadow-2xl shadow-rose-900/20">
                     <div className="absolute -right-10 -top-10 opacity-10">
                         <Calculator className="w-48 h-48" />
                     </div>
@@ -657,7 +657,7 @@ export default function FinancePage() {
                         "rounded-xl p-6 border relative overflow-hidden h-full flex flex-col justify-center transition-all duration-300",
                         daysUntilDeadline <= 5
                             ? "bg-gradient-to-br from-rose-50 to-red-100 border-rose-200 shadow-xl shadow-rose-900/10 text-foreground"
-                            : "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 border-transparent shadow-xl shadow-cyan-900/10 text-white"
+                            : "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 dark:from-cyan-900/60 dark:via-cyan-800/60 dark:to-emerald-900/60 dark:border-cyan-500/30 shadow-xl shadow-cyan-900/10 text-white"
                     )}>
                         <div className="flex items-center justify-between mb-4">
                             <h3 className={cn("font-black flex items-center uppercase tracking-wider text-xs", daysUntilDeadline <= 5 ? "text-rose-700" : "text-cyan-100")}>
@@ -678,7 +678,7 @@ export default function FinancePage() {
                 </div>
 
                 <div className="lg:col-span-3">
-                    <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl p-6 h-full shadow-xl shadow-orange-900/10 transition-all duration-300 text-white">
+                    <div className="bg-gradient-to-br from-orange-500 to-amber-600 dark:from-orange-900/60 dark:to-amber-900/60 dark:border dark:border-orange-500/30 rounded-xl p-6 h-full shadow-xl shadow-orange-900/10 transition-all duration-300 text-white">
                         <div className="mb-6 flex items-center justify-between">
                             <div>
                                 <h3 className="text-lg font-black flex items-center text-white uppercase tracking-tight">
@@ -824,7 +824,7 @@ export default function FinancePage() {
                                 className={cn(
                                     "flex-1 py-4 text-lg font-black rounded-xl transition-all duration-300",
                                     activeTab === 'expenses'
-                                        ? "bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-[0_8px_20px_-4px_rgba(79,70,229,0.4)] scale-y-105"
+                                        ? "bg-gradient-to-br from-indigo-500 to-blue-600 dark:from-indigo-600 dark:to-blue-700 text-white shadow-[0_8px_20px_-4px_rgba(79,70,229,0.4)] scale-y-105"
                                         : "bg-black/20 text-foreground hover:bg-black/30 hover:text-foreground hover:scale-y-105"
                                 )}
                             >
@@ -850,7 +850,7 @@ export default function FinancePage() {
                                 <div className="bg-surface rounded-xl border border-border shadow-sm p-6">
                                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                                         <div className="md:col-span-1">
-                                            <label className="text-xs font-bold text-gray-500 mb-1 block">日期</label>
+                                            <label className="text-xs font-bold text-muted-foreground mb-1 block">日期</label>
                                             <input
                                                 title="日期"
                                                 type="date"
@@ -860,7 +860,7 @@ export default function FinancePage() {
                                             />
                                         </div>
                                         <div className="md:col-span-2">
-                                            <label className="text-xs font-bold text-gray-500 mb-1 block">支出項目說明</label>
+                                            <label className="text-xs font-bold text-muted-foreground mb-1 block">支出項目說明</label>
                                             <input
                                                 title="說明"
                                                 type="text"
@@ -871,7 +871,7 @@ export default function FinancePage() {
                                             />
                                         </div>
                                         <div className="md:col-span-1">
-                                            <label className="text-xs font-bold text-gray-500 mb-1 block">類別</label>
+                                            <label className="text-xs font-bold text-muted-foreground mb-1 block">類別</label>
                                             <select
                                                 title="類別"
                                                 value={newExpense.category}
@@ -888,7 +888,7 @@ export default function FinancePage() {
                                         </div>
                                         <div className="md:col-span-1">
                                             <div className="flex items-center justify-between mb-1">
-                                                <label className="text-xs font-bold text-gray-500 block">總金額</label>
+                                                <label className="text-xs font-bold text-muted-foreground block">總金額</label>
                                                 {newExpense.category === 'freelancer' && (
                                                     <span className="text-[10px] bg-rose-50 text-rose-600 px-1 rounded font-black">含勞報扣繳</span>
                                                 )}
@@ -941,7 +941,7 @@ export default function FinancePage() {
                                 {/* Expense List */}
                                 <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
                                     <table className="w-full text-base text-left">
-                                        <thead className="bg-gray-50 text-gray-500 border-b">
+                                        <thead className="bg-muted text-muted-foreground border-b">
                                             <tr>
                                                 <th className="px-6 py-4 font-bold uppercase tracking-wider">日期</th>
                                                 <th className="px-6 py-4 font-bold uppercase tracking-wider">項目</th>
@@ -964,11 +964,11 @@ export default function FinancePage() {
                                                     ? Math.round(expense.amount - (expense.amount / 1.05))
                                                     : 0;
                                                 return (
-                                                    <tr key={expense.id} className="hover:bg-gray-50 group">
-                                                        <td className="px-6 py-5 font-mono text-gray-600">{expense.date}</td>
+                                                    <tr key={expense.id} className="hover:bg-muted group">
+                                                        <td className="px-6 py-5 font-mono text-muted-foreground">{expense.date}</td>
                                                         <td className="px-6 py-5 font-bold text-gray-900">{expense.description}</td>
                                                         <td className="px-6 py-5">
-                                                            <span className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm font-bold text-gray-600">
+                                                            <span className="px-3 py-1.5 bg-muted rounded-lg text-sm font-bold text-muted-foreground">
                                                                 {expense.category === 'software' && '軟體'}
                                                                 {expense.category === 'office' && '辦公'}
                                                                 {expense.category === 'travel' && '交通'}
@@ -978,7 +978,7 @@ export default function FinancePage() {
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-5 text-right font-black text-lg">{expense.amount.toLocaleString()}</td>
-                                                        <td className="px-6 py-5 text-right text-gray-500 font-medium">{tax.toLocaleString()}</td>
+                                                        <td className="px-6 py-5 text-right text-muted-foreground font-medium">{tax.toLocaleString()}</td>
                                                         <td className="px-6 py-5 text-right">
                                                             <button
                                                                 title="刪除"
@@ -1000,14 +1000,14 @@ export default function FinancePage() {
                         {/* INCOME TAB CONTENT */}
                         {activeTab === 'income' && (
                             <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
-                                <p className="text-sm text-gray-500 mb-2 bg-blue-50 text-blue-700 p-3 rounded-lg flex items-center">
+                                <p className="text-sm text-muted-foreground mb-2 bg-blue-50 text-blue-700 p-3 rounded-lg flex items-center">
                                     <AlertCircle className="w-4 h-4 mr-2" />
                                     這裡列出所有專案。請將「已開發票」的專案標記起來，系統才會計算稅額。
                                 </p>
 
                                 <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
                                     <table className="w-full text-sm text-left">
-                                        <thead className="bg-gray-50 text-gray-500 border-b">
+                                        <thead className="bg-muted text-muted-foreground border-b">
                                             <tr>
                                                 <th className="px-4 py-3 font-medium">建立日期</th>
                                                 <th className="px-4 py-3 font-medium">專案名稱</th>
@@ -1027,10 +1027,10 @@ export default function FinancePage() {
                                                 const isBilled = project.invoiceStatus === 'billed' || project.invoiceStatus === 'paid';
 
                                                 return (
-                                                    <tr key={project.id} className="hover:bg-gray-50">
-                                                        <td className="px-4 py-3 text-gray-500 text-xs">{new Date(project.createdAt).toLocaleDateString()}</td>
+                                                    <tr key={project.id} className="hover:bg-muted">
+                                                        <td className="px-4 py-3 text-muted-foreground text-xs">{new Date(project.createdAt).toLocaleDateString()}</td>
                                                         <td className="px-4 py-3 font-medium text-gray-900">{project.name}</td>
-                                                        <td className="px-4 py-3 text-gray-600">{project.data.clientCompany || '-'}</td>
+                                                        <td className="px-4 py-3 text-muted-foreground">{project.data.clientCompany || '-'}</td>
                                                         <td className="px-4 py-3 text-right font-medium">{total.toLocaleString()}</td>
                                                         <td className="px-4 py-3 text-center">
                                                             <button
@@ -1044,7 +1044,7 @@ export default function FinancePage() {
                                                                     "px-3 py-1 rounded-full text-xs font-medium transition-colors",
                                                                     isBilled
                                                                         ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                                                        : "bg-muted text-muted-foreground hover:bg-gray-200"
                                                                 )}
                                                             >
                                                                 {isBilled ? (
@@ -1091,14 +1091,14 @@ export default function FinancePage() {
             </div>
 
             {/* Disclaimer / Legal Shield */}
-            <div className="bg-gray-100 rounded-xl p-5 text-[13.5px] leading-relaxed text-gray-600 mt-12 mb-8 border border-border">
-                <h4 className="text-[15px] font-bold flex items-center mb-3 text-gray-800">
+            <div className="bg-muted rounded-xl p-5 text-[13.5px] leading-relaxed text-muted-foreground mt-12 mb-8 border border-border">
+                <h4 className="text-[15px] font-bold flex items-center mb-3 text-foreground">
                     <ShieldCheck className="w-5 h-5 mr-2" />
                     免責聲明 (Disclaimer)
                 </h4>
                 <ul className="list-disc pl-5 space-y-1.5">
                     <li>本系統 (捷報Estimator) 僅提供財務數據整理與試算功能，旨在協助使用者自行管理專案收支。</li>
-                    <li>本系統非會計師事務所，<span className="font-bold text-gray-700">不提供稅務簽證、代客記帳或稅務諮詢服務</span>。</li>
+                    <li>本系統非會計師事務所，<span className="font-bold text-foreground">不提供稅務簽證、代客記帳或稅務諮詢服務</span>。</li>
                     <li>試算結果僅供參考，實際申報金額與稅務責任，請以國稅局相關法規與核定為準。使用者應自行確認申報數據之正確性。</li>
                     <li>若有複雜稅務問題，或營業規模較大 (如需會計師簽證)，仍建議諮詢專業會計師。</li>
                     <li>By using this tool, you acknowledge that you are solely responsible for your tax filings.</li>
