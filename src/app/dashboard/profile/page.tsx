@@ -259,25 +259,25 @@ export default function ProfilePage() {
                 <div className="lg:col-span-5 space-y-6">
                     
                     {/* Premium Subscription Card */}
-                    <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-[24px] border border-white/10 shadow-2xl p-8 relative overflow-hidden text-white">
+                    <section className="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 rounded-[24px] border border-white/20 shadow-2xl shadow-cyan-500/25 p-8 relative overflow-hidden text-white">
                         {/* Decorative background flair */}
-                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-cyan-500/20 blur-3xl rounded-full pointer-events-none"></div>
-                        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/20 blur-3xl rounded-full pointer-events-none"></div>
+                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/20 blur-3xl rounded-full pointer-events-none"></div>
+                        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-300/20 blur-3xl rounded-full pointer-events-none"></div>
                         
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
-                                    <Crown className="w-8 h-8 text-cyan-400" />
-                                    <span className="text-xl font-bold tracking-wider">AIM PRO</span>
+                                    <Crown className="w-8 h-8 text-white drop-shadow-md" />
+                                    <span className="text-xl font-bold tracking-wider drop-shadow-md">AIM PRO</span>
                                 </div>
-                                <span className="text-[11px] font-black tracking-widest text-slate-400 uppercase border border-slate-600 px-2 py-1 rounded-md">
+                                <span className="text-[11px] font-black tracking-widest text-cyan-50 uppercase border border-white/40 bg-white/10 px-2 py-1 rounded-md backdrop-blur-sm">
                                     Subscription
                                 </span>
                             </div>
 
                             <div className="mb-8">
-                                <p className="text-slate-400 text-sm mb-1">當前訂閱方案</p>
-                                <p className="text-4xl font-black bg-gradient-to-r from-cyan-300 via-white to-purple-200 bg-clip-text text-transparent">
+                                <p className="text-cyan-50 text-sm mb-1 font-medium">當前訂閱方案</p>
+                                <p className="text-4xl font-black text-white drop-shadow-lg">
                                     {
                                         userTier === 'starter' ? 'Starter' :
                                         userTier === 'professional' ? 'Professional' :
@@ -295,18 +295,18 @@ export default function ProfilePage() {
                                     解鎖專業版功能
                                 </button>
                             ) : (
-                                <div className="space-y-3 bg-white/5 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                                <div className="space-y-3 bg-white/20 p-4 rounded-xl backdrop-blur-md border border-white/30 shadow-inner">
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-slate-300 flex items-center gap-2"><Calendar className="w-4 h-4"/> 狀態</span>
-                                        <span className="font-bold text-emerald-400">
+                                        <span className="text-white flex items-center gap-2"><Calendar className="w-4 h-4"/> 狀態</span>
+                                        <span className="font-bold text-white drop-shadow-md">
                                             {subscription?.status === 'active' ? '✅ 啟用中' :
                                              subscription?.status === 'trial' ? '🎯 試用期' :
                                              subscription?.status === 'expired' ? '⚠️ 已過期' : 'Pro (團隊授權)'}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-slate-300 flex items-center gap-2"><AlertCircle className="w-4 h-4"/> 到期日</span>
-                                        <span className="font-medium text-white">
+                                        <span className="text-white flex items-center gap-2"><AlertCircle className="w-4 h-4"/> 到期日</span>
+                                        <span className="font-bold text-white drop-shadow-md">
                                             {subscription?.trial_end_date
                                                 ? new Date(subscription?.trial_end_date).toLocaleDateString('zh-TW')
                                                 : '無期限'}
