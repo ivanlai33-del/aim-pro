@@ -55,7 +55,7 @@ const MermaidDiagram = ({ chart }: { chart: string }) => {
 };
 
 export default function ReportView({ reportContent, onSave, apiKey }: ReportViewProps) {
-    const { userTier, aiQuota, activeProject } = useProject();
+    const { userTier, aiQuota, activeProject, updateProjectQuotation } = useProject();
     const router = useRouter();
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const canDownload = userTier !== 'free';
@@ -457,6 +457,22 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                         <VideoInsightsBento 
                             projectName={activeProject?.name || activeProject?.data?.projectName || "商業品牌形象片"}
                             industry={activeProject?.industries?.[0] || activeProject?.data?.moduleId || "video"}
+                            onImportEquipment={(equipment) => {
+                                if (activeProject) {
+                                    const newItems = equipment.map(eq => ({
+                                        id: `insight_${Date.now()}_${Math.random()}`,
+                                        description: `${eq.name} (${eq.reason})`,
+                                        quantity: 1,
+                                        unitPrice: eq.cost
+                                    }));
+                                    const existingItems = activeProject.quotationItems || [];
+                                    updateProjectQuotation(
+                                        activeProject.id, 
+                                        [...existingItems, ...newItems], 
+                                        activeProject.quotationSettings || { taxMode: 'exclusive', riskLevel: 'medium' }
+                                    );
+                                }
+                            }}
                         />
                     )}
 

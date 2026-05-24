@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from 'react';
 import { useProject } from '@/context/ProjectContext';
 import { useAgiHealthCheck, AgiHealthReport } from '@/hooks/useAgiHealthCheck';
+import { getProfessionalMemory, getProjectMemory, ProfessionalMemory, ProjectMemory } from '@/lib/memoryService';
 
 export type AgiTab = 'health' | 'meeting' | 'onboarding';
 
@@ -64,7 +65,7 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
 };
 
 export function AgiProvider({ children }: { children: ReactNode }) {
-    const { activeProject, userTier, currentPersona } = useProject();
+    const { activeProject, userTier, currentPersona, currentTeamId } = useProject();
     const userRole = currentPersona?.role || 'member';
     const allowedIds = ROLE_PERMISSIONS[userRole] || ROLE_PERMISSIONS.member;
 
@@ -92,6 +93,29 @@ export function AgiProvider({ children }: { children: ReactNode }) {
     const [messages, setMessages] = useState<AdvisorMessage[]>([]);
     const [activeAdvisor, setActiveAdvisor] = useState<AdvisorId | 'all'>('boss');
     const [isAdvisorTyping, setIsAdvisorTyping] = useState(false);
+
+    // Memory state
+    const [profMemory, setProfMemory] = useState<ProfessionalMemory[]>([]);
+    const [projMemory, setProjMemory] = useState<ProjectMemory[]>([]);
+
+    // Fetch memory
+    useEffect(() => {
+        const fetchMemories = async () => {
+            const userId = currentPersona?.id;
+            const projectId = activeProject?.id;
+            const teamId = currentTeamId;
+            
+            if (userId && userId !== 'guest') {
+                const pMem = await getProfessionalMemory(userId, teamId);
+                setProfMemory(pMem);
+            }
+            if (projectId && userId && userId !== 'guest') {
+                const pProj = await getProjectMemory(projectId, userId, teamId);
+                setProjMemory(pProj);
+            }
+        };
+        fetchMemories();
+    }, [currentPersona?.id, activeProject?.id, currentTeamId]);
 
     // Reset messages when switching projects to maintain context purity
     useEffect(() => {
@@ -168,23 +192,92 @@ export function AgiProvider({ children }: { children: ReactNode }) {
         setCompletedItems(prev => new Set([...Array.from(prev), id]));
     }, []);
 
-    const sendMessage = useCallback((content: string) => {
+    const sendMessage = useCallback(async (content: string) => {
         const userMsg: AdvisorMessage = {
             id: `msg_${Date.now()}`,
             advisorId: 'user',
             content,
             timestamp: new Date(),
         };
-        setMessages(prev => [...prev, userMsg]);
 
-        // Simulate advisor response (rule-engine, no AI quota)
-        setIsAdvisorTyping(true);
-        setTimeout(() => {
-            const response = generateRuleResponse(content, activeAdvisor, activeProject?.data, allowedIds);
-            setMessages(prev => [...prev, ...response]);
-            setIsAdvisorTyping(false);
-        }, 800 + Math.random() * 600);
-    }, [activeAdvisor, activeProject?.data, allowedIds]);
+        setMessages(prev => {
+            const updated = [...prev, userMsg];
+            // Immediately start AI fetch with the new history
+            fetchAiResponse(updated);
+            return updated;
+        });
+
+        const fetchAiResponse = async (history: AdvisorMessage[]) => {
+            setIsAdvisorTyping(true);
+            try {
+                // Determine which advisors to ask
+                const targetAdvisors = activeAdvisor === 'all' 
+                    ? ['boss', 'gm', 'cfo', 'clo', 'cso'].filter(id => allowedIds.includes(id))
+                    : (allowedIds.includes(activeAdvisor) ? [activeAdvisor] : []);
+
+                if (targetAdvisors.length === 0) {
+                    setMessages(prev => [...prev, {
+                        id: `resp_sys_${Date.now()}`,
+                        advisorId: 'boss',
+                        content: '抱歉，您目前的權限等級無法諮詢該位顧問。',
+                        timestamp: new Date(),
+                    }]);
+                    setIsAdvisorTyping(false);
+                    return;
+                }
+
+                // Prepare short history to send
+                const historyPayload = history.map(msg => ({
+                    sender: msg.advisorId === 'user' ? 'user' : 'ai',
+                    content: msg.content
+                }));
+
+                // Fetch real AI responses in parallel
+                const promises = targetAdvisors.map(async (advisorId) => {
+                    const res = await fetch('/api/agi-chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: content,
+                            advisorId: advisorId,
+                            projectData: activeProject?.data || null,
+                            history: historyPayload,
+                            profMemory,
+                            projMemory
+                        })
+                    });
+                    
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.error || `API request failed for ${advisorId}`);
+                    }
+                    const data = await res.json();
+                    
+                    return {
+                        id: `resp_${advisorId}_${Date.now()}_${Math.random()}`,
+                        advisorId: advisorId as AdvisorId,
+                        content: data.content,
+                        timestamp: new Date(),
+                    };
+                });
+
+                const responses = await Promise.all(promises);
+                
+                setMessages(prev => [...prev, ...responses]);
+            } catch (error) {
+                console.error("AGI Chat Error:", error);
+                setMessages(prev => [...prev, {
+                    id: `resp_err_${Date.now()}`,
+                    advisorId: 'system' as AdvisorId | 'system',
+                    content: '連線至 AGI 伺服器失敗，請稍後再試。',
+                    timestamp: new Date(),
+                }]);
+            } finally {
+                setIsAdvisorTyping(false);
+            }
+        };
+
+    }, [activeAdvisor, activeProject?.data, allowedIds, profMemory, projMemory]);
 
     return (
         <AgiContext.Provider value={{
@@ -205,93 +298,4 @@ export function useAgi() {
     return ctx;
 }
 
-// ─────────────────────────────────────────────
-//  Rule-engine response generator (no AI quota)
-// ─────────────────────────────────────────────
-
-function generateRuleResponse(
-    query: string,
-    advisor: AdvisorId | 'all',
-    projectData?: any,
-    allowedIds: string[] = []
-): AdvisorMessage[] {
-    const q = query.toLowerCase();
-    const now = new Date();
-
-    const makeMsg = (advisorId: AdvisorId, content: string): AdvisorMessage => ({
-        id: `resp_${advisorId}_${Date.now()}_${Math.random()}`,
-        advisorId,
-        content,
-        timestamp: now,
-    });
-
-    if (advisor === 'all') {
-        const msgs: AdvisorMessage[] = [];
-        
-        if (allowedIds.includes('boss')) {
-            msgs.push(makeMsg('boss', projectData?.budget
-                ? `整體策略風險：時程與預算是否匹配，建議優先確認這個案子的驗收標準。`
-                : `目前還沒有預算資訊，我沒辦法給整體意見。先把預算填進去。`));
-        }
-
-        if (allowedIds.includes('cfo')) {
-            msgs.push(makeMsg('cfo', projectData?.budget
-                ? `預算 ${projectData.budget}，請確認毛利是否達到 20% 以上。若包含外包，記得扣除相關成本。`
-                : `缺少預算資料，帳目無法評估。`));
-        }
-
-        if (allowedIds.includes('clo')) {
-            msgs.push(makeMsg('clo', `確認合約中是否有驗收期條款（建議 30 天）與著作權歸屬聲明，這是最常見的糾紛來源。`));
-        }
-
-        if (allowedIds.includes('cso')) {
-            msgs.push(makeMsg('cso', projectData?.description?.length > 50
-                ? `提案描述充分，建議補充「客戶預期 ROI」數據，增加說服力。`
-                : `專案描述太少，競爭力不足。至少補充 100 字的需求說明。`));
-        }
-
-        if (allowedIds.includes('gm')) {
-            msgs.push(makeMsg('gm', `建議先確認需求邊界，避免範疇蔓延。送出正式提案前，請客戶簽署需求確認書。`));
-        }
-
-        return msgs;
-    }
-
-    // Check if single advisor is allowed
-    if (!allowedIds.includes(advisor)) {
-        return [makeMsg('boss', '抱歉，您目前的權限等級無法諮詢該位顧問。')];
-    }
-
-    // Single advisor responses
-    const responses: Record<AdvisorId, string[]> = {
-        boss: [
-            projectData?.timeline ? `時程 ${projectData.timeline} 看起來合理，但記得預留 20% 緩衝時間。` : `你沒填時程，我不知道這案子要跑多久。`,
-            `這案子最大的風險是什麼？你有想過最壞的情況嗎？`,
-            `別把精力放在細節上。先確認客戶付得起、願意付，再談做什麼。`,
-        ],
-        gm: [
-            `從策略角度看，這個案子能幫你打開哪個市場？別只想著這一單。`,
-            `建議分析三個競爭對手的報價區間，再決定你的定位是「品質優先」還是「速度優先」。`,
-            projectData?.description ? `你的描述有提到解決方案，但沒說清楚你的差異化優勢。` : `需求描述太空洞，建議重寫。`,
-        ],
-        cfo: [
-            projectData?.budget ? `${projectData.budget} 的預算，你的人力成本大概佔多少比例？記得算進去。` : `沒有預算我什麼都算不了。`,
-            `付款條件建議：簽約 30%、交稿 50%、驗收 20%。這樣現金流最健康。`,
-            `外包項目記得加上 10-15% 的管理費，這是您應得的協調成本。`,
-        ],
-        clo: [
-            `合約一定要寫清楚「修改次數上限」，否則無限修改是最常見的糾紛。`,
-            `著作權在交件並收到尾款後才轉移，這個要明確寫在合約裡。`,
-            projectData?.clientTaxId ? `客戶資料有統編，可以開立合法發票。` : `缺少客戶統編，請確認客戶是否需要統一發票。`,
-        ],
-        cso: [
-            `你的報價比市場低嗎？低價不一定拿得到案子，還可能讓客戶覺得品質有問題。`,
-            `建議在提案中加入「成功案例」，三個具體的過去作品比任何說明都有說服力。`,
-            `客戶最在意的是什麼？是時間、品質、還是價格？搞清楚這個，提案重點就不同了。`,
-        ],
-    };
-
-    const pool = responses[advisor] || responses.boss;
-    const content = pool[Math.floor(Math.random() * pool.length)];
-    return [makeMsg(advisor, content)];
-}
+// (The mock rule-engine has been removed as the system is now fully integrated with Gemini AI)
