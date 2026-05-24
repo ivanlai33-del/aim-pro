@@ -431,7 +431,7 @@ function Dashboard() {
                                 {activeTab === 'setup' && (
                                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1600px] mx-auto">
                                         {/* Project Header Block */}
-                                        <div className="bg-surface p-8 rounded-[24px] border border-border shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                                        <div className="bg-surface p-8 rounded-[24px] border border-border dark:border-0 shadow-sm dark:shadow-none mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
                                             <div className="flex flex-col gap-2 w-full md:w-auto">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600 shrink-0">
@@ -474,7 +474,7 @@ function Dashboard() {
                                                 <button
                                                     type="submit"
                                                     form="project-setup-form"
-                                                    className="inline-flex items-center px-8 py-4 border border-border shadow-sm text-[16px] font-bold rounded-2xl text-foreground bg-surface hover:bg-surface-hover hover:text-primary transition-all active:scale-95 whitespace-nowrap"
+                                                    className="inline-flex items-center px-8 py-4 border border-border dark:border-0 shadow-sm dark:shadow-none text-[16px] font-bold rounded-2xl text-foreground bg-surface hover:bg-surface-hover hover:text-primary transition-all active:scale-95 whitespace-nowrap"
                                                 >
                                                     <Save className="-ml-1 mr-2 h-6 w-6 text-muted-foreground" />
                                                     儲存設定環境
