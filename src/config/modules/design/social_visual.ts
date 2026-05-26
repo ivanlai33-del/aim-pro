@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_SOCIAL_VISUAL: BusinessModule = {
     id: 'social_visual',
-    name: '社群視覺設計',
+    name: '社群視覺與模板 職人模組',
     description: '社群圖卡、模板設計、Discord 視覺、Emoji 設計',
     categoryId: 'design',
-    tagline: '模板授權範圍說清楚，視覺一致不走樣',
+    tagline: '統一視覺規範，精準估算大量社群素材的產製成本',
     targetUser: '社群視覺設計師、品牌設計師',
     painPoints: ['模板授權範圍不清', '客戶自行修改後出問題', '視覺不一致'],
     corePrompt: `Role: 社群視覺設計師 (Social Media Visual Designer)

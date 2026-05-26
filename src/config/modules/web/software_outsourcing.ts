@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_SOFTWARE_OUTSOURCING: BusinessModule = {
     id: 'software_outsourcing',
-    name: '軟體外包與 SaaS',
+    name: '軟體外包與 SaaS 職人模組',
     description: '客製化系統開發、API 整合、資料遷移、技術顧問',
     categoryId: 'web',
-    tagline: '用 SLA 和里程碑保護你的開發成果',
+    tagline: '防禦合約陷阱，確保每一筆外包費用的 ROI 最大化',
     targetUser: '軟體公司、技術顧問、外包接案者',
     painPoints: ['需求變更頻繁、SLA 沒有定義', '智財歸屬不清', '人月估算不準確'],
     corePrompt: `Role: 軟體外包專案顧問 (Software Outsourcing Consultant)

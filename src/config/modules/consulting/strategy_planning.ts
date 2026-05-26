@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_STRATEGY_PLANNING: BusinessModule = {
     id: 'strategy_planning',
-    name: '策略規劃與顧問',
+    name: '品牌策略與企劃 職人模組',
     description: '商業模式設計、市場進入策略、競爭分析',
     categoryId: 'consulting',
-    tagline: '策略報告所有權清楚，執行支援範圍有界定',
+    tagline: '把策略思考轉化為可收費的階段性產出，保護你的腦力',
     targetUser: '策略顧問、商業顧問',
     painPoints: ['策略報告被拿去用但不付尾款', '執行支援範圍不清', '成效難量化'],
     corePrompt: `Role: 策略顧問與商業模式專家 (Strategy Consultant)

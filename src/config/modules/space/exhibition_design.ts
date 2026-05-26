@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_EXHIBITION_DESIGN: BusinessModule = {
     id: 'exhibition_design',
-    name: '展場與特展企劃',
+    name: '展場設計與佈置 職人模組',
     description: '大型展館攤位、品牌快閃店、沉浸式特展',
     categoryId: 'space',
-    tagline: '搭拆時程、展品安全，展前全部確認',
+    tagline: '確保進退場順利，防禦各種展場施工與法規變更風險',
     targetUser: '展場設計公司、特展策展人',
     painPoints: ['搭建拆除時間壓力大', '展品損壞責任不清', '場地規範限制多'],
     corePrompt: `Role: 展場設計與專案專家 (Exhibition Designer)

@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_AD_MANAGEMENT: BusinessModule = {
     id: 'ad_management',
-    name: '廣告投放與優化',
+    name: '廣告投放與優化 職人模組',
     description: 'Meta 廣告投放、Google Ads、成效優化',
     categoryId: 'marketing',
-    tagline: '廣告費和服務費分清楚，ROAS 說話',
+    tagline: '破除 ROAS 迷思，把隱藏的設定與測試成本具象化',
     targetUser: '數位廣告操手、媒體購買公司',
     painPoints: ['廣告費和服務費混淆', 'KPI 承諾過高', '帳號權限問題'],
     corePrompt: `Role: 廣告優化師與媒體採購 (Ad Optimizer)

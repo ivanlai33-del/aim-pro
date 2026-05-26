@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_ONLINE_COURSE: BusinessModule = {
     id: 'online_course_prod',
-    name: '線上課程製作統籌',
+    name: '線上課程製作 職人模組',
     description: '課程企劃、影片拍攝、後期剪輯、平台架設、行銷分潤',
     categoryId: 'pro_service',
-    tagline: '將知識轉化為可獲利的數位資產',
+    tagline: '從腳本到上架，完整防護課程製作過程中的版權與變更',
     targetUser: '內容創作者、企業講師、線上教育機構',
     painPoints: ['不知道如何將知識結構化', '拍攝成本控管困難', '平台選擇與串接複雜'],
     corePrompt: `Role: 資深線上課程製作人與內容策略師

@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_SEO: BusinessModule = {
     id: 'seo',
-    name: 'SEO 與搜尋策略',
+    name: 'SEO 與搜尋策略 職人模組',
     description: '網站 SEO 優化、關鍵字策略、內容撰寫',
     categoryId: 'marketing',
-    tagline: '白帽 SEO，長期排名，成效透明',
+    tagline: '拒絕無效保證，用白帽策略建立長效的 SEO 專案規範',
     targetUser: 'SEO 顧問、數位行銷公司',
     painPoints: ['排名承諾被濫用', '成效週期長客戶沒耐心', '白帽/黑帽爭議'],
     corePrompt: `Role: SEO 搜尋引擎優化專家 (SEO Specialist)

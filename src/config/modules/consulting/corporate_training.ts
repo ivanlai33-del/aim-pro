@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_CORPORATE_TRAINING: BusinessModule = {
     id: 'corporate_training',
-    name: '企業培訓與教練',
+    name: '企業內訓與講師 職人模組',
     description: '內訓課程、工作坊、一對一教練、線上課程製作',
     categoryId: 'consulting',
-    tagline: '出席率、錄影授權、成效評估，課前說清楚',
+    tagline: '杜絕超時授課，精準定義教材版權與講師鐘點費用',
     targetUser: '企業培訓師、教練、講師',
     painPoints: ['出席率不足', '課程被錄影後流傳', '成效評估爭議'],
     corePrompt: `Role: 企業培訓師與高階教練 (Corporate Trainer)

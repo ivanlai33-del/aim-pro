@@ -12,8 +12,8 @@ import {
 import { BusinessModule } from '@/types/industries';
 import { getAllItems } from '@/config/industries';
 
-// Icon mapping for all 21 modules
-const ICON_MAP: Record<string, any> = {
+// Icon mapping for all 26 modules
+export const ICON_MAP: Record<string, any> = {
     web_development: Code2,
     software_outsourcing: Layout,
     system_integration: Monitor,
@@ -53,15 +53,15 @@ const CATEGORIES = [
     { id: 'business_dev', name: '商務開發與競標' },
 ];
 
-// Category mapping with specific gradients and styles
+// Category mapping with specific gradients and styles matching the persona pages
 const CATEGORY_STYLES: Record<string, { color: string, bg: string, border: string, glow: string, gradient: string, themeColor: string }> = {
-    web: { color: 'text-white', bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', glow: 'rgba(6, 182, 212, 0.5)', gradient: 'from-cyan-400 to-blue-500', themeColor: 'bg-cyan-500' },
-    marketing: { color: 'text-white', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', glow: 'rgba(16, 185, 129, 0.5)', gradient: 'from-emerald-400 to-teal-500', themeColor: 'bg-emerald-500' },
-    design: { color: 'text-white', bg: 'bg-teal-500/10', border: 'border-teal-500/30', glow: 'rgba(20, 184, 166, 0.5)', gradient: 'from-teal-400 to-cyan-500', themeColor: 'bg-teal-500' },
-    space: { color: 'text-white', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', glow: 'rgba(16, 185, 129, 0.5)', gradient: 'from-emerald-400 to-teal-500', themeColor: 'bg-emerald-500' },
-    consulting: { color: 'text-white', bg: 'bg-sky-500/10', border: 'border-sky-500/30', glow: 'rgba(14, 165, 233, 0.5)', gradient: 'from-sky-400 to-blue-500', themeColor: 'bg-sky-500' },
-    pro_service: { color: 'text-white', bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', glow: 'rgba(6, 182, 212, 0.5)', gradient: 'from-cyan-400 to-teal-500', themeColor: 'bg-cyan-500' },
-    business_dev: { color: 'text-white', bg: 'bg-amber-500/10', border: 'border-amber-500/30', glow: 'rgba(245, 158, 11, 0.5)', gradient: 'from-amber-400 to-orange-500', themeColor: 'bg-amber-500' },
+    web: { color: 'text-white', bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', glow: 'theme-glow-web', gradient: 'theme-gradient-web', themeColor: 'bg-indigo-500' },
+    marketing: { color: 'text-white', bg: 'bg-amber-500/10', border: 'border-amber-500/30', glow: 'theme-glow-marketing', gradient: 'theme-gradient-marketing', themeColor: 'bg-amber-500' },
+    design: { color: 'text-white', bg: 'bg-pink-500/10', border: 'border-pink-500/30', glow: 'theme-glow-design', gradient: 'theme-gradient-design', themeColor: 'bg-pink-500' },
+    space: { color: 'text-white', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', glow: 'theme-glow-space', gradient: 'theme-gradient-space', themeColor: 'bg-emerald-500' },
+    consulting: { color: 'text-white', bg: 'bg-purple-500/10', border: 'border-purple-500/30', glow: 'theme-glow-consulting', gradient: 'theme-gradient-consulting', themeColor: 'bg-purple-500' },
+    pro_service: { color: 'text-white', bg: 'bg-sky-500/10', border: 'border-sky-500/30', glow: 'theme-glow-pro_service', gradient: 'theme-gradient-pro_service', themeColor: 'bg-sky-500' },
+    business_dev: { color: 'text-white', bg: 'bg-orange-500/10', border: 'border-orange-500/30', glow: 'theme-glow-business_dev', gradient: 'theme-gradient-business_dev', themeColor: 'bg-orange-500' },
 };
 
 export default function RoleSegmentation() {
@@ -141,19 +141,18 @@ export default function RoleSegmentation() {
                                     transition={{ duration: 0.4, ease: "easeOut" }}
                                 >
                                     <Link
-                                        href={`/login?mode=signup&industry=${mod.id}`}
+                                        href={`/personas/${mod.id}`}
                                         className="group relative block h-full"
                                     >
                                         {/* Thick Gradient Border Background Layer */}
-                                        <div className={`absolute -inset-[3px] rounded-[2.6rem] bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[2px]`} />
-                                        <div className={`absolute -inset-[1px] rounded-[2.6rem] bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                        <div className={`absolute -inset-[3px] rounded-[2.6rem] ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[2px]`} />
+                                        <div className={`absolute -inset-[1px] rounded-[2.6rem] ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
                                         {/* Main Card Content */}
-                                        <div className={`relative h-full p-8 rounded-[2rem] bg-white/10 backdrop-blur-xl transition-all duration-500 
-                                                      border border-white/20 flex flex-col
-                                                      hover:border-white/40
+                                        <div className={`relative h-full p-8 rounded-[2rem] glass-card-effect transition-all duration-500 
+                                                      flex flex-col
                                                       group-hover:-translate-y-[20px]
-                                                      group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.3),0_0_50px_${style.glow}]`}
+                                                      group-hover:${style.glow}`}
                                         >
                                             {/* Icon Container */}
                                             <div className={`w-16 h-16 rounded-2xl ${style.bg} text-white flex items-center justify-center mb-10 group-hover:scale-110 group-hover:rotate-3 group-hover:${style.themeColor} transition-all duration-500 shadow-xl border border-white/20`}>
@@ -177,7 +176,7 @@ export default function RoleSegmentation() {
                                                 <div className="flex items-center gap-3">
                                                     <div className={`h-[2px] w-6 bg-white rounded-full group-hover:w-12 transition-all duration-500`} />
                                                     <span className="text-sm font-bold tracking-widest text-white/60 group-hover:text-white uppercase transition-colors">
-                                                        開始估價
+                                                        開始協作
                                                     </span>
                                                 </div>
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-white/10 text-white group-hover:bg-white group-hover:text-cyan-600 transition-all duration-500 border border-white/20`}>

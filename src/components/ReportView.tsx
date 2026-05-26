@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 import Turnstile from './Turnstile';
 import { useProject } from '../context/ProjectContext';
 import { toast } from 'sonner';
-import UpgradeModal from './landing/UpgradeModal';
 import mermaid from 'mermaid';
 import VideoInsightsBento from './VideoInsightsBento';
 
@@ -55,9 +54,8 @@ const MermaidDiagram = ({ chart }: { chart: string }) => {
 };
 
 export default function ReportView({ reportContent, onSave, apiKey }: ReportViewProps) {
-    const { userTier, aiQuota, activeProject, updateProjectQuotation } = useProject();
+    const { userTier, aiQuota, activeProject, updateProjectQuotation, setUpgradeModalOpen } = useProject();
     const router = useRouter();
-    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const canDownload = userTier !== 'free';
     const reportRef = useRef<HTMLDivElement>(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -151,7 +149,7 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
     const handleTranslate = async (lang: 'English' | 'Japanese' | 'Traditional Chinese') => {
         // 🔒 Paywall Check: Translation is a Pro feature
         if (userTier === 'free') {
-            setShowUpgradeModal(true);
+            setUpgradeModalOpen(true);
             return;
         }
 
@@ -183,7 +181,7 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
     const handleDownloadPDF = async () => {
         // 🔒 Paywall: Free users cannot download
         if (!canDownload) {
-            setShowUpgradeModal(true);
+            setUpgradeModalOpen(true);
             return;
         }
 
@@ -508,12 +506,8 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
             )}
         </div>
 
-        <UpgradeModal
-            isOpen={showUpgradeModal}
-            onClose={() => setShowUpgradeModal(false)}
-            planName="Starter 個人啟航版"
-            tierId="starter"
-        />
+
+
         </>
     );
 }

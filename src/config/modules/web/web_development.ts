@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_WEB_DEVELOPMENT: BusinessModule = {
     id: 'web_development',
-    name: '網站/APP 開發',
+    name: '網站/APP 開發 職人模組',
     description: '形象網站、電商系統、企業官網、APP 開發',
     categoryId: 'web',
-    tagline: '把需求變成可驗收的系統，不再改不完',
+    tagline: '告別無底洞修改！用規格化防禦機制保障雙方權益',
     targetUser: '網頁工作室、全端工程師、接案開發者',
     painPoints: ['功能範圍不清、驗收標準模糊', '客戶一直追加功能', '改不完、收不到尾款'],
     corePrompt: `Role: 資深技術顧問與解決方案架構師 (Senior Technical Consultant)

@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_SYSTEM_INTEGRATION: BusinessModule = {
     id: 'system_integration',
-    name: '系統整合',
+    name: '系統整合 職人模組',
     description: 'ERP 整合、CRM 串接、第三方 API 整合',
     categoryId: 'web',
-    tagline: '讓現有系統無縫連通，資料不再孤島',
+    tagline: '打通資訊孤島，精準釐清 API 責任歸屬與資安規格',
     targetUser: 'ERP/CRM 導入顧問、IT 整合商',
     painPoints: ['現有系統不配合', '資料遷移風險高', '測試責任歸屬不清'],
     corePrompt: `Role: 系統整合專家 (Systems Integration Specialist)

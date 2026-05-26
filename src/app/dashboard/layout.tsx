@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from '@/components/Sidebar';
-import UpgradeModal from '@/components/landing/UpgradeModal';
+import SubscriptionModal from '@/components/subscription/SubscriptionModal';
 import { useProject } from '@/context/ProjectContext';
 
 export default function DashboardLayout({
@@ -20,11 +20,9 @@ export default function DashboardLayout({
                 </div>
             </main>
             
-            <UpgradeModal 
+            <SubscriptionModal 
                 isOpen={isUpgradeModalOpen} 
                 onClose={() => setUpgradeModalOpen(false)} 
-                planName="" 
-                tierId=""
             />
         </div>
     );

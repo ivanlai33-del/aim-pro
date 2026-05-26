@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_GRANT_SUBSIDY: BusinessModule = {
     id: 'grant_subsidy',
-    name: '補助計畫申請師',
+    name: '補助案申請 職人模組',
     description: '政府補助計畫撰寫、SBIR 申請、各部會補貼規劃',
     categoryId: 'business_dev',
-    tagline: '把政府的錢，合法合理地用在對的地方',
+    tagline: '釐清核銷責任，防禦補助款被追回或請款失敗的風險',
     maxDocuments: 10,
     targetUser: '新創公司、中小企業、社會企業、NGO 非營利組織、個人工作室、學術研究機構',
     painPoints: [

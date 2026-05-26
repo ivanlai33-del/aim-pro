@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_UI_UX: BusinessModule = {
     id: 'ui_ux_design',
-    name: 'UI/UX 介面設計',
+    name: 'UI/UX 介面設計 職人模組',
     description: '使用者經驗分析、介面設計、交互原型製作',
     categoryId: 'design',
-    tagline: '不只是畫圖，更是解決產品易用性問題',
+    tagline: '拒絕通靈設計！透過 wireframe 與設計系統防禦需求變更',
     targetUser: 'UI/UX 設計師、產品設計師',
     painPoints: ['客戶分不清楚 UI 與 UX', '需求邊界模糊導致無限增改', '開發落地與設計稿有落差'],
     corePrompt: `Role: 資深 UI/UX 設計師與產品策略師

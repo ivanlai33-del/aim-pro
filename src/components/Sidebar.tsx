@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { useProject } from "../context/ProjectContext";
 import { Plus, LayoutGrid, Layout, Briefcase, X, Wallet, LayoutDashboard, Settings, ChevronLeft, ChevronRight, Users, LogOut, Moon, Sun, Lock, Building2, Wand2, Menu, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -132,7 +133,7 @@ export default function Sidebar() {
                     <SidebarLink
                         href="/dashboard/settings"
                         icon={<Settings className="w-[18px] h-[18px] shrink-0" />}
-                        label="系統方案"
+                        label="系統與營業設定"
                         isActive={pathname === '/dashboard/settings'}
                         isCollapsed={sidebarCollapsed}
                         activeClass="bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/30"
@@ -297,11 +298,17 @@ interface ThemeSwitchProps {
 
 function ThemeSwitch({ isCollapsed }: ThemeSwitchProps) {
     const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
     };
 
+    // 解決水合錯誤: 在還沒 mounted 前，不要渲染內部圖標
     return (
         <button
             onClick={toggleTheme}
@@ -310,12 +317,13 @@ function ThemeSwitch({ isCollapsed }: ThemeSwitchProps) {
                 "w-10 h-10",
                 "text-muted-foreground hover:bg-surface-hover shadow-sm"
             )}
-            title={theme === 'dark' ? '切換至淺色模式' : '切換至深色模式'}
+            title={mounted ? (theme === 'dark' ? '切換至淺色模式' : '切換至深色模式') : '切換佈景主題'}
+            suppressHydrationWarning
         >
-            {theme === 'dark' ? (
-                <Sun className="w-5 h-5" />
+            {mounted ? (
+                theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />
             ) : (
-                <Moon className="w-5 h-5" />
+                <div className="w-5 h-5" />
             )}
         </button>
     );

@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_IP_AGENT: BusinessModule = {
     id: 'ip_agent',
-    name: '商標與智財代理',
+    name: '商標與智財代理 職人模組',
     description: '商標查詢、專利申請諮詢、著作權聲明代理、IP 授權合約諮詢',
     categoryId: 'pro_service',
-    tagline: '保護您的無形資產，讓專業價值有法律保障',
+    tagline: '防禦申請駁回風險，建立透明的智財代辦收費標準',
     targetUser: '商標代理人、法律顧問、智財專家',
     painPoints: ['客戶對規費與服務費分不清', '不知道如何選擇申請類別', '商標已被註冊導致做白工'],
     corePrompt: `Role: 資深商標代理人與智慧財產權顧問

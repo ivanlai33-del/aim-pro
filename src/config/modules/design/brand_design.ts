@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_BRAND_DESIGN: BusinessModule = {
     id: 'brand_design',
-    name: '品牌識別與平面設計',
+    name: '品牌設計與 CIS 職人模組',
     description: 'LOGO、VI 系統、海報、名片、包裝、DM、Banner、插畫、PPT 等',
     categoryId: 'design',
-    tagline: '修改次數說清楚，版權歸屬白紙黑字',
+    tagline: '終結主觀修改！把抽象美感轉化為可量化的設計規範',
     targetUser: '設計師、設計工作室、接案平面設計者',
     painPoints: ['改稿沒有上限', '版權歸屬不清', '報價沒有依據'],
     corePrompt: `Role: 品牌設計師與視覺傳達專家 (Brand Designer)

@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_GOVERNMENT_TENDER: BusinessModule = {
     id: 'government_tender',
-    name: '政府標案策略師',
+    name: '政府標案 職人模組',
     description: '政府採購標案分析、投標文件撰寫、勝率策略規劃',
     categoryId: 'business_dev',
-    tagline: '讀懂招標文件，讓每一次投標都有勝算',
+    tagline: '應對繁雜政府規格，確保標案執行過程不會虧損超支',
     maxDocuments: 10,
     targetUser: '設計公司、顧問公司、IT 廠商、工程承包商、各類接受政府採購的服務業者',
     painPoints: [

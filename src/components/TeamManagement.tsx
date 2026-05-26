@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProject } from '@/context/ProjectContext';
+import { supabase } from '@/lib/supabaseClient';
 import { 
     Users, 
     UserPlus, 
@@ -12,15 +13,16 @@ import {
     AlertCircle,
     Crown,
     Briefcase,
-    DollarSign,
     Calculator,
-    User
+    User,
+    RefreshCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 type TeamMember = {
     id: string;
+    user_id: string;
     name: string;
     email: string;
     role: 'owner' | 'admin' | 'sales' | 'accountant' | 'member';
@@ -28,20 +30,70 @@ type TeamMember = {
 };
 
 export default function TeamManagement() {
-    const { currentTeamRole, currentTeamId } = useProject();
-    
-    // In a real app, these would come from the database/context
-    const [members, setMembers] = useState<TeamMember[]>([
-        { id: '1', name: '老闆本人', email: 'owner@studio.tw', role: 'owner', status: 'active' },
-        { id: '2', name: '資深 PM 小華', email: 'pm@studio.tw', role: 'admin', status: 'active' },
-        { id: '3', name: '業務經理小明', email: 'sales@studio.tw', role: 'sales', status: 'active' },
-        { id: '4', name: '財務莉莉', email: 'finance@studio.tw', role: 'accountant', status: 'active' },
-    ]);
-
+    const { currentTeamRole, currentTeamId, session } = useProject();
+    const [members, setMembers] = useState<TeamMember[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [inviteEmail, setInviteEmail] = useState('');
     const [inviteRole, setInviteRole] = useState<TeamMember['role']>('member');
 
     const canManageTeam = ['owner', 'admin'].includes(currentTeamRole);
+
+    useEffect(() => {
+        if (currentTeamId) {
+            fetchTeamMembers();
+        }
+    }, [currentTeamId]);
+
+    const fetchTeamMembers = async () => {
+        setIsLoading(true);
+        try {
+            // First get team members
+            const { data: teamMembers, error } = await supabase
+                .from('team_members')
+                .select('*')
+                .eq('team_id', currentTeamId);
+
+            if (error) throw error;
+
+            // Extract unique user IDs
+            const userIds = teamMembers.map(tm => tm.user_id).filter(Boolean);
+            
+            // Get user profiles manually to avoid foreign key issues
+            let profilesDict: Record<string, any> = {};
+            if (userIds.length > 0) {
+                const { data: profiles, error: profileErr } = await supabase
+                    .from('users_profile')
+                    .select('id, name, email')
+                    .in('id', userIds);
+                    
+                if (!profileErr && profiles) {
+                    profilesDict = profiles.reduce((acc, p) => {
+                        acc[p.id] = p;
+                        return acc;
+                    }, {});
+                }
+            }
+
+            const formattedMembers: TeamMember[] = teamMembers.map(tm => {
+                const profile = tm.user_id ? (profilesDict[tm.user_id as string] || {}) : {};
+                return {
+                    id: tm.id,
+                    user_id: tm.user_id,
+                    name: profile.name || profile.email?.split('@')[0] || '未知用戶',
+                    email: profile.email || 'pending...',
+                    role: tm.role as any,
+                    status: tm.user_id ? 'active' : 'pending' // If no user_id, it might be an invitation
+                };
+            });
+
+            setMembers(formattedMembers);
+        } catch (error: any) {
+            console.error(error);
+            toast.error('無法載入團隊成員', { description: error.message });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleInvite = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,21 +112,17 @@ export default function TeamManagement() {
 
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.error);
+            if (!response.ok) {
+                // If API doesn't exist, simulate success for demo purposes
+                if (response.status === 404) {
+                    toast.success('🎉 [模擬] 邀請信已送出 (API 尚未實作)');
+                    setInviteEmail('');
+                    return;
+                }
+                throw new Error(data.error);
+            }
 
             const inviteLink = `${window.location.origin}/invite?token=${data.invitation.token}`;
-            
-            // Add to local list for immediate UI feedback
-            const newMember: TeamMember = {
-                id: data.invitation.id,
-                name: inviteEmail.split('@')[0],
-                email: inviteEmail,
-                role: inviteRole,
-                status: 'pending'
-            };
-            
-            setMembers([newMember, ...members]);
-            setInviteEmail('');
             
             toast.success(`邀請信已建立！`, {
                 description: `邀請連結已產生，請複製給員工：${inviteLink}`,
@@ -87,8 +135,30 @@ export default function TeamManagement() {
                     }
                 }
             });
+            
+            fetchTeamMembers();
+            setInviteEmail('');
         } catch (error: any) {
             toast.error(`邀請失敗: ${error.message}`);
+        }
+    };
+
+    const handleRemoveMember = async (memberId: string) => {
+        if (!confirm('確定要將此成員移出團隊嗎？')) return;
+        
+        try {
+            const { error } = await supabase
+                .from('team_members')
+                .delete()
+                .eq('id', memberId)
+                .eq('team_id', currentTeamId);
+                
+            if (error) throw error;
+            
+            toast.success('已移除成員');
+            setMembers(members.filter(m => m.id !== memberId));
+        } catch (error: any) {
+            toast.error('移除失敗', { description: error.message });
         }
     };
 
@@ -145,7 +215,7 @@ export default function TeamManagement() {
                         <Users className="w-8 h-8 mr-3 text-cyan-600" />
                         團隊成員管理
                     </h2>
-                    <p className="text-slate-500 font-bold mt-1">管理職位權限、發送邀請與成員汰換</p>
+                    <p className="text-slate-500 font-bold mt-1">管理職位權限、發送邀請與成員汰換 (Real DB)</p>
                 </div>
                 <div className="bg-cyan-50 px-4 py-2 rounded-2xl border border-cyan-100 flex items-center">
                     <Crown className="w-4 h-4 text-cyan-600 mr-2" />
@@ -207,7 +277,13 @@ export default function TeamManagement() {
 
                 {/* Member List */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-black/10 overflow-hidden">
+                    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-black/10 overflow-hidden relative min-h-[300px]">
+                        {isLoading && (
+                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+                                <RefreshCw className="w-8 h-8 text-cyan-500 animate-spin mb-4" />
+                                <span className="font-bold text-slate-500">載入成員名單...</span>
+                            </div>
+                        )}
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-slate-50/50 text-[11px] font-black text-slate-400 uppercase tracking-widest">
@@ -218,7 +294,11 @@ export default function TeamManagement() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-black/5">
-                                {members.map((member) => (
+                                {members.length === 0 && !isLoading ? (
+                                    <tr>
+                                        <td colSpan={4} className="text-center py-12 text-slate-400 font-bold">目前沒有其他成員</td>
+                                    </tr>
+                                ) : members.map((member) => (
                                     <tr key={member.id} className="group hover:bg-slate-50/50 transition-colors">
                                         <td className="px-8 py-6">
                                             <div className="flex items-center">
@@ -251,8 +331,11 @@ export default function TeamManagement() {
                                             )}
                                         </td>
                                         <td className="px-6 py-6 text-right">
-                                            {member.role !== 'owner' && (
-                                                <button className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100">
+                                            {member.role !== 'owner' && member.user_id !== session?.user?.id && (
+                                                <button 
+                                                    onClick={() => handleRemoveMember(member.id)}
+                                                    className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                >
                                                     <Trash2 className="w-5 h-5" />
                                                 </button>
                                             )}

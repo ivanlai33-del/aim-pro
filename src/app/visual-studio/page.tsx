@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   DesignSkill, DesignPhilosophy, ArtifactRecord, 
   getStoredArtifacts, storeArtifact, generateArtifactId,
@@ -21,7 +22,9 @@ import { useProject, Project } from '@/context/ProjectContext';
 import { toast } from 'sonner';
 
 export default function VisualStudioPage() {
-  const { projects } = useProject();
+  const { projects, updateProjectVisuals } = useProject();
+  const searchParams = useSearchParams();
+  
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [selectedSkill, setSelectedSkill] = useState<DesignSkill>('presentation');
   const [selectedPhilosophy, setSelectedPhilosophy] = useState<DesignPhilosophy>('apple');
@@ -30,6 +33,16 @@ export default function VisualStudioPage() {
   const [currentArtifact, setCurrentArtifact] = useState<ArtifactRecord | null>(null);
   const [artifactHistory, setArtifactHistory] = useState<ArtifactRecord[]>([]);
   const [copied, setCopied] = useState(false);
+
+  // 初始化讀取 Query Params
+  useEffect(() => {
+    const pid = searchParams.get('projectId');
+    const sk = searchParams.get('skill');
+    const ph = searchParams.get('philosophy');
+    if (pid) setSelectedProjectId(pid);
+    if (sk) setSelectedSkill(sk as DesignSkill);
+    if (ph) setSelectedPhilosophy(ph as DesignPhilosophy);
+  }, [searchParams]);
 
   const selectedProject = projects.find(p => p.id === selectedProjectId);
 
@@ -86,7 +99,23 @@ export default function VisualStudioPage() {
       storeArtifact(newArtifact);
       setArtifactHistory([newArtifact, ...artifactHistory]);
       setCurrentArtifact(newArtifact);
-      toast.success('交付物生成成功');
+      
+      // 同步回 ProjectContext 的 visualProposals
+      if (selectedProject) {
+        const existingVisuals = selectedProject.visualProposals || [];
+        updateProjectVisuals(selectedProject.id, [
+          {
+            id: newArtifact.id,
+            timestamp: newArtifact.generatedAt,
+            skill: newArtifact.skill,
+            philosophy: selectedPhilosophy,
+            htmlPreview: newArtifact.html
+          },
+          ...existingVisuals
+        ]);
+      }
+      
+      toast.success('交付物生成成功，已同步至專案');
     } catch (error: any) {
       console.error(error);
       toast.error('生成失敗: ' + error.message);

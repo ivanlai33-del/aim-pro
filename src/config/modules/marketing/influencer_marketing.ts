@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_INFLUENCER_MARKETING: BusinessModule = {
     id: 'influencer_marketing',
-    name: 'KOL/網紅媒合',
+    name: 'KOL/網紅媒合 職人模組',
     description: 'KOL 篩選媒合、業配洽談、成效追蹤',
     categoryId: 'marketing',
-    tagline: '找對 KOL，內容審核有保障',
+    tagline: '避免合作爭議，從審稿到授權提供完整的防禦規範',
     targetUser: 'KOL 經紀公司、品牌行銷部門',
     painPoints: ['KOL 臨時爽約', '內容不符品牌調性', '成效造假'],
     corePrompt: `Role: KOL/網紅行銷專家 (Influencer Marketing Specialist)

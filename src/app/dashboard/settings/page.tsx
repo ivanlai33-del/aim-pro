@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useProject } from '@/context/ProjectContext';
 import {
     RefreshCw, Save, CheckCircle2, Building, Bot, FileCog,
@@ -18,6 +18,7 @@ import { BankInfo } from '@/context/ProjectContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import BankBranchSelector from '@/components/BankBranchSelector';
+import SupportTicketWidget from '@/components/dashboard/SupportTicketWidget';
 
 // --- Icons Map ---
 const CATEGORY_ICONS: Record<string, any> = {
@@ -107,7 +108,19 @@ function SettingsContent({
     syncProviderInfoToCloud 
 }: any) {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const { setUpgradeModalOpen } = useProject();
+    
     const isPaymentSuccess = searchParams.get('payment') === 'success';
+
+    // Handle upgrade action from Persona pages
+    useEffect(() => {
+        if (searchParams.get('action') === 'upgrade') {
+            setUpgradeModalOpen(true);
+            // Optional: clean up URL so refresh doesn't pop it open again
+            router.replace('/dashboard/settings');
+        }
+    }, [searchParams, setUpgradeModalOpen, router]);
 
     // --- Local State for Settings ---
     const [apiKey, setApiKey] = useState('');
@@ -176,7 +189,7 @@ function SettingsContent({
                 description: "請升級方案或加購此模組以解鎖功能。",
                 action: {
                     label: "了解詳情",
-                    onClick: () => window.open('/pricing', '_blank') // Mock link
+                    onClick: () => window.open(`/personas/${moduleId}`, '_blank')
                 }
             });
             return;
@@ -391,16 +404,28 @@ function SettingsContent({
                                                                 </p>
 
                                                                 {/* Status Icon positioned bottom-right */}
-                                                                <div className="absolute bottom-0 right-0">
+                                                                <div className="absolute bottom-0 right-0 p-3">
                                                                     {isUnlocked ? (
-                                                                        <div className="flex items-center text-[14.5px] font-bold bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-md text-yellow-300 border border-white/20 shadow-sm">
-                                                                            <CheckCircle2 className="w-[18px] h-[18px] mr-1.5 text-yellow-300 fill-yellow-300/20" />
+                                                                        <div className="flex items-center text-[13px] font-bold bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-md text-yellow-300 border border-white/20 shadow-sm">
+                                                                            <CheckCircle2 className="w-4 h-4 mr-1.5 text-yellow-300 fill-yellow-300/20" />
                                                                             已啟用
                                                                         </div>
                                                                     ) : (
-                                                                        <div className="flex items-center text-[14.5px] font-bold bg-muted px-3 py-1.5 rounded-full text-muted-foreground border border-border">
-                                                                            <Lock className="w-[18px] h-[18px] mr-1.5" />
-                                                                            未訂閱
+                                                                        <div className="flex items-center gap-2">
+                                                                            <div 
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    window.open(`/personas/${moduleId}`, '_blank');
+                                                                                }}
+                                                                                className="flex items-center text-[12px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-full transition-colors cursor-pointer border border-indigo-100/50 shadow-sm"
+                                                                            >
+                                                                                <Info className="w-3.5 h-3.5 mr-1" />
+                                                                                了解詳情
+                                                                            </div>
+                                                                            <div className="flex items-center text-[12px] font-bold bg-muted px-3 py-1.5 rounded-full text-muted-foreground border border-border shadow-sm">
+                                                                                <Lock className="w-3.5 h-3.5 mr-1" />
+                                                                                未訂閱
+                                                                            </div>
                                                                         </div>
                                                                     )}
                                                                 </div>
@@ -551,8 +576,13 @@ function SettingsContent({
                                 <Building2 className="w-10 h-10 text-indigo-600 flex-shrink-0" />
                                 <h2 className="text-[27px] font-bold text-foreground tracking-tight flex items-baseline flex-wrap gap-x-2">
                                     <span>公司與統編資料</span>
-                                    <span className="text-[15px] text-muted-foreground font-normal">(Company Info)</span>
+                                    <span className="text-[15px] text-muted-foreground font-normal">(Provider Info)</span>
                                 </h2>
+                            </div>
+                            <div className="ml-14 mt-1 mb-4 flex items-center">
+                                <p className="text-[14px] text-muted-foreground bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 px-3 py-1.5 rounded-lg border border-indigo-100 dark:border-indigo-500/20">
+                                    💡 <strong>這筆資料的用途：</strong>此處為您的「營業檔案」，將會自動帶入到您產生的「報價單」與「合約」中，作為乙方 (服務提供者) 的官方聯絡資訊。
+                                </p>
                             </div>
                             <button
                                 onClick={handleSave}
@@ -706,6 +736,9 @@ function SettingsContent({
 
                     </section>
                 </div>
+
+                {/* --- 5. Support Ticketing (Contact Us) --- */}
+                <SupportTicketWidget />
 
 
                 {/* --- Simulation Mode (Developer Only) --- */}

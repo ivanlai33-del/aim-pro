@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_VIDEO_PRODUCTION: BusinessModule = {
     id: 'video_production',
-    name: '影片與動態影像 (NVIDIA 多模態升級版)',
+    name: '腳本企劃與影片製作 職人模組',
     description: '品牌形象片、TVC、社群短影音、活動紀錄、動態設計、多模態影音 RAG 檢索',
     categoryId: 'design',
-    tagline: 'NVIDIA 多模態秒級切片，腳本確認才開拍',
+    tagline: '從分鏡到後製，建立防禦無止盡修改的標準工作流',
     targetUser: '影片製作公司、剪輯師、動態設計師、行銷總監',
     painPoints: ['腳本一直改', '版權音樂糾紛', '素材所有權不清', '數十小時毛片人工審看耗時', '競品短影音成效難以量化解構'],
     corePrompt: `Role: 資深影視製作人與 AI 多模態視覺總監 (Senior Video Producer & Multimodal AI Director)

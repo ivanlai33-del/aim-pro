@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_PHOTOGRAPHY: BusinessModule = {
     id: 'photography',
-    name: '攝影服務',
+    name: '商業攝影 職人模組',
     description: '商業攝影、婚禮紀錄、產品拍攝、人像寫真',
     categoryId: 'design',
-    tagline: '精修張數說清楚，版權使用範圍白紙黑字',
+    tagline: '明確修圖標準與授權範圍，保護你的攝影專業著作權',
     targetUser: '商業攝影師、婚攝、產品攝影師',
     painPoints: ['精修張數爭議', '版權使用範圍不清', '場地問題責任歸屬'],
     corePrompt: `Role: 專業攝影師 (Professional Photographer)

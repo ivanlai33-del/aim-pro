@@ -23,7 +23,7 @@ export default function AgiOfficePage() {
   const { 
     messages, activeAdvisor, setActiveAdvisor, sendMessage, isAdvisorTyping,
     workflowStatus, triggerChainAnalysis, commitMeetingResolution, lastDeliverables,
-    allowedIds, customNames, setCustomName
+    allowedIds, customNames, setCustomName, syncActionToDashboard
   } = useAgi();
 
   const isQuotaExhausted = (aiQuota <= 0);
@@ -390,12 +390,22 @@ export default function AgiOfficePage() {
           </div>
           
           <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-white/10 scrollbar-track-transparent">
-            {ADVISORS.filter(a => ['cfo', 'clo', 'cso', 'gm'].includes(a.id)).map(advisor => {
+            {ADVISORS.filter(a => ['cfo', 'clo', 'cso', 'gm', 'boss'].includes(a.id)).map(advisor => {
               const deliverable = lastDeliverables[advisor.id as AdvisorId];
               const hasContent = !!deliverable?.content;
-              const hasTasks = !!deliverable?.tasks?.length;
               
               if (!hasContent) return null;
+
+              // Parse JSON Action Block if present
+              let parsedAction: any = null;
+              let cleanContent = deliverable.content;
+              const jsonMatch = deliverable.content.match(/\`\`\`json\n([\s\S]*?)\n\`\`\`/);
+              if (jsonMatch) {
+                  try {
+                      parsedAction = JSON.parse(jsonMatch[1]);
+                      cleanContent = deliverable.content.replace(/\`\`\`json\n[\s\S]*?\n\`\`\`/, '').trim();
+                  } catch(e) {}
+              }
               
               return (
                 <div key={`deliv-${advisor.id}`} className="bg-white dark:bg-gray-800/60 border border-slate-200 dark:border-gray-700/50 rounded-xl p-4 shadow-sm">
@@ -404,15 +414,39 @@ export default function AgiOfficePage() {
                     <span className="font-medium text-slate-700 dark:text-gray-200 text-sm">{advisor.name}產出</span>
                   </div>
                   
-                  <div className="text-sm text-slate-600 dark:text-gray-400 line-clamp-4 overflow-hidden mb-3 whitespace-pre-wrap">
-                    {deliverable.content}
-                  </div>
+                  {cleanContent && (
+                    <div className="text-sm text-slate-600 dark:text-gray-400 line-clamp-4 overflow-hidden mb-3 whitespace-pre-wrap">
+                      {cleanContent}
+                    </div>
+                  )}
+
+                  {parsedAction && (
+                    <div className="mt-4 pt-3 border-t border-indigo-100 dark:border-indigo-500/20">
+                      <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 mb-2">
+                        {advisor.id === 'cfo' && '發現新的報價單項目：'}
+                        {advisor.id === 'gm' && `拆解出 ${parsedAction.tasks?.length || 0} 項任務：`}
+                        {advisor.id === 'clo' && '修訂合約條文：'}
+                        {advisor.id === 'cso' && '整理客戶溝通摘要：'}
+                        {advisor.id === 'boss' && '生成全新提案視覺：'}
+                        {!['cfo', 'gm', 'clo', 'cso', 'boss'].includes(advisor.id) && '有新的可同步動作：'}
+                      </p>
+                      <button 
+                        onClick={() => syncActionToDashboard(advisor.id as AdvisorId, parsedAction.action, parsedAction)}
+                        className="w-full text-xs bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-indigo-500/20"
+                      >
+                        <CheckCircle2 className="w-3 h-3 mr-1.5" /> 立即同步至儀表板
+                      </button>
+                    </div>
+                  )}
                   
-                  {hasTasks && advisor.id === 'gm' && (
+                  {!parsedAction && advisor.id === 'gm' && !!deliverable?.tasks?.length && (
                     <div className="mt-4 pt-3 border-t border-indigo-100 dark:border-indigo-500/20">
                       <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 mb-2">已拆解出 {deliverable.tasks?.length} 項執行任務：</p>
-                      <button className="w-full text-xs bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <PlusCircle className="w-3 h-3 mr-1.5" /> 匯入至 ExecutionManager
+                      <button 
+                        onClick={() => syncActionToDashboard(advisor.id as AdvisorId, 'update_execution', { tasks: deliverable.tasks })}
+                        className="w-full text-xs bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-indigo-500/20"
+                      >
+                        <CheckCircle2 className="w-3 h-3 mr-1.5" /> 匯入至 ExecutionManager
                       </button>
                     </div>
                   )}

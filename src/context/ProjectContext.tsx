@@ -98,11 +98,28 @@ export interface PaymentSchedule {
 
 export interface ProjectDocument {
     id: string;
-    name: string;
+    title: string;
     type: string;
-    size: string;
     content: string;
-    parsedAt: string;
+    size?: string;
+    parsedAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface ClientCommLog {
+    id: string;
+    timestamp: string;
+    summary: string;
+    followUpTasks?: string[];
+}
+
+export interface VisualProposal {
+    id: string;
+    timestamp: string;
+    skill: string;
+    philosophy: string;
+    htmlPreview?: string;
 }
 
 export interface Project {
@@ -127,6 +144,16 @@ export interface Project {
     industries?: string[];
     modules: string[]; // List of active module IDs
     documents?: ProjectDocument[];
+    clientCommLogs?: ClientCommLog[];
+    visualProposals?: VisualProposal[];
+    snapshots?: ProjectSnapshot[];
+}
+
+export interface ProjectSnapshot {
+    id: string;
+    timestamp: string;
+    description: string;
+    projectState: Omit<Project, 'snapshots' | 'chatHistory'>;
 }
 
 export interface Team {
@@ -160,6 +187,10 @@ interface ProjectContextType {
     addProjectIndustry: (projectId: string, industryId: string) => void;
     addProjectModule: (projectId: string, moduleId: string) => void;
     updateProjectDocuments: (projectId: string, documents: ProjectDocument[]) => void;
+    updateProjectClientComms: (projectId: string, logs: ClientCommLog[]) => void;
+    updateProjectVisuals: (projectId: string, visuals: VisualProposal[]) => void;
+    createProjectSnapshot: (projectId: string, description: string) => void;
+    restoreProjectSnapshot: (projectId: string, snapshotId: string) => void;
     addChatMessage: (id: string, message: ChatMessage) => void;
     deleteProject: (id: string) => void;
     importProject: (project: Project) => void;
@@ -837,13 +868,94 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     const updateProjectDocuments = async (projectId: string, documents: ProjectDocument[]) => {
         let updated: Project | undefined;
         setProjects(prev => prev.map(p => {
-            if (p.id !== projectId) return p;
-            updated = { ...p, documents };
-            return updated;
+            if (p.id === projectId) {
+                updated = { ...p, documents };
+                return updated;
+            }
+            return p;
         }));
 
         if (session?.user && updated) {
             await syncProjectToCloud(projectId, updated);
+        }
+    };
+
+    const updateProjectClientComms = async (projectId: string, logs: ClientCommLog[]) => {
+        let updated: Project | undefined;
+        setProjects(prev => prev.map(p => {
+            if (p.id === projectId) {
+                updated = { ...p, clientCommLogs: logs };
+                return updated;
+            }
+            return p;
+        }));
+
+        if (session?.user && updated) {
+            await syncProjectToCloud(projectId, updated);
+        }
+    };
+
+    const updateProjectVisuals = async (projectId: string, visuals: VisualProposal[]) => {
+        let updated: Project | undefined;
+        setProjects(prev => prev.map(p => {
+            if (p.id === projectId) {
+                updated = { ...p, visualProposals: visuals };
+                return updated;
+            }
+            return p;
+        }));
+
+        if (session?.user && updated) {
+            await syncProjectToCloud(projectId, updated);
+        }
+    };
+
+    const createProjectSnapshot = async (projectId: string, description: string) => {
+        let updated: Project | undefined;
+        setProjects(prev => prev.map(p => {
+            if (p.id === projectId) {
+                const { snapshots, chatHistory, ...projectState } = p;
+                const newSnapshot: ProjectSnapshot = {
+                    id: generateId(),
+                    timestamp: new Date().toISOString(),
+                    description,
+                    projectState
+                };
+                updated = {
+                    ...p,
+                    snapshots: [newSnapshot, ...(p.snapshots || [])].slice(0, 10) // keep last 10
+                };
+                return updated;
+            }
+            return p;
+        }));
+        if (session?.user && updated) {
+            await syncProjectToCloud(projectId, updated);
+        }
+    };
+
+    const restoreProjectSnapshot = async (projectId: string, snapshotId: string) => {
+        let updated: Project | undefined;
+        setProjects(prev => prev.map(p => {
+            if (p.id === projectId && p.snapshots) {
+                const snapshot = p.snapshots.find(s => s.id === snapshotId);
+                if (snapshot) {
+                    updated = {
+                        ...p,
+                        ...snapshot.projectState,
+                        snapshots: p.snapshots, // keep snapshots intact
+                        chatHistory: p.chatHistory // keep chat history intact
+                    };
+                    return updated;
+                }
+            }
+            return p;
+        }));
+        if (session?.user && updated) {
+            await syncProjectToCloud(projectId, updated);
+            toast.success('專案已還原至指定版本');
+        } else if (updated) {
+            toast.success('專案已還原至指定版本');
         }
     };
 
@@ -1070,6 +1182,10 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             addProjectIndustry,
             addProjectModule,
             updateProjectDocuments,
+            updateProjectClientComms,
+            updateProjectVisuals,
+            createProjectSnapshot,
+            restoreProjectSnapshot,
             addChatMessage,
             deleteProject,
             importProject,

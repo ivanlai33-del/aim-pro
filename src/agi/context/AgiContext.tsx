@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from 'react';
 import { useProject } from '@/context/ProjectContext';
+import { useRouter } from 'next/navigation';
 import { useAgiHealthCheck, AgiHealthReport } from '@/hooks/useAgiHealthCheck';
 import { getProfessionalMemory, getProjectMemory, saveProjectMemory, ProfessionalMemory, ProjectMemory } from '@/lib/memoryService';
 import { toast } from 'sonner';
@@ -54,6 +55,9 @@ export interface AgiContextValue {
     // Custom Names
     customNames: Record<AdvisorId, string>;
     setCustomName: (id: AdvisorId, name: string) => void;
+
+    // Action Sync
+    syncActionToDashboard: (advisorId: AdvisorId, action: string, data: any) => Promise<boolean>;
 }
 
 export interface OnboardingItem {
@@ -78,9 +82,14 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
 };
 
 export function AgiProvider({ children }: { children: ReactNode }) {
-    const { activeProject, userTier, currentPersona, currentTeamId, consumeAiQuota } = useProject();
+    const { 
+        activeProject, userTier, currentPersona, currentTeamId, consumeAiQuota,
+        updateProjectQuotation, updateProjectExecution, updateProjectDocuments, createProjectSnapshot,
+        updateProjectClientComms, updateProjectVisuals
+    } = useProject();
     const userRole = currentPersona?.role || 'member';
     const allowedIds = ROLE_PERMISSIONS[userRole] || ROLE_PERMISSIONS.member;
+    const router = useRouter();
 
     // Window state
     const [isOpen, setIsOpen] = useState(false);
@@ -337,6 +346,103 @@ export function AgiProvider({ children }: { children: ReactNode }) {
         }
     }, [activeProject?.data, consumeAiQuota, lastDeliverables, profMemory, projMemory]);
 
+    const syncActionToDashboard = useCallback(async (advisorId: AdvisorId, action: string, data: any): Promise<boolean> => {
+        if (!activeProject?.id) {
+            toast.error('找不到作用中的專案，無法同步');
+            return false;
+        }
+
+        const advisorNames: Record<string, string> = {
+            cfo: '會計長',
+            clo: '法務',
+            gm: '總經理',
+            boss: '策略大腦',
+            cso: '業務'
+        };
+        const actorName = customNames[advisorId] || advisorNames[advisorId];
+
+        try {
+            await createProjectSnapshot(activeProject.id, `同步 ${actorName} 的 ${action} 更新`);
+
+            switch (action) {
+                case 'update_quotation':
+                    if (data.items) {
+                        const settings = activeProject.quotationSettings || { taxMode: 'exclusive', riskLevel: 'low' };
+                        updateProjectQuotation(activeProject.id, data.items, settings);
+                    }
+                    break;
+                case 'update_execution':
+                    if (data.tasks) {
+                        updateProjectExecution(activeProject.id, data.tasks, activeProject.paymentSchedule, activeProject.projectFlow);
+                    }
+                    break;
+                case 'update_document':
+                    if (data.content && data.title) {
+                        const newDocs = activeProject.documents ? [...activeProject.documents] : [];
+                        const existingIdx = newDocs.findIndex(d => d.title === data.title);
+                        if (existingIdx >= 0) {
+                            newDocs[existingIdx].content = data.content;
+                            newDocs[existingIdx].updatedAt = new Date().toISOString();
+                        } else {
+                            newDocs.push({
+                                id: crypto.randomUUID(),
+                                title: data.title,
+                                type: data.type || 'contract',
+                                content: data.content,
+                                createdAt: new Date().toISOString(),
+                                updatedAt: new Date().toISOString()
+                            });
+                        }
+                        updateProjectDocuments(activeProject.id, newDocs);
+                    }
+                    break;
+                case 'update_client_comm':
+                    if (data.summary) {
+                        const newLogs = activeProject.clientCommLogs ? [...activeProject.clientCommLogs] : [];
+                        newLogs.push({
+                            id: crypto.randomUUID(),
+                            timestamp: new Date().toISOString(),
+                            summary: data.summary,
+                            followUpTasks: data.followUpTasks || []
+                        });
+                        updateProjectClientComms(activeProject.id, newLogs);
+                    }
+                    break;
+                case 'generate_visual':
+                    if (data.skill && data.philosophy) {
+                        const newVisuals = activeProject.visualProposals ? [...activeProject.visualProposals] : [];
+                        newVisuals.push({
+                            id: crypto.randomUUID(),
+                            timestamp: new Date().toISOString(),
+                            skill: data.skill,
+                            philosophy: data.philosophy
+                        });
+                        updateProjectVisuals(activeProject.id, newVisuals);
+                        // 關閉 AGI 視窗並轉跳
+                        setIsOpen(false);
+                        const params = new URLSearchParams({
+                            projectId: activeProject.id,
+                            skill: data.skill,
+                            philosophy: data.philosophy
+                        });
+                        router.push(`/visual-studio?${params.toString()}`);
+                    }
+                    break;
+                default:
+                    console.warn(`未知的 Action: ${action}`);
+                    toast.error(`無法處理未知的行動指令: ${action}`);
+                    return false;
+            }
+
+            toast.success(`已將 ${actorName} 的提案同步至儀表板`);
+            return true;
+        } catch (error) {
+            console.error('Failed to sync action to dashboard:', error);
+            toast.error('同步至儀表板失敗');
+            return false;
+        }
+    }, [activeProject, customNames, createProjectSnapshot, updateProjectQuotation, updateProjectExecution, updateProjectDocuments, updateProjectClientComms, updateProjectVisuals, router]);
+
     // Save decision resolutions to project memory
     const commitMeetingResolution = useCallback(async (content: string) => {
         const projectId = activeProject?.id;
@@ -475,7 +581,7 @@ export function AgiProvider({ children }: { children: ReactNode }) {
             allowedIds,
             workflowStatus, currentWorkflowStep, lastDeliverables,
             triggerChainAnalysis, commitMeetingResolution, setMessages,
-            customNames, setCustomName
+            customNames, setCustomName, syncActionToDashboard
         }}>
             {children}
         </AgiContext.Provider>

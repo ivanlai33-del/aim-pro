@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_SOCIAL_MEDIA: BusinessModule = {
     id: 'social_media',
-    name: '社群經營與內容行銷',
+    name: '社群經營與內容行銷 職人模組',
     description: 'FB/IG 粉專經營、貼文製作、內容策略',
     categoryId: 'marketing',
-    tagline: '帳號是你的，成效是可量化的',
+    tagline: '量化無形成本！讓你的每一分內容創作都有清晰報價',
     targetUser: '社群小編、內容行銷公司、自媒體接案者',
     painPoints: ['帳號所有權爭議', '成效定義不清', '客戶隨時要改方向'],
     corePrompt: `Role: 數位行銷策略師 (Digital Marketing Strategist)

@@ -7,8 +7,6 @@ import jsPDF from 'jspdf';
 import { ProjectData } from '@/types/project';
 import { cn, generateId } from '@/lib/utils';
 import ContractGenerator from './ContractGenerator';
-import UpgradeModal from './landing/UpgradeModal';
-
 interface QuotationBuilderProps {
     projectData: ProjectData;
     reportContent?: string;
@@ -18,10 +16,9 @@ type RiskLevel = 'low' | 'medium' | 'high';
 type TaxMode = 'exclusive' | 'inclusive' | 'none';
 
 export default function QuotationBuilder({ projectData, reportContent }: QuotationBuilderProps) {
-    const { providerInfo, activeProject, updateProjectQuotation, userTier } = useProject();
+    const { providerInfo, activeProject, updateProjectQuotation, userTier, setUpgradeModalOpen } = useProject();
     const primaryBank = providerInfo?.bankAccounts?.find(b => b.id === providerInfo.primaryBankId);
     const canDownload = userTier !== 'free';
-    const [showUpgradeModal, setShowUpgradeModal] = useState<boolean>(false);
 
     // Initialize state from context or defaults
     const [items, setItems] = useState<QuotationItem[]>(activeProject?.quotationItems || [
@@ -330,7 +327,7 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
 
     const handleDownloadPDF = () => {
         if (!canDownload) {
-            setShowUpgradeModal(true);
+            setUpgradeModalOpen(true);
             return;
         }
         window.print();
@@ -860,12 +857,7 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
             </div> {/* end flex-1 overflow-y-auto wrapper */}
         </div> {/* end space-y-6 */}
 
-        <UpgradeModal
-            isOpen={showUpgradeModal}
-            onClose={() => setShowUpgradeModal(false)}
-            planName="Starter 個人啟航版"
-            tierId="starter"
-        />
+
         </>
     );
 }

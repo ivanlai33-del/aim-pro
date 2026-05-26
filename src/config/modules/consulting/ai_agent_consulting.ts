@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
     id: 'ai_agent_consultant',
-    name: 'AI Agent 代理顧問',
+    name: 'AI 導入與培訓 職人模組',
     description: '企業流程診斷、AI Agent PoC 設計、數位工作流自動化、AI 運維優化',
     categoryId: 'consulting',
-    tagline: '點擊 3 下，把您的經驗變成「不會累的 AI 助手」',
+    tagline: '拒絕神話 AI，用具體的概念驗證(PoC)保護雙方期待',
     targetUser: 'AI 顧問、流程工程師、數位轉型專家',
     painPoints: ['手動作業過多', '流程混亂難以自動化', 'AI 導入不知從何開始', '人員異動造成 Know-how 流失'],
     corePrompt: `Role: AI Agent 代理顧問 (AI Orchestrator)

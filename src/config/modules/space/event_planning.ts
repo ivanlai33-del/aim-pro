@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_EVENT_PLANNING: BusinessModule = {
     id: 'event_planning',
-    name: '活動與婚禮統籌',
+    name: '活動企劃與執行 職人模組',
     description: '婚禮統籌、企業尾牙、新品發表會',
     categoryId: 'space',
-    tagline: '取消政策、不可抗力，活動前就說清楚',
+    tagline: '應對突發狀況，用嚴謹的 SLA 保護你的活動企劃心血',
     targetUser: '活動公司、婚禮顧問、企業活動統籌',
     painPoints: ['臨時取消損失慘重', '場地問題責任歸屬', '人力調度臨時出包'],
     corePrompt: `Role: 活動統籌與策劃人 (Event Planner)

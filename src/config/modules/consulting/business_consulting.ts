@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_BUSINESS_CONSULTING: BusinessModule = {
     id: 'business_consulting',
-    name: '企業管理顧問',
+    name: '企業管理顧問 職人模組',
     description: '企業診斷、流程優化、組織重整、數位轉型',
     categoryId: 'consulting',
-    tagline: '顧問建議有依據，保密協議有保障',
+    tagline: '將無形顧問價值具象化，確立清晰的顧問服務邊界',
     targetUser: '管理顧問、企業診斷師',
     painPoints: ['顧問建議不被執行', '成效難以量化', '保密資訊外洩風險'],
     corePrompt: `Role: 企業顧問與策略導師 (Business Consultant)

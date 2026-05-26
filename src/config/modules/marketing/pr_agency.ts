@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_PR_AGENCY: BusinessModule = {
     id: 'pr_agency',
-    name: '公關公司與活動行銷',
+    name: '公關公司與活動行銷 職人模組',
     description: '媒體關係、記者會規劃、危機處理、品牌活動',
     categoryId: 'marketing',
-    tagline: '掌握話語權，讓品牌價值被看見',
+    tagline: '精準定義公關危機處理與媒體曝光的服務邊界',
     targetUser: '公關顧問、活動公關公司、行銷專案經理',
     painPoints: ['媒體曝光效果難量化', '現場突發狀況多', '新聞稿石沉大海'],
     corePrompt: `Role: 資深公關顧問與活動策劃專家 (Senior PR Consultant)

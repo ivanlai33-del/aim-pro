@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { useProject, Customer } from '@/context/ProjectContext';
-import { Users, Plus, Search, Mail, Phone, MapPin, Building2, Tag, Trash2, Edit2, X, Check, ExternalLink } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Users, Plus, Search, Mail, Phone, MapPin, Building2, Tag, Trash2, Edit2, X, Check, ExternalLink, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 export default function CustomersPage() {
-    const { customers, addCustomer, updateCustomer, deleteCustomer } = useProject();
+    const { customers, projects, addCustomer, updateCustomer, deleteCustomer, selectProject } = useProject();
+    const router = useRouter();
     const [isAdding, setIsAdding] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -234,7 +236,40 @@ export default function CustomersPage() {
                             )}
                         </div>
 
-                        <div className="mt-8 pt-4 border-t border-slate-50 flex justify-between items-center">
+                        {/* Related Projects */}
+                        {(() => {
+                            const relatedProjects = projects.filter(p => 
+                                (customer.company && p.data.clientCompany === customer.company) || 
+                                (customer.taxId && p.data.clientTaxId === customer.taxId) || 
+                                (customer.name && p.data.clientContact === customer.name)
+                            );
+                            
+                            return relatedProjects.length > 0 ? (
+                                <div className="mt-5 pt-4 border-t border-slate-100 dark:border-gray-700">
+                                    <h5 className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-3 flex items-center">
+                                        <Briefcase className="w-3.5 h-3.5 mr-1" />
+                                        關聯專案 ({relatedProjects.length})
+                                    </h5>
+                                    <div className="space-y-2">
+                                        {relatedProjects.map(p => (
+                                            <button
+                                                key={p.id}
+                                                onClick={() => {
+                                                    selectProject(p.id);
+                                                    router.push('/dashboard');
+                                                }}
+                                                className="w-full text-left bg-slate-50 hover:bg-indigo-50 dark:bg-gray-800 dark:hover:bg-indigo-500/10 rounded-lg p-2.5 text-xs text-slate-700 dark:text-gray-300 transition-colors flex items-center justify-between group/proj"
+                                            >
+                                                <span className="font-medium truncate pr-2">{p.name || '未命名專案'}</span>
+                                                <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover/proj:opacity-100 transition-opacity" />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : null;
+                        })()}
+
+                        <div className="mt-6 pt-4 border-t border-slate-50 flex justify-between items-center">
                             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                                 Added {new Date(customer.createdAt).toLocaleDateString()}
                             </span>

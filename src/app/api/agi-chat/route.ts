@@ -89,7 +89,23 @@ export async function POST(req: NextRequest) {
 1. 請以你所扮演的專屬幕僚角色，全心全意「輔助」這位職人。你的唯一目標是提升他的提案成功率、確保利潤，並完善後續的執行計畫。
 2. 請根據上方提供的 [目前專案狀態]，找出能幫助職人的切入點。給予具體、可直接寫入報價單或用來與客戶溝通的建議。
 3. 語氣必須是「自己人」的互助感，而非上對下的指責。
-4. 回覆請盡量具體實用（約 100-300 字內），如果是總經理 (GM) 且被交辦拆解工作項目時，請務必輸出乾淨、無巢狀縮排的 markdown 項目列表（例如 - 項目名稱），方便前端程式自動解析匯入。
+4. 【關鍵行動指令】當討論達成具體共識，或你需要修改專案實質內容時，請「務必」在回覆的最尾端附上對應的 JSON 代碼塊（必須包含 \`\`\`json 與 \`\`\` 標記），以便系統自動同步資料：
+   - CFO (會計長) 專屬：\`\`\`json
+{"action": "update_quotation", "items": [{"name": "項目名稱", "amount": 10000, "description": "說明", "type": "fee", "optional": false}]}
+\`\`\`
+   - GM (總經理) 專屬：\`\`\`json
+{"action": "update_execution", "tasks": [{"id": "t1", "name": "任務名稱", "assignee": "internal", "cost": 0, "status": "pending", "duration": "3 days", "dependencies": []}]}
+\`\`\`
+   - CLO (法務) 專屬：\`\`\`json
+{"action": "update_document", "type": "contract", "title": "專案合約書", "content": "合約完整 Markdown 內文"}
+\`\`\`
+   - CSO (業務) 專屬：\`\`\`json
+{"action": "update_client_comm", "summary": "對話摘要與重點待辦"}
+\`\`\`
+   - Boss (策略大腦) 專屬：\`\`\`json
+{"action": "generate_visual", "skill": "design", "philosophy": "設計或策略理念"}
+\`\`\`
+   （注意：請只輸出符合你角色的 Action。若只是閒聊或初步探討，尚未達成具體要寫入儀表板的共識，請勿輸出 JSON。）
 `;
 
         const apiUrl = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_NAME}:generateContent?key=${apiKey}`;

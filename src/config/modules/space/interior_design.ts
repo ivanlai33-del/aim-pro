@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_INTERIOR_DESIGN: BusinessModule = {
     id: 'interior_design',
-    name: '室內空間設計與裝修',
+    name: '室內設計與裝潢 職人模組',
     description: '居家裝潢、店面改裝、辦公室設計',
     categoryId: 'space',
-    tagline: '工序、材料、追加費用，全部寫進合約',
+    tagline: '避免工程糾紛，建立透明且具防禦力的裝潢報價體系',
     targetUser: '室內設計師、裝修工班、設計裝修公司',
     painPoints: ['工期延誤', '材料替換糾紛', '追加工程費無限追加'],
     corePrompt: `Role: 室內設計師與工務經理 (Interior Designer)

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Check, Star, Shield, Users, Zap, Building2, Crown } from 'lucide-react';
-import UpgradeModal from './UpgradeModal';
+import SubscriptionModal from '../subscription/SubscriptionModal';
 import { PRICING_CONFIG, SubscriptionTier, PricingPeriod } from '@/config/subscription';
 import { cn } from '@/lib/utils';
 
@@ -209,11 +209,9 @@ export default function Pricing() {
                 </div>
             </div>
 
-            <UpgradeModal
+            <SubscriptionModal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                planName={selectedPlan.name}
-                tierId={selectedPlan.id}
             />
         </section>
     );

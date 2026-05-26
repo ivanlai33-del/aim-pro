@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_HOME_ORGANIZER: BusinessModule = {
     id: 'home_organizer',
-    name: '專業整理收納師',
+    name: '居家整理顧問 職人模組',
     description: '居家空間規劃、物品捨棄建議、動線優化、到府收納施作',
     categoryId: 'pro_service',
-    tagline: '不只是整理，更是透過空間重整生活',
+    tagline: '保護你的體力與專業，明確定義服務時數與廢棄物清運責任',
     targetUser: '整理師、收納顧問、軟裝佈置師',
     painPoints: ['客戶對「整理」與「清潔」有誤解', '物品過多導致結案困難', '施作時間難以精確預估'],
     corePrompt: `Role: 專業空間整理顧問與生活規劃師

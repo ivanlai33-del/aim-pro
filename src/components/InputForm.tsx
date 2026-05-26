@@ -22,7 +22,7 @@ interface InputFormProps {
     isLoading: boolean;
 }
 
-import { ProjectData } from '@/types/project';
+import { ProjectData, ProjectDocument } from '@/types/project';
 
 const MODULE_ICONS: Record<string, any> = {
     // 🟢 Web
@@ -234,14 +234,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
     const { checkAccess } = useModuleAccess();
 
     // --- 文件解析器 State ---
-    const [parsedDocuments, setParsedDocuments] = useState<Array<{
-        id: string;
-        name: string;
-        type: string;
-        size: string;
-        content: string;
-        parsedAt: string;
-    }>>([]);
+    const [parsedDocuments, setParsedDocuments] = useState<ProjectDocument[]>([]);
 
     // Load existing docs on mount or project switch
     useEffect(() => {
@@ -295,7 +288,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
 
                 newDocs.push({
                     id: `doc_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-                    name: file.name,
+                    title: file.name,
                     type: file.name.split('.').pop()?.toUpperCase() || 'TXT',
                     size: sizeMB < 0.1 ? `${Math.round(file.size / 1024)}KB` : `${sizeMB.toFixed(1)}MB`,
                     content: cleanText,
@@ -322,7 +315,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
         if (parsedDocuments.length >= MAX_DOCS) { toast.error(`最多支援 ${MAX_DOCS} 份文件`); return; }
         const doc = {
             id: `doc_paste_${Date.now()}`,
-            name: `貼上文字 #${parsedDocuments.filter(d => d.name.startsWith('貼上')).length + 1}`,
+            title: `貼上文字 #${parsedDocuments.filter(d => d.title.startsWith('貼上')).length + 1}`,
             type: 'TEXT',
             size: `${pasteText.length} 字`,
             content: pasteText.slice(0, 8000),
@@ -351,7 +344,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
         if (parsedDocuments.length === 0) return '';
         return `\n\n---\n## 📎 附加參考文件（共 ${parsedDocuments.length} 份，請整合分析）\n` +
             parsedDocuments.map((d, i) =>
-                `\n### 文件 ${i + 1}：${d.name}\n${d.content}`
+                `\n### 文件 ${i + 1}：${d.title}\n${d.content}`
             ).join('\n');
     };
 
@@ -632,7 +625,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
                                     <div key={doc.id} className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
                                         <FileText size={16} className="text-emerald-500 shrink-0" />
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-[13px] font-semibold text-foreground truncate">{doc.name}</p>
+                                            <p className="text-[13px] font-semibold text-foreground truncate">{doc.title}</p>
                                             <p className="text-[11px] text-muted-foreground">{doc.type} · {doc.size} · 解析於 {doc.parsedAt} · {doc.content.length} 字元已擷取</p>
                                         </div>
                                         <button type="button" onClick={() => removeDoc(doc.id)}

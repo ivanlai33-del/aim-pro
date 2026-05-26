@@ -2,10 +2,10 @@ import { BusinessModule } from '@/types/industries';
 
 export const MODULE_REAL_ESTATE_AGENT: BusinessModule = {
     id: 'real_estate_agent',
-    name: '不動產全生命週期 AI 顧問',
+    name: '房地產代銷 職人模組',
     description: '提供土地代書產權調查、各銀行房貸試算、房屋土地銷售文案、租賃包租代管投報及定型化契約審查之 100% AI 輔助與法定免責防護',
     categoryId: 'pro_service',
-    tagline: '全生命週期 AI 智能中樞：買賣靠數據，合約靠審查，特許業務零法律風險',
+    tagline: '確保法規合規，建立安全可靠的代銷合約與銷售規範',
     targetUser: '首購族、置產投資客、自售屋主、房東房客、商辦尋求者及包租代管業者',
     painPoints: [
         '產權謄本複雜且隱藏抵押設定，代書過戶與稅費試算常缺乏事前透明度',
