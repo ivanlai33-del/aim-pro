@@ -4,8 +4,8 @@
 
 import { ProjectData } from '@/types/project';
 
-export type DesignPhilosophy = 'apple' | 'estate' | 'cruise' | 'rural' | 'cyber' | 'gallery';
-export type DesignSkill = 'prototype' | 'presentation' | 'dashboard' | 'brand_spec' | 'flowchart';
+export type DesignPhilosophy = 'apple' | 'estate' | 'cruise' | 'rural' | 'cyber' | 'gallery' | 'magazine';
+export type DesignSkill = 'prototype' | 'presentation' | 'dashboard' | 'brand_spec' | 'flowchart' | 'html_ppt' | 'swipe_deck';
 
 export interface DesignBrief {
   projectName: string;
@@ -22,7 +22,8 @@ export function getFullCraftCSS(philosophy: DesignPhilosophy): string {
         cruise: `--bg: #020c1b; --text: #e8dcc8; --accent: #d4af6a; --secondary: #0d2137; --font: 'Cormorant Garamond'; --accent-gradient: linear-gradient(180deg, #d4af6a 0%, #8a6d3b 100%);`,
         rural: `--bg: #fdf8f0; --text: #3d2b1f; --accent: #7c4a1e; --secondary: #f4ece2; --font: 'Noto Serif TC'; --accent-gradient: linear-gradient(to right, #7c4a1e, #a67c52);`,
         cyber: `--bg: #020617; --text: #e2e8f0; --accent: #10b981; --secondary: #0f172a; --font: 'Space Mono'; --accent-gradient: linear-gradient(90deg, #10b981, #3b82f6);`,
-        gallery: `--bg: #ffffff; --text: #000; --accent: #e63946; --secondary: #f5f5f0; --font: 'Outfit'; --accent-gradient: linear-gradient(45deg, #e63946, #000);`
+        gallery: `--bg: #ffffff; --text: #000; --accent: #e63946; --secondary: #f5f5f0; --font: 'Outfit'; --accent-gradient: linear-gradient(45deg, #e63946, #000);`,
+        magazine: `--bg: #fafafa; --text: #111111; --accent: #ff4500; --secondary: #f0f0f0; --font: 'Helvetica Neue', Helvetica; --accent-gradient: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);`
     };
 
     return `
@@ -74,11 +75,11 @@ export function getFullCraftCSS(philosophy: DesignPhilosophy): string {
 }
 
 export const PHILOSOPHY_LABELS: Record<DesignPhilosophy, string> = {
-  apple: '極致蘋果 (Apple)', estate: '私人莊園 (Estate)', cruise: '皇家郵輪 (Cruise)', rural: '文青鄉產 (Rural)', cyber: '賽博科技 (Cyber)', gallery: '現代藝廊 (Creative)',
+  apple: '極致蘋果 (Apple)', estate: '私人莊園 (Estate)', cruise: '皇家郵輪 (Cruise)', rural: '文青鄉產 (Rural)', cyber: '賽博科技 (Cyber)', gallery: '現代藝廊 (Creative)', magazine: '時尚雜誌 (Magazine)'
 };
 
 export const SKILL_LABELS: Record<DesignSkill, string> = {
-  prototype: '互動原型', presentation: '提案簡報', dashboard: '數據儀表板', brand_spec: '品牌規範書', flowchart: '流程架構圖',
+  prototype: '互動原型', presentation: '提案簡報', dashboard: '數據儀表板', brand_spec: '品牌規範書', flowchart: '流程架構圖', html_ppt: '網頁互動簡報', swipe_deck: '橫向滑動提案'
 };
 
 export const PHILOSOPHY_DESCRIPTIONS: Record<DesignPhilosophy, string> = {
@@ -88,10 +89,12 @@ export const PHILOSOPHY_DESCRIPTIONS: Record<DesignPhilosophy, string> = {
   rural: '純樸溫度：大地暖色、紙質感、手感編排',
   cyber: '未來脈動：發光網格、霓虹對比、科技感介面',
   gallery: '前衛衝擊：不對稱佈局、流體元素、藝術對比',
+  magazine: '時尚雜誌：大膽排版、全屏圖片、搶眼字體',
 };
 
 export const SKILL_DESCRIPTIONS: Record<DesignSkill, string> = {
-  prototype: '產出可互動的 Web UI 原型', presentation: '產出雜誌感的專業提案簡報', dashboard: '產出視覺化數據儀表板', brand_spec: '產出完整品牌視覺規範書', flowchart: '產出流程架構圖',
+  prototype: '產出可互動的 Web UI 原型', presentation: '產出專業標準的 PDF 簡報格式', dashboard: '產出視覺化數據儀表板', brand_spec: '產出完整品牌視覺規範書', flowchart: '產出流程架構圖',
+  html_ppt: '產出高流暢度、高互動性的 HTML 網頁簡報', swipe_deck: '產出如數位雜誌般的橫向滑動體驗'
 };
 
 export function getRecommendedSkills(moduleId: string): DesignSkill[] {

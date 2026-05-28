@@ -5,7 +5,7 @@ import {
   Sparkles, Eye, Code2, History, Download, Copy, Check, 
   ChevronRight, Building2, Layout, Presentation, BarChart3, 
   Settings2, RefreshCw, Layers, FileCode2, Info, Briefcase,
-  ExternalLink, ArrowLeft, Trash2
+  ExternalLink, ArrowLeft, Trash2, MonitorPlay, GalleryHorizontalEnd
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -243,6 +243,8 @@ export default function VisualStudioPage() {
                       {skill === 'dashboard' && <BarChart3 className="w-5 h-5" />}
                       {skill === 'brand_spec' && <FileCode2 className="w-5 h-5" />}
                       {skill === 'flowchart' && <Layout className="w-5 h-5" />}
+                      {skill === 'html_ppt' && <MonitorPlay className="w-5 h-5" />}
+                      {skill === 'swipe_deck' && <GalleryHorizontalEnd className="w-5 h-5" />}
                     </div>
                     <div>
                       <h3 className={cn("text-sm font-bold", isSelected ? "text-white" : "text-slate-300")}>

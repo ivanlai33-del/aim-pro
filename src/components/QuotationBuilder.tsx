@@ -29,7 +29,7 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
     ]);
     const [taxMode, setTaxMode] = useState<TaxMode>((activeProject?.quotationSettings?.taxMode as TaxMode) || 'exclusive'); // exclusive = +5%
     const [riskLevel, setRiskLevel] = useState<RiskLevel>((activeProject?.quotationSettings?.riskLevel as RiskLevel) || 'medium');
-    const [quoteStyle, setQuoteStyle] = useState<'standard' | 'modern' | 'minimal' | 'classic' | 'creative'>('standard');
+    const [quoteStyle, setQuoteStyle] = useState<'standard' | 'modern' | 'minimal' | 'classic' | 'creative' | 'od_swiss' | 'od_brutal' | 'od_editorial' | 'od_mono' | 'od_receipt' | 'od_architect' | 'od_academic' | 'od_gallery' | 'od_terminal' | 'od_neo_classic'>('standard');
 
     // Import Confirmation State
     const [isConfirmingImport, setIsConfirmingImport] = useState(false);
@@ -404,6 +404,18 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                 <option value="minimal">極簡低調 (Minimal)</option>
                                 <option value="classic">經典嚴謹 (Classic)</option>
                                 <option value="creative">創意活潑 (Creative)</option>
+                                <optgroup label="Open Design 黑白職人風格">
+                                    <option value="od_swiss">國際瑞士風 (Swiss)</option>
+                                    <option value="od_brutal">新粗野主義 (Brutal)</option>
+                                    <option value="od_editorial">報刊社論 (Editorial)</option>
+                                    <option value="od_mono">極致純黑 (Monochrome)</option>
+                                    <option value="od_receipt">電子收據 (Receipt)</option>
+                                    <option value="od_architect">建築藍圖 (Architect)</option>
+                                    <option value="od_academic">學術論文 (Academic)</option>
+                                    <option value="od_gallery">現代藝廊 (Gallery)</option>
+                                    <option value="od_terminal">代碼終端 (Terminal)</option>
+                                    <option value="od_neo_classic">新古典 (Neo Classic)</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -470,7 +482,17 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                         quoteStyle === 'modern' && "max-w-[850px] p-16 font-sans border-t-[12px] border-black/20 rounded-none bg-white print:px-8 print:py-8 print:border-t-0",
                         quoteStyle === 'minimal' && "max-w-[780px] p-16 font-sans border-none shadow-none print:px-8 print:py-8",
                         quoteStyle === 'classic' && "max-w-[820px] p-12 font-serif border border-black/20 shadow-sm print:px-8 print:py-8 print:border-none",
-                        quoteStyle === 'creative' && "max-w-4xl p-16 rounded-[2.5rem] font-sans bg-gradient-to-br from-white to-slate-50/50 shadow-xl overflow-hidden border border-black/20 print:px-8 print:py-8 print:rounded-none print:shadow-none"
+                        quoteStyle === 'creative' && "max-w-4xl p-16 rounded-[2.5rem] font-sans bg-gradient-to-br from-white to-slate-50/50 shadow-xl overflow-hidden border border-black/20 print:px-8 print:py-8 print:rounded-none print:shadow-none",
+                        quoteStyle === 'od_swiss' && "max-w-[850px] p-16 font-sans bg-white border border-black shadow-none print:border-none print:p-8",
+                        quoteStyle === 'od_brutal' && "max-w-[850px] p-16 font-sans bg-white border-[6px] border-black shadow-[8px_8px_0_0_#000] print:border-[4px] print:shadow-none print:p-8",
+                        quoteStyle === 'od_editorial' && "max-w-[850px] p-16 font-serif bg-white border-y-[4px] border-black print:border-y-[4px] print:p-8",
+                        quoteStyle === 'od_mono' && "max-w-[850px] p-16 font-sans bg-black text-white print:bg-white print:text-black print:p-8 print:border print:border-black",
+                        quoteStyle === 'od_receipt' && "max-w-[600px] p-12 font-mono bg-white border-dashed border-2 border-black print:border-dashed print:p-6",
+                        quoteStyle === 'od_architect' && "max-w-[850px] p-16 font-mono bg-white border-[1px] border-black bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:20px_20px] print:bg-none print:p-8",
+                        quoteStyle === 'od_academic' && "max-w-4xl p-20 font-serif bg-white print:p-12 print:border-none",
+                        quoteStyle === 'od_gallery' && "max-w-[900px] p-16 font-sans bg-white print:p-8 print:border-none",
+                        quoteStyle === 'od_terminal' && "max-w-[850px] p-16 font-mono bg-[#1e1e1e] text-[#d4d4d4] print:bg-white print:text-black print:p-8",
+                        quoteStyle === 'od_neo_classic' && "max-w-[850px] p-16 font-serif bg-white border-double border-[6px] border-black print:p-12 print:border-[4px]"
                     )}
                 >
                     {/* Watermark Overlay for Free users */}
@@ -514,6 +536,54 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                             </div>
                             {/* Subtle Decorative Circle */}
                             <div className="absolute -right-12 -top-12 w-48 h-48 bg-indigo-50/50 rounded-full blur-3xl pointer-events-none"></div>
+                        </div>
+                    ) : ['od_swiss', 'od_brutal', 'od_editorial', 'od_mono', 'od_receipt', 'od_architect', 'od_academic', 'od_gallery', 'od_terminal', 'od_neo_classic'].includes(quoteStyle) ? (
+                        <div className={cn(
+                            "flex justify-between items-start mb-16",
+                            quoteStyle === 'od_swiss' && "border-b border-black pb-8",
+                            quoteStyle === 'od_brutal' && "border-b-[6px] border-black pb-6",
+                            quoteStyle === 'od_editorial' && "border-b-[2px] border-black pb-6",
+                            quoteStyle === 'od_mono' && "border-b-[2px] border-white pb-6 print:border-black",
+                            quoteStyle === 'od_receipt' && "border-b-2 border-dashed border-black pb-4 text-center block flex-col items-center",
+                            quoteStyle === 'od_architect' && "border-b border-black pb-4",
+                            quoteStyle === 'od_academic' && "border-b border-black pb-8 text-center flex-col items-center",
+                            quoteStyle === 'od_gallery' && "mb-24 flex-col gap-8",
+                            quoteStyle === 'od_terminal' && "border-b border-[#d4d4d4] pb-4 print:border-black",
+                            quoteStyle === 'od_neo_classic' && "border-b-4 border-double border-black pb-6 text-center flex-col items-center"
+                        )}>
+                            <div className={cn(
+                                (quoteStyle === 'od_academic' || quoteStyle === 'od_receipt' || quoteStyle === 'od_neo_classic') && "w-full text-center"
+                            )}>
+                                <h1 className={cn(
+                                    "font-black m-0 leading-none",
+                                    quoteStyle === 'od_swiss' && "text-5xl font-sans tracking-tight",
+                                    quoteStyle === 'od_brutal' && "text-6xl font-black uppercase tracking-tighter",
+                                    quoteStyle === 'od_editorial' && "text-5xl font-serif italic",
+                                    quoteStyle === 'od_mono' && "text-5xl font-bold uppercase",
+                                    quoteStyle === 'od_receipt' && "text-3xl font-mono uppercase tracking-widest",
+                                    quoteStyle === 'od_architect' && "text-4xl font-mono uppercase tracking-widest",
+                                    quoteStyle === 'od_academic' && "text-4xl font-serif tracking-widest mb-4",
+                                    quoteStyle === 'od_gallery' && "text-2xl font-light tracking-widest uppercase",
+                                    quoteStyle === 'od_terminal' && "text-3xl font-mono",
+                                    quoteStyle === 'od_neo_classic' && "text-5xl font-serif tracking-wider mb-4"
+                                )}>
+                                    QUOTATION
+                                </h1>
+                            </div>
+                            <div className={cn(
+                                "text-right",
+                                (quoteStyle === 'od_academic' || quoteStyle === 'od_receipt' || quoteStyle === 'od_neo_classic') && "mt-4 text-center w-full",
+                                quoteStyle === 'od_gallery' && "text-left"
+                            )}>
+                                <p className={cn(
+                                    "font-bold uppercase",
+                                    quoteStyle === 'od_receipt' ? "text-sm" : "text-xs",
+                                    quoteStyle === 'od_mono' ? "text-white/70 print:text-black/70" : "text-slate-500",
+                                    quoteStyle === 'od_terminal' && "text-[#d4d4d4]/70 print:text-black/70"
+                                )}>
+                                    Date: {new Date().toLocaleDateString('en-CA')}
+                                </p>
+                            </div>
                         </div>
                     ) : (
                         // Standard / Minimal / Classic Header
@@ -579,6 +649,45 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                 {/* <p className="text-xs text-slate-400">{providerInfo.email}</p> */}
                             </div>
                         </div>
+                    ) : ['od_swiss', 'od_brutal', 'od_editorial', 'od_mono', 'od_receipt', 'od_architect', 'od_academic', 'od_gallery', 'od_terminal', 'od_neo_classic'].includes(quoteStyle) ? (
+                        <div className={cn(
+                            "flex justify-between mb-20 gap-16",
+                            quoteStyle === 'od_brutal' && "border-[4px] border-black p-6 mb-16",
+                            quoteStyle === 'od_receipt' && "flex-col gap-6 text-center mb-12",
+                            quoteStyle === 'od_academic' && "flex-col gap-8 text-center",
+                            quoteStyle === 'od_gallery' && "flex-col gap-12",
+                            quoteStyle === 'od_terminal' && "border border-[#d4d4d4] print:border-black p-6 mb-16",
+                            quoteStyle === 'od_neo_classic' && "border-y-2 border-black py-8 mb-16"
+                        )}>
+                            <div className={cn("flex-1", (quoteStyle === 'od_receipt' || quoteStyle === 'od_academic') && "text-center")}>
+                                <h3 className={cn(
+                                    "text-xs font-bold uppercase mb-4",
+                                    quoteStyle === 'od_swiss' && "border-b border-black pb-1 inline-block",
+                                    quoteStyle === 'od_brutal' && "bg-black text-white px-2 py-1 print:border print:border-black print:bg-white print:text-black inline-block",
+                                    quoteStyle === 'od_mono' && "text-white/60 print:text-black/60",
+                                    quoteStyle === 'od_terminal' && "text-[#d4d4d4]/60 print:text-black/60"
+                                )}>CLIENT</h3>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-lg">{projectData.clientCompany || 'Client Name'}</p>
+                                    <p className={cn("text-sm", quoteStyle==='od_mono'?"text-white/80 print:text-black/80":quoteStyle==='od_terminal'?"text-[#d4d4d4]/80 print:text-black/80":"text-slate-700")}>{projectData.clientContact}</p>
+                                    <p className={cn("text-sm", quoteStyle==='od_mono'?"text-white/70 print:text-black/70":quoteStyle==='od_terminal'?"text-[#d4d4d4]/70 print:text-black/70":"text-slate-600")}>{projectData.clientAddress}</p>
+                                </div>
+                            </div>
+                            <div className={cn("flex-1", (quoteStyle !== 'od_receipt' && quoteStyle !== 'od_academic' && quoteStyle !== 'od_gallery') && "text-right")}>
+                                <h3 className={cn(
+                                    "text-xs font-bold uppercase mb-4",
+                                    quoteStyle === 'od_swiss' && "border-b border-black pb-1 inline-block",
+                                    quoteStyle === 'od_brutal' && "bg-black text-white px-2 py-1 print:border print:border-black print:bg-white print:text-black inline-block",
+                                    quoteStyle === 'od_mono' && "text-white/60 print:text-black/60",
+                                    quoteStyle === 'od_terminal' && "text-[#d4d4d4]/60 print:text-black/60"
+                                )}>PROVIDER</h3>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-lg">{providerInfo.name}</p>
+                                    <p className={cn("text-sm", quoteStyle==='od_mono'?"text-white/80 print:text-black/80":quoteStyle==='od_terminal'?"text-[#d4d4d4]/80 print:text-black/80":"text-slate-700")}>{providerInfo.contact}</p>
+                                    <p className={cn("text-sm", quoteStyle==='od_mono'?"text-white/70 print:text-black/70":quoteStyle==='od_terminal'?"text-[#d4d4d4]/70 print:text-black/70":"text-slate-600")}>{providerInfo.taxId}</p>
+                                </div>
+                            </div>
+                        </div>
                     ) : (
                         // Standard / Minimal / Classic Info
                         <div className={cn(
@@ -616,7 +725,17 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                         "w-full mb-16",
                         quoteStyle === 'classic' && "border-y border-black/20",
                         quoteStyle === 'modern' && "border-separate border-spacing-0",
-                        quoteStyle === 'creative' && "border-separate border-spacing-y-2"
+                        quoteStyle === 'creative' && "border-separate border-spacing-y-2",
+                        quoteStyle === 'od_swiss' && "border-y-2 border-black",
+                        quoteStyle === 'od_brutal' && "border-4 border-black",
+                        quoteStyle === 'od_editorial' && "border-y border-black",
+                        quoteStyle === 'od_mono' && "border-y border-white print:border-black",
+                        quoteStyle === 'od_receipt' && "border-y-2 border-dashed border-black",
+                        quoteStyle === 'od_architect' && "border border-black",
+                        quoteStyle === 'od_academic' && "border-y-2 border-black",
+                        quoteStyle === 'od_gallery' && "",
+                        quoteStyle === 'od_terminal' && "border-y border-[#d4d4d4] print:border-black",
+                        quoteStyle === 'od_neo_classic' && "border-y-4 border-double border-black"
                     )}>
                         <thead>
                             <tr className={cn(
@@ -625,12 +744,22 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                 quoteStyle === 'modern' && "bg-slate-50 text-slate-600",
                                 quoteStyle === 'minimal' && "border-b border-black/20",
                                 quoteStyle === 'classic' && "bg-slate-50 border-black/20 text-slate-700",
-                                quoteStyle === 'creative' && "text-indigo-900/70"
+                                quoteStyle === 'creative' && "text-indigo-900/70",
+                                quoteStyle === 'od_swiss' && "border-b-2 border-black",
+                                quoteStyle === 'od_brutal' && "bg-black text-white print:bg-white print:text-black print:border-b-4 print:border-black",
+                                quoteStyle === 'od_editorial' && "border-b border-black",
+                                quoteStyle === 'od_mono' && "border-b border-white print:border-black",
+                                quoteStyle === 'od_receipt' && "border-b-2 border-dashed border-black",
+                                quoteStyle === 'od_architect' && "border-b border-black bg-slate-50 print:bg-transparent",
+                                quoteStyle === 'od_academic' && "border-b-2 border-black",
+                                quoteStyle === 'od_gallery' && "border-b border-black",
+                                quoteStyle === 'od_terminal' && "border-b border-[#d4d4d4] print:border-black",
+                                quoteStyle === 'od_neo_classic' && "border-b border-black"
                             )}>
-                                <th className="text-left py-4 font-bold w-[45%] text-[10px] uppercase tracking-widest pl-4 text-slate-500">Item Description</th>
-                                <th className="text-center py-4 font-bold w-[15%] text-[10px] uppercase tracking-widest text-slate-500">Qty</th>
-                                <th className="text-right py-4 font-bold w-[20%] text-[10px] uppercase tracking-widest text-slate-500">Unit Price</th>
-                                <th className="text-right py-4 font-bold w-[20%] text-[10px] uppercase tracking-widest pr-4 text-slate-500">Total</th>
+                                <th className={cn("text-left py-4 font-bold w-[45%] text-[10px] uppercase tracking-widest pl-4", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal' || quoteStyle === 'od_brutal') ? "" : "text-slate-500")}>Item Description</th>
+                                <th className={cn("text-center py-4 font-bold w-[15%] text-[10px] uppercase tracking-widest", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal' || quoteStyle === 'od_brutal') ? "" : "text-slate-500")}>Qty</th>
+                                <th className={cn("text-right py-4 font-bold w-[20%] text-[10px] uppercase tracking-widest", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal' || quoteStyle === 'od_brutal') ? "" : "text-slate-500")}>Unit Price</th>
+                                <th className={cn("text-right py-4 font-bold w-[20%] text-[10px] uppercase tracking-widest pr-4", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal' || quoteStyle === 'od_brutal') ? "" : "text-slate-500")}>Total</th>
                                 <th className="w-[40px] print:hidden"></th>
                             </tr>
                         </thead>
@@ -638,6 +767,12 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                             quoteStyle === 'standard' && "divide-y divide-black/30",
                             quoteStyle === 'minimal' && "divide-y divide-slate-50",
                             quoteStyle === 'classic' && "divide-y divide-black/30",
+                            ['od_swiss', 'od_editorial', 'od_academic', 'od_gallery', 'od_neo_classic'].includes(quoteStyle) && "divide-y divide-black/20",
+                            quoteStyle === 'od_brutal' && "divide-y-2 divide-black",
+                            quoteStyle === 'od_mono' && "divide-y divide-white/20 print:divide-black",
+                            quoteStyle === 'od_receipt' && "divide-y divide-dashed divide-black",
+                            quoteStyle === 'od_architect' && "divide-y divide-black",
+                            quoteStyle === 'od_terminal' && "divide-y divide-[#d4d4d4]/20 print:divide-black",
                         )}>
                             {items.map((item, idx) => (
                                 <tr key={item.id} className={cn(
@@ -652,7 +787,7 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                             id={`item-description-${item.id}`}
                                             value={item.description}
                                             onChange={(e) => handleUpdateItem(item.id, 'description', e.target.value)}
-                                            className="w-full bg-transparent border-none focus:ring-0 p-0 font-bold text-slate-700 resize-none text-sm leading-snug placeholder-slate-300"
+                                            className={cn("w-full bg-transparent border-none focus:ring-0 p-0 font-bold resize-none text-sm leading-snug placeholder-slate-400", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-700")}
                                             rows={item.description.length > 50 ? 2 : 1}
                                             placeholder="Item Description"
                                         />
@@ -662,7 +797,7 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                             type="number"
                                             value={item.quantity}
                                             onChange={(e) => handleUpdateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
-                                            className="w-12 text-center bg-transparent font-medium text-slate-600 text-sm"
+                                            className={cn("w-12 text-center bg-transparent font-medium text-sm", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-600")}
                                             title="數量"
                                         />
                                     </td>
@@ -671,12 +806,13 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                             type="number"
                                             value={item.unitPrice}
                                             onChange={(e) => handleUpdateItem(item.id, 'unitPrice', parseInt(e.target.value) || 0)}
-                                            className="w-24 text-right bg-transparent font-medium text-slate-600 text-sm"
+                                            className={cn("w-24 text-right bg-transparent font-medium text-sm", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-600")}
                                             title="單價"
                                         />
                                     </td>
                                     <td className={cn(
-                                        "py-4 pr-4 text-right font-bold text-slate-800 text-sm font-sans tabular-nums",
+                                        "py-4 pr-4 text-right font-bold text-sm font-sans tabular-nums",
+                                        (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-800",
                                         quoteStyle === 'creative' && "rounded-r-xl"
                                     )}>
                                         ${(item.quantity * item.unitPrice).toLocaleString()}
@@ -719,26 +855,46 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                             quoteStyle === 'modern' && "p-0",
                             quoteStyle === 'minimal' && "p-6",
                             quoteStyle === 'classic' && "p-6 border border-black/20 bg-slate-50/30",
-                            quoteStyle === 'creative' && "p-8 bg-slate-50/50 rounded-3xl border border-black/20"
+                            quoteStyle === 'creative' && "p-8 bg-slate-50/50 rounded-3xl border border-black/20",
+                            quoteStyle === 'od_swiss' && "p-8 border-l border-b border-black",
+                            quoteStyle === 'od_brutal' && "p-8 border-4 border-black mt-4",
+                            quoteStyle === 'od_editorial' && "p-6 border border-black mt-4",
+                            quoteStyle === 'od_mono' && "p-8 border border-white print:border-black mt-4",
+                            quoteStyle === 'od_receipt' && "p-6 border-dashed border-2 border-black mt-4",
+                            quoteStyle === 'od_architect' && "p-6 border border-black mt-4 bg-slate-50 print:bg-transparent",
+                            quoteStyle === 'od_academic' && "p-4 border-none mt-4",
+                            quoteStyle === 'od_gallery' && "p-4 border-none mt-4",
+                            quoteStyle === 'od_terminal' && "p-6 border border-[#d4d4d4] print:border-black mt-4",
+                            quoteStyle === 'od_neo_classic' && "p-8 border-double border-4 border-black mt-4"
                         )}>
                             {/* ... Totals ... */}
-                            <div className="flex justify-between text-slate-500 font-medium text-sm">
+                            <div className={cn("flex justify-between font-medium text-sm", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-500")}>
                                 <span>Subtotal</span>
-                                <span className="font-sans tabular-nums text-slate-700">${subtotal.toLocaleString()}</span>
+                                <span className={cn("font-sans tabular-nums", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-700")}>${subtotal.toLocaleString()}</span>
                             </div>
-                            <div className="flex justify-between text-slate-500 font-medium text-sm">
+                            <div className={cn("flex justify-between font-medium text-sm", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-500")}>
                                 <span>Tax (5%)</span>
-                                <span className="font-sans tabular-nums text-slate-700">${taxAmount.toLocaleString()}</span>
+                                <span className={cn("font-sans tabular-nums", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-700")}>${taxAmount.toLocaleString()}</span>
                             </div>
                             <div className={cn(
                                 "pt-4 mt-2 flex justify-between items-baseline",
                                 quoteStyle === 'standard' && "border-t border-black/20",
                                 quoteStyle === 'modern' && "border-t border-black/20",
                                 quoteStyle === 'classic' && "border-t border-black/20",
-                                quoteStyle === 'creative' && "border-t border-black/20"
+                                quoteStyle === 'creative' && "border-t border-black/20",
+                                quoteStyle === 'od_swiss' && "border-t border-black",
+                                quoteStyle === 'od_brutal' && "border-t-4 border-black",
+                                quoteStyle === 'od_editorial' && "border-t border-black",
+                                quoteStyle === 'od_mono' && "border-t border-white print:border-black",
+                                quoteStyle === 'od_receipt' && "border-t-2 border-dashed border-black",
+                                quoteStyle === 'od_architect' && "border-t border-black",
+                                quoteStyle === 'od_academic' && "border-t-2 border-black",
+                                quoteStyle === 'od_gallery' && "border-t border-black",
+                                quoteStyle === 'od_terminal' && "border-t border-[#d4d4d4] print:border-black",
+                                quoteStyle === 'od_neo_classic' && "border-t border-black"
                             )}>
-                                <span className="text-slate-800 font-bold text-sm">Total</span>
-                                <span className="font-sans tabular-nums font-black text-2xl text-slate-800">NT$ {total.toLocaleString()}</span>
+                                <span className={cn("font-bold text-sm", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-800")}>Total</span>
+                                <span className={cn("font-sans tabular-nums font-black text-2xl", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-800")}>NT$ {total.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -750,11 +906,23 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                         quoteStyle === 'modern' && "bg-white border-black/20 shadow-sm",
                         quoteStyle === 'minimal' && "bg-transparent border-black/20",
                         quoteStyle === 'classic' && "bg-white border-black/20 rounded-none",
-                        quoteStyle === 'creative' && "bg-slate-50 border-black/20 rounded-[2rem]"
+                        quoteStyle === 'creative' && "bg-slate-50 border-black/20 rounded-[2rem]",
+                        quoteStyle === 'od_swiss' && "bg-white border-black rounded-none",
+                        quoteStyle === 'od_brutal' && "bg-white border-[4px] border-black rounded-none shadow-[8px_8px_0_0_#000] print:shadow-none",
+                        quoteStyle === 'od_editorial' && "bg-white border border-black rounded-none",
+                        quoteStyle === 'od_mono' && "bg-black border border-white rounded-none print:bg-white print:border-black print:text-black",
+                        quoteStyle === 'od_receipt' && "bg-white border-dashed border-2 border-black rounded-none",
+                        quoteStyle === 'od_architect' && "bg-white border border-black rounded-none",
+                        quoteStyle === 'od_academic' && "bg-transparent border-none rounded-none p-0",
+                        quoteStyle === 'od_gallery' && "bg-transparent border-none rounded-none p-0",
+                        quoteStyle === 'od_terminal' && "bg-[#1e1e1e] border border-[#d4d4d4] rounded-none print:bg-white print:border-black",
+                        quoteStyle === 'od_neo_classic' && "bg-white border-double border-[4px] border-black rounded-none"
                     )}>
                         <h4 className={cn(
                             "font-bold text-sm mb-6 flex items-center border-b pb-3 uppercase tracking-wider",
-                            "text-slate-600 border-black/20"
+                            (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit border-inherit print:border-black" : "text-slate-600 border-black/20",
+                            ['od_swiss', 'od_brutal', 'od_editorial', 'od_architect', 'od_neo_classic'].includes(quoteStyle) && "border-black text-black",
+                            quoteStyle === 'od_receipt' && "border-dashed border-black text-black"
                         )}>
                             <Calculator className="w-4 h-4 mr-2" />
                             PAYMENT TERMS
@@ -767,16 +935,26 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                     quoteStyle === 'modern' && "bg-slate-50 border-none",
                                     quoteStyle === 'minimal' && "bg-transparent border-black/20",
                                     quoteStyle === 'classic' && "bg-white border-black/20 rounded-none",
-                                    quoteStyle === 'creative' && "bg-white border-black/20 rounded-2xl"
+                                    quoteStyle === 'creative' && "bg-white border-black/20 rounded-2xl",
+                                    quoteStyle === 'od_swiss' && "bg-white border-black rounded-none",
+                                    quoteStyle === 'od_brutal' && "bg-white border-2 border-black rounded-none shadow-[4px_4px_0_0_#000] print:shadow-none print:border",
+                                    quoteStyle === 'od_editorial' && "bg-white border border-black rounded-none",
+                                    quoteStyle === 'od_mono' && "bg-black border border-white rounded-none print:bg-white print:border-black",
+                                    quoteStyle === 'od_receipt' && "bg-white border-dashed border border-black rounded-none",
+                                    quoteStyle === 'od_architect' && "bg-white border border-black rounded-none",
+                                    quoteStyle === 'od_academic' && "bg-transparent border-l-2 border-black border-y-0 border-r-0 rounded-none",
+                                    quoteStyle === 'od_gallery' && "bg-transparent border-t border-black border-x-0 border-b-0 rounded-none",
+                                    quoteStyle === 'od_terminal' && "bg-[#1e1e1e] border border-[#d4d4d4] rounded-none print:bg-white print:border-black",
+                                    quoteStyle === 'od_neo_classic' && "bg-white border border-black rounded-none"
                                 )}>
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase mb-1 leading-none tracking-widest">{term.label.split('：')[0]}</p>
-                                    <p className="font-black text-lg leading-none font-sans tabular-nums text-slate-800">NT$ {term.amount.toLocaleString()}</p>
-                                    <p className="text-[10px] mt-2 font-medium text-slate-400">{term.label.split('：')[1] || '簽署後支付'}</p>
+                                    <p className={cn("text-[9px] font-bold uppercase mb-1 leading-none tracking-widest", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit opacity-70" : "text-slate-400")}>{term.label.split('：')[0]}</p>
+                                    <p className={cn("font-black text-lg leading-none font-sans tabular-nums", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-800")}>NT$ {term.amount.toLocaleString()}</p>
+                                    <p className={cn("text-[10px] mt-2 font-medium", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit opacity-70" : "text-slate-400")}>{term.label.split('：')[1] || '簽署後支付'}</p>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="space-y-4 pt-6 border-t border-black/20">
+                        <div className={cn("space-y-4 pt-6 border-t", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "border-inherit print:border-black" : "border-black/20", ['od_swiss', 'od_brutal', 'od_editorial', 'od_architect', 'od_neo_classic', 'od_academic', 'od_gallery'].includes(quoteStyle) && "border-black", quoteStyle === 'od_receipt' && "border-dashed border-black")}>
                             <div className="flex items-start gap-4">
                                 <div className="bg-slate-100 p-2 rounded-lg">
                                     <AlertCircle className="w-5 h-5 text-slate-400" />

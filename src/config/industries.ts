@@ -68,7 +68,7 @@ export const CATEGORY_FOLDERS: Record<string, CategoryFolder> = {
         description: '品牌設計、影片製作、社群視覺、攝影服務',
         icon: 'Palette',
         color: '#ec4899',
-        moduleIds: ['brand_design', 'ui_ux_design', 'video_production', 'social_visual', 'photography'],
+        moduleIds: ['brand_design', 'ui_ux_design', 'presentation_design', 'video_production', 'social_visual', 'photography'],
         workflow: {
             diagram: `graph LR
     A[收到訂金] --> B[風格企劃]
@@ -184,6 +184,7 @@ import { MODULE_VIDEO_PRODUCTION } from './modules/design/video_production';
 import { MODULE_SOCIAL_VISUAL } from './modules/design/social_visual';
 import { MODULE_PHOTOGRAPHY } from './modules/design/photography';
 import { MODULE_UI_UX } from './modules/design/ui_ux';
+import { MODULE_PRESENTATION_DESIGN } from './modules/design/presentation_design';
 
 import { MODULE_INTERIOR_DESIGN } from './modules/space/interior_design';
 import { MODULE_EVENT_PLANNING } from './modules/space/event_planning';
@@ -205,7 +206,7 @@ import { MODULE_GRANT_SUBSIDY } from './modules/business_dev/grant_subsidy';
 export {
     MODULE_WEB_DEVELOPMENT, MODULE_SOFTWARE_OUTSOURCING, MODULE_SYSTEM_INTEGRATION,
     MODULE_SOCIAL_MEDIA, MODULE_AD_MANAGEMENT, MODULE_SEO, MODULE_INFLUENCER_MARKETING,
-    MODULE_BRAND_DESIGN, MODULE_VIDEO_PRODUCTION, MODULE_SOCIAL_VISUAL, MODULE_PHOTOGRAPHY, MODULE_UI_UX,
+    MODULE_BRAND_DESIGN, MODULE_VIDEO_PRODUCTION, MODULE_SOCIAL_VISUAL, MODULE_PHOTOGRAPHY, MODULE_UI_UX, MODULE_PRESENTATION_DESIGN,
     MODULE_INTERIOR_DESIGN, MODULE_EVENT_PLANNING, MODULE_EXHIBITION_DESIGN,
     MODULE_BUSINESS_CONSULTING, MODULE_CORPORATE_TRAINING, MODULE_STRATEGY_PLANNING,
     MODULE_ONLINE_COURSE, MODULE_HOME_ORGANIZER, MODULE_IP_AGENT, MODULE_PR_AGENCY,
@@ -233,6 +234,7 @@ export const BUSINESS_MODULES: Record<string, BusinessModule> = {
     // 🔵 視覺設計與創意
     brand_design: MODULE_BRAND_DESIGN,
     ui_ux_design: MODULE_UI_UX,
+    presentation_design: MODULE_PRESENTATION_DESIGN,
     video_production: MODULE_VIDEO_PRODUCTION,
     social_visual: MODULE_SOCIAL_VISUAL,
     photography: MODULE_PHOTOGRAPHY,

@@ -351,7 +351,7 @@ export default function ContractGenerator({
 }: ContractGeneratorProps) {
     const contractRef = useRef<HTMLDivElement>(null);
     const currentDate = new Date().toLocaleDateString('zh-TW');
-    const [contractStyle, setContractStyle] = useState<'formal' | 'concise' | 'modern' | 'standard' | 'detailed'>('formal');
+    const [contractStyle, setContractStyle] = useState<'formal' | 'concise' | 'modern' | 'standard' | 'detailed' | 'od_swiss' | 'od_brutal' | 'od_editorial' | 'od_mono' | 'od_receipt' | 'od_architect' | 'od_academic' | 'od_gallery' | 'od_terminal' | 'od_neo_classic'>('formal');
 
     // 解析 projectTypeId：優先使用 projectTypeId，否則從 industryId 推斷
     const resolvedProjectTypeId = projectTypeId ||
@@ -612,7 +612,17 @@ export default function ContractGenerator({
                             contractStyle === 'concise' && "max-w-3xl p-12 font-sans text-slate-800 border-t-8 border-indigo-600 bg-slate-50 print:bg-white print:p-12",
                             contractStyle === 'modern' && "max-w-4xl p-16 font-sans text-slate-800 bg-white border border-black/20 rounded-3xl print:rounded-none print:p-16",
                             contractStyle === 'standard' && "max-w-4xl p-12 font-serif text-slate-900 print:p-12",
-                            contractStyle === 'detailed' && "max-w-5xl p-16 font-sans text-slate-800 bg-white border-l-4 border-slate-900 print:p-16"
+                            contractStyle === 'detailed' && "max-w-5xl p-16 font-sans text-slate-800 bg-white border-l-4 border-slate-900 print:p-16",
+                            contractStyle === 'od_swiss' && "max-w-4xl p-16 font-sans text-black bg-white border border-black print:border-none print:p-8",
+                            contractStyle === 'od_brutal' && "max-w-4xl p-16 font-sans text-black bg-white border-[6px] border-black shadow-[12px_12px_0_0_#000] print:border-[4px] print:shadow-none print:p-8",
+                            contractStyle === 'od_editorial' && "max-w-4xl p-20 font-serif text-black bg-white border-y-[4px] border-black print:p-12",
+                            contractStyle === 'od_mono' && "max-w-4xl p-16 font-sans bg-black text-white print:bg-white print:text-black print:border print:border-black print:p-8",
+                            contractStyle === 'od_receipt' && "max-w-3xl p-12 font-mono text-black bg-white border-dashed border-2 border-black print:border-dashed print:p-8",
+                            contractStyle === 'od_architect' && "max-w-4xl p-16 font-mono text-black bg-white border border-black bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:20px_20px] print:bg-none print:p-8",
+                            contractStyle === 'od_academic' && "max-w-4xl p-24 font-serif text-black bg-white print:p-12 print:border-none",
+                            contractStyle === 'od_gallery' && "max-w-4xl p-20 font-sans text-black bg-white print:p-12 print:border-none",
+                            contractStyle === 'od_terminal' && "max-w-4xl p-16 font-mono bg-[#1e1e1e] text-[#d4d4d4] print:bg-white print:text-black print:p-8",
+                            contractStyle === 'od_neo_classic' && "max-w-4xl p-20 font-serif text-black bg-white border-double border-[8px] border-black print:p-12 print:border-[4px]"
                         )}
                     >
                         {/* Watermark - Lighter */}
@@ -624,7 +634,44 @@ export default function ContractGenerator({
 
                         {/* Title */}
                         {/* Title Section */}
-                        {contractStyle === 'modern' ? (
+                        {['od_swiss', 'od_brutal', 'od_editorial', 'od_mono', 'od_receipt', 'od_architect', 'od_academic', 'od_gallery', 'od_terminal', 'od_neo_classic'].includes(contractStyle) ? (
+                            <div className={cn(
+                                "mb-16",
+                                contractStyle === 'od_swiss' && "border-b border-black pb-8",
+                                contractStyle === 'od_brutal' && "border-b-[6px] border-black pb-6",
+                                contractStyle === 'od_editorial' && "border-b-[2px] border-black pb-8 text-center",
+                                contractStyle === 'od_mono' && "border-b-[2px] border-white pb-6 print:border-black",
+                                contractStyle === 'od_receipt' && "border-b-2 border-dashed border-black pb-6 text-center",
+                                contractStyle === 'od_architect' && "border-b border-black pb-6",
+                                contractStyle === 'od_academic' && "border-b border-black pb-12 text-center",
+                                contractStyle === 'od_gallery' && "mb-20 text-right",
+                                contractStyle === 'od_terminal' && "border-b border-[#d4d4d4] pb-6 print:border-black",
+                                contractStyle === 'od_neo_classic' && "border-b-4 border-double border-black pb-8 text-center"
+                            )}>
+                                <h1 className={cn(
+                                    "font-black m-0 leading-tight",
+                                    contractStyle === 'od_swiss' && "text-5xl font-sans tracking-tight",
+                                    contractStyle === 'od_brutal' && "text-6xl uppercase tracking-tighter",
+                                    contractStyle === 'od_editorial' && "text-5xl font-serif italic",
+                                    contractStyle === 'od_mono' && "text-5xl uppercase",
+                                    contractStyle === 'od_receipt' && "text-3xl font-mono uppercase tracking-widest",
+                                    contractStyle === 'od_architect' && "text-4xl font-mono uppercase tracking-widest",
+                                    contractStyle === 'od_academic' && "text-4xl font-serif tracking-widest mb-4",
+                                    contractStyle === 'od_gallery' && "text-3xl font-light tracking-widest uppercase",
+                                    contractStyle === 'od_terminal' && "text-4xl font-mono",
+                                    contractStyle === 'od_neo_classic' && "text-5xl font-serif tracking-wider mb-4"
+                                )}>
+                                    {template.title}
+                                </h1>
+                                <p className={cn(
+                                    "mt-4 font-bold",
+                                    contractStyle === 'od_receipt' && "font-mono text-sm",
+                                    (contractStyle === 'od_mono' || contractStyle === 'od_terminal') ? "opacity-70" : "text-gray-500"
+                                )}>
+                                    PROJECT: {projectName}
+                                </p>
+                            </div>
+                        ) : contractStyle === 'modern' ? (
                             <div className="mb-16 border-b border-black/20 pb-8">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4">Service Agreement</p>
                                 <h1 className="text-5xl font-black text-slate-800 tracking-tight mb-2">{template.title}</h1>
@@ -657,7 +704,24 @@ export default function ContractGenerator({
 
                         {/* Parties */}
                         {/* Parties Section */}
-                        {contractStyle === 'concise' ? (
+                        {['od_swiss', 'od_brutal', 'od_editorial', 'od_mono', 'od_receipt', 'od_architect', 'od_academic', 'od_gallery', 'od_terminal', 'od_neo_classic'].includes(contractStyle) ? (
+                            <div className={cn(
+                                "flex gap-12 mb-16",
+                                contractStyle === 'od_receipt' && "flex-col text-center gap-6",
+                                contractStyle === 'od_academic' && "flex-col text-center gap-8",
+                                contractStyle === 'od_gallery' && "flex-col gap-12"
+                            )}>
+                                <div className="flex-1">
+                                    <h3 className={cn("text-xs font-bold uppercase mb-2", (contractStyle === 'od_mono' || contractStyle === 'od_terminal') ? "opacity-60" : "text-gray-500")}>甲方 (Client)</h3>
+                                    <p className="font-bold text-lg">{clientName}</p>
+                                </div>
+                                <div className={cn("flex-1", (contractStyle !== 'od_receipt' && contractStyle !== 'od_academic' && contractStyle !== 'od_gallery') && "text-right")}>
+                                    <h3 className={cn("text-xs font-bold uppercase mb-2", (contractStyle === 'od_mono' || contractStyle === 'od_terminal') ? "opacity-60" : "text-gray-500")}>乙方 (Provider)</h3>
+                                    <p className="font-bold text-lg">{providerInfo.name}</p>
+                                    <p className={cn("text-sm", (contractStyle === 'od_mono' || contractStyle === 'od_terminal') ? "opacity-70" : "text-gray-600")}>統編: {providerInfo.taxId}</p>
+                                </div>
+                            </div>
+                        ) : contractStyle === 'concise' ? (
                             <div className="bg-slate-50 p-6 rounded-xl mb-10 text-sm leading-relaxed border border-black/20 text-slate-600">
                                 <p>
                                     <strong>立合約人：</strong><br />
@@ -683,7 +747,17 @@ export default function ContractGenerator({
                             // Standard / Formal / Detailed
                             <div className={cn(
                                 "mb-16 space-y-6 text-base",
-                                contractStyle === 'detailed' && "px-8"
+                                contractStyle === 'detailed' && "px-8",
+                                contractStyle === 'od_swiss' && "border-t border-black pt-8",
+                                contractStyle === 'od_brutal' && "border-t-[4px] border-black pt-8",
+                                contractStyle === 'od_editorial' && "border-t border-black pt-8",
+                                contractStyle === 'od_mono' && "border-t border-white pt-8 print:border-black",
+                                contractStyle === 'od_receipt' && "border-t-2 border-dashed border-black pt-8",
+                                contractStyle === 'od_architect' && "border-t border-black pt-8",
+                                contractStyle === 'od_academic' && "border-t border-black pt-12",
+                                contractStyle === 'od_gallery' && "border-t border-black pt-12",
+                                contractStyle === 'od_terminal' && "border-t border-[#d4d4d4] pt-8 print:border-black",
+                                contractStyle === 'od_neo_classic' && "border-t-2 border-double border-black pt-8"
                             )}>
                                 <div className="flex items-baseline border-b border-black/20 pb-2">
                                     <span className="w-32 font-bold text-slate-500 text-sm uppercase tracking-wider">Client (甲方)</span>
@@ -706,7 +780,17 @@ export default function ContractGenerator({
                         <div className={cn(
                             "space-y-8 text-sm text-justify",
                             contractStyle === 'concise' && "space-y-4 text-xs",
-                            contractStyle === 'detailed' && "space-y-12"
+                            contractStyle === 'detailed' && "space-y-12",
+                            contractStyle === 'od_swiss' && "space-y-10",
+                            contractStyle === 'od_brutal' && "space-y-12",
+                            contractStyle === 'od_editorial' && "space-y-10",
+                            contractStyle === 'od_mono' && "space-y-10",
+                            contractStyle === 'od_receipt' && "space-y-8 text-sm",
+                            contractStyle === 'od_architect' && "space-y-8 text-sm",
+                            contractStyle === 'od_academic' && "space-y-12 text-lg leading-loose",
+                            contractStyle === 'od_gallery' && "space-y-16",
+                            contractStyle === 'od_terminal' && "space-y-10",
+                            contractStyle === 'od_neo_classic' && "space-y-12"
                         )}>
                             {contractStyle !== 'concise' && (
                                 <p>
@@ -720,9 +804,29 @@ export default function ContractGenerator({
                                     "font-bold text-lg mb-4 flex items-center text-slate-800",
                                     contractStyle === 'modern' && "text-xl font-black mb-6",
                                     contractStyle === 'formal' && "justify-center mb-6 text-xl tracking-widest",
+                                    contractStyle === 'od_swiss' && "text-xl font-bold mb-4 border-b border-black pb-2",
+                                    contractStyle === 'od_brutal' && "text-2xl font-black mb-6 bg-black text-white px-3 py-1 inline-flex print:border print:border-black print:bg-white print:text-black",
+                                    contractStyle === 'od_editorial' && "text-xl font-serif font-bold mb-4",
+                                    contractStyle === 'od_mono' && "text-xl font-bold mb-4",
+                                    contractStyle === 'od_receipt' && "text-lg font-mono font-bold mb-4 border-b border-dashed border-black pb-2",
+                                    contractStyle === 'od_architect' && "text-sm font-mono font-bold uppercase tracking-widest mb-4",
+                                    contractStyle === 'od_academic' && "text-xl font-serif font-bold mb-6 justify-center",
+                                    contractStyle === 'od_gallery' && "text-lg font-light tracking-widest mb-6",
+                                    contractStyle === 'od_terminal' && "text-xl font-mono mb-4 border-b border-[#d4d4d4] print:border-black pb-2",
+                                    contractStyle === 'od_neo_classic' && "text-xl font-serif font-bold mb-6 justify-center border-b border-black pb-2",
+                                    contractStyle === 'od_swiss' && "text-xl font-bold mb-4 border-b border-black pb-2",
+                                    contractStyle === 'od_brutal' && "text-2xl font-black mb-6 bg-black text-white px-3 py-1 inline-flex print:border print:border-black print:bg-white print:text-black",
+                                    contractStyle === 'od_editorial' && "text-xl font-serif font-bold mb-4",
+                                    contractStyle === 'od_mono' && "text-xl font-bold mb-4",
+                                    contractStyle === 'od_receipt' && "text-lg font-mono font-bold mb-4 border-b border-dashed border-black pb-2",
+                                    contractStyle === 'od_architect' && "text-sm font-mono font-bold uppercase tracking-widest mb-4",
+                                    contractStyle === 'od_academic' && "text-xl font-serif font-bold mb-6 justify-center",
+                                    contractStyle === 'od_gallery' && "text-lg font-light tracking-widest mb-6",
+                                    contractStyle === 'od_terminal' && "text-xl font-mono mb-4 border-b border-[#d4d4d4] print:border-black pb-2",
+                                    contractStyle === 'od_neo_classic' && "text-xl font-serif font-bold mb-6 justify-center border-b border-black pb-2",
                                 )}>
                                     {contractStyle === 'modern' && <span className="text-indigo-500 mr-2 text-sm">01.</span>}
-                                    {contractStyle === 'formal' ? "第一條 專案內容與費用" : "第一條、專案內容與費用"}
+                                    {['od_brutal', 'od_receipt', 'od_architect', 'od_terminal'].includes(contractStyle) ? "01. 專案內容與費用" : contractStyle === 'formal' ? "第一條 專案內容與費用" : "第一條、專案內容與費用"}
                                 </h3>
                                 <div className="pl-4 border-l border-black/20">
                                     <p className="mb-2 text-slate-700">1. 本專案之執行內容詳見附件報價單。</p>
@@ -735,9 +839,29 @@ export default function ContractGenerator({
                                     "font-bold text-lg mb-4 flex items-center text-slate-800",
                                     contractStyle === 'modern' && "text-xl font-black mb-6",
                                     contractStyle === 'formal' && "justify-center mb-6 text-xl tracking-widest",
+                                    contractStyle === 'od_swiss' && "text-xl font-bold mb-4 border-b border-black pb-2",
+                                    contractStyle === 'od_brutal' && "text-2xl font-black mb-6 bg-black text-white px-3 py-1 inline-flex print:border print:border-black print:bg-white print:text-black",
+                                    contractStyle === 'od_editorial' && "text-xl font-serif font-bold mb-4",
+                                    contractStyle === 'od_mono' && "text-xl font-bold mb-4",
+                                    contractStyle === 'od_receipt' && "text-lg font-mono font-bold mb-4 border-b border-dashed border-black pb-2",
+                                    contractStyle === 'od_architect' && "text-sm font-mono font-bold uppercase tracking-widest mb-4",
+                                    contractStyle === 'od_academic' && "text-xl font-serif font-bold mb-6 justify-center",
+                                    contractStyle === 'od_gallery' && "text-lg font-light tracking-widest mb-6",
+                                    contractStyle === 'od_terminal' && "text-xl font-mono mb-4 border-b border-[#d4d4d4] print:border-black pb-2",
+                                    contractStyle === 'od_neo_classic' && "text-xl font-serif font-bold mb-6 justify-center border-b border-black pb-2",
+                                    contractStyle === 'od_swiss' && "text-xl font-bold mb-4 border-b border-black pb-2",
+                                    contractStyle === 'od_brutal' && "text-2xl font-black mb-6 bg-black text-white px-3 py-1 inline-flex print:border print:border-black print:bg-white print:text-black",
+                                    contractStyle === 'od_editorial' && "text-xl font-serif font-bold mb-4",
+                                    contractStyle === 'od_mono' && "text-xl font-bold mb-4",
+                                    contractStyle === 'od_receipt' && "text-lg font-mono font-bold mb-4 border-b border-dashed border-black pb-2",
+                                    contractStyle === 'od_architect' && "text-sm font-mono font-bold uppercase tracking-widest mb-4",
+                                    contractStyle === 'od_academic' && "text-xl font-serif font-bold mb-6 justify-center",
+                                    contractStyle === 'od_gallery' && "text-lg font-light tracking-widest mb-6",
+                                    contractStyle === 'od_terminal' && "text-xl font-mono mb-4 border-b border-[#d4d4d4] print:border-black pb-2",
+                                    contractStyle === 'od_neo_classic' && "text-xl font-serif font-bold mb-6 justify-center border-b border-black pb-2",
                                 )}>
                                     {contractStyle === 'modern' && <span className="text-indigo-500 mr-2 text-sm">02.</span>}
-                                    {contractStyle === 'formal' ? "第二條 付款辦法" : "第二條、付款辦法"}
+                                    {['od_brutal', 'od_receipt', 'od_architect', 'od_terminal'].includes(contractStyle) ? "02. 付款辦法" : contractStyle === 'formal' ? "第二條 付款辦法" : "第二條、付款辦法"}
                                 </h3>
                                 <div className="pl-4 border-l border-black/20">
                                     <p className="mb-1 text-xs text-slate-400 font-bold uppercase tracking-wider">付款模式：{paymentMode.name}</p>
@@ -764,9 +888,19 @@ export default function ContractGenerator({
                                             "font-bold text-lg mb-2 flex items-center text-slate-800",
                                             contractStyle === 'modern' && "text-xl font-black mb-4",
                                             contractStyle === 'formal' && "justify-center mb-4 text-xl tracking-widest",
+                                            contractStyle === 'od_swiss' && "text-xl font-bold mb-4 border-b border-black pb-2",
+                                            contractStyle === 'od_brutal' && "text-2xl font-black mb-6 bg-black text-white px-3 py-1 inline-flex print:border print:border-black print:bg-white print:text-black",
+                                            contractStyle === 'od_editorial' && "text-xl font-serif font-bold mb-4",
+                                            contractStyle === 'od_mono' && "text-xl font-bold mb-4",
+                                            contractStyle === 'od_receipt' && "text-lg font-mono font-bold mb-4 border-b border-dashed border-black pb-2",
+                                            contractStyle === 'od_architect' && "text-sm font-mono font-bold uppercase tracking-widest mb-4",
+                                            contractStyle === 'od_academic' && "text-xl font-serif font-bold mb-6 justify-center",
+                                            contractStyle === 'od_gallery' && "text-lg font-light tracking-widest mb-6",
+                                            contractStyle === 'od_terminal' && "text-xl font-mono mb-4 border-b border-[#d4d4d4] print:border-black pb-2",
+                                            contractStyle === 'od_neo_classic' && "text-xl font-serif font-bold mb-6 justify-center border-b border-black pb-2",
                                         )}>
                                             {contractStyle === 'modern' && <span className="text-indigo-500 mr-2 text-sm">{String(index + 3).padStart(2, '0')}.</span>}
-                                            {contractStyle === 'formal' ? `第 ${index + 3} 條 ${clause.title}` : `第 ${index + 3} 條、${clause.title}`}
+                                            {['od_brutal', 'od_receipt', 'od_architect', 'od_terminal'].includes(contractStyle) ? `${String(index + 3).padStart(2, '0')}. ${clause.title}` : contractStyle === 'formal' ? `第 ${index + 3} 條 ${clause.title}` : `第 ${index + 3} 條、${clause.title}`}
                                         </h3>
                                         <p className="leading-relaxed pl-4 border-l-2 border-slate-50 text-slate-700">{clause.content}</p>
                                     </section>
@@ -811,7 +945,11 @@ export default function ContractGenerator({
                         {/* Signatures */}
                         <div className={cn(
                             "mt-24 grid gap-16 pt-12 border-t border-black/30",
-                            contractStyle === 'concise' ? "grid-cols-2 mt-12 gap-8" : "grid-cols-2"
+                            contractStyle === 'concise' ? "grid-cols-2 mt-12 gap-8" : "grid-cols-2",
+                            ['od_swiss', 'od_brutal', 'od_editorial', 'od_mono', 'od_architect', 'od_terminal', 'od_neo_classic'].includes(contractStyle) && "grid-cols-2 mt-16 pt-12 border-t border-black",
+                            contractStyle === 'od_receipt' && "grid-cols-2 mt-12 pt-8 border-t-2 border-dashed border-black",
+                            contractStyle === 'od_academic' && "grid-cols-2 mt-20 gap-16",
+                            contractStyle === 'od_gallery' && "grid-cols-2 mt-20 gap-16"
                         )}>
                             <div>
                                 <p className="font-bold mb-12 text-slate-900 text-lg">甲方簽章 (Client):</p>
