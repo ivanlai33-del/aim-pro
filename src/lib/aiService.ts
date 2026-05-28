@@ -18,21 +18,43 @@ function cleanAIResponse(text: string): string {
 }
 
 /**
- * Universal call to Backend AI API
+ * Universal call to Backend AI API (Streaming)
  */
-async function callGenerateAPI(payload: any): Promise<{content: string, error?: string}> {
+async function callGenerateAPI(payload: any, onChunk?: (text: string) => void): Promise<{content: string, error?: string}> {
     const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
     
-    const data = await response.json();
     if (!response.ok) {
-        throw new Error(data.error || 'API Request Failed');
+        let errMsg = 'API Request Failed';
+        try {
+            const data = await response.json();
+            errMsg = data.error || errMsg;
+        } catch(e) {}
+        throw new Error(errMsg);
     }
     
-    return { content: data.content };
+    if (!response.body) {
+        throw new Error('無效的伺服器回應 (Empty Body)');
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let fullText = '';
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunkStr = decoder.decode(value, { stream: true });
+        fullText += chunkStr;
+        if (onChunk) {
+            onChunk(fullText);
+        }
+    }
+
+    return { content: fullText };
 }
 
 export interface AIResponse {
@@ -47,7 +69,8 @@ export async function fetchAIResponse(
     projectData: ProjectData, 
     userApiKey?: string, 
     customPrompts?: Record<string, string>,
-    turnstileToken?: string
+    turnstileToken?: string,
+    onChunk?: (text: string) => void
 ): Promise<AIResponse> {
     try {
         const result = await callGenerateAPI({
@@ -56,6 +79,8 @@ export async function fetchAIResponse(
             customPrompts,
             userApiKey,
             turnstileToken
+        }, (text) => {
+            if (onChunk) onChunk(cleanAIResponse(text));
         });
         return { content: cleanAIResponse(result.content) };
     } catch (error: any) {
@@ -80,7 +105,8 @@ export async function generateChatReply(
     userMessage: string,
     userApiKey?: string,
     projectType: 'web' | 'design' = 'web',
-    turnstileToken?: string
+    turnstileToken?: string,
+    onChunk?: (text: string) => void
 ): Promise<AIResponse> {
     try {
         const result = await callGenerateAPI({
@@ -93,6 +119,8 @@ export async function generateChatReply(
             isDesign: projectType === 'design',
             userApiKey,
             turnstileToken
+        }, (text) => {
+            if (onChunk) onChunk(cleanAIResponse(text));
         });
         return { content: cleanAIResponse(result.content) };
     } catch (error: any) {
@@ -108,7 +136,8 @@ export async function refineReport(
     currentContent: string,
     additionalNotes: string,
     userApiKey?: string,
-    turnstileToken?: string
+    turnstileToken?: string,
+    onChunk?: (text: string) => void
 ): Promise<AIResponse> {
     try {
         const result = await callGenerateAPI({
@@ -117,6 +146,8 @@ export async function refineReport(
             additionalNotes,
             userApiKey,
             turnstileToken
+        }, (text) => {
+            if (onChunk) onChunk(cleanAIResponse(text));
         });
         return { content: cleanAIResponse(result.content) };
     } catch (error: any) {
@@ -133,7 +164,8 @@ export async function translateDocument(
     targetLanguage: 'English' | 'Japanese' | 'Traditional Chinese',
     context?: string,
     userApiKey?: string,
-    turnstileToken?: string
+    turnstileToken?: string,
+    onChunk?: (text: string) => void
 ): Promise<AIResponse> {
     try {
         const result = await callGenerateAPI({
@@ -143,6 +175,8 @@ export async function translateDocument(
             context,
             userApiKey,
             turnstileToken
+        }, (text) => {
+            if (onChunk) onChunk(cleanAIResponse(text));
         });
         return { content: cleanAIResponse(result.content) };
     } catch (error: any) {
@@ -157,7 +191,8 @@ export async function partialRefine(
     selectedText: string,
     instruction: string,
     userApiKey?: string,
-    turnstileToken?: string
+    turnstileToken?: string,
+    onChunk?: (text: string) => void
 ): Promise<AIResponse> {
     try {
         const result = await callGenerateAPI({
@@ -166,6 +201,8 @@ export async function partialRefine(
             instruction,
             userApiKey,
             turnstileToken
+        }, (text) => {
+            if (onChunk) onChunk(cleanAIResponse(text));
         });
         return { content: cleanAIResponse(result.content) };
     } catch (error: any) {

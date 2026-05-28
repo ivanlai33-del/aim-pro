@@ -230,6 +230,7 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
     const [clientSuggestions, setClientSuggestions] = useState<Customer[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
+
     // Permission Hook
     const { checkAccess } = useModuleAccess();
 
@@ -378,6 +379,23 @@ export default function InputForm({ initialData, onSubmit, isLoading }: InputFor
             setFormData(prev => ({ ...prev, ...initialData }));
         }
     }, [initialData]);
+
+    // --- Autosave & Debounce ---
+    const lastSavedData = useRef<string>('');
+
+    useEffect(() => {
+        const currentDataStr = JSON.stringify(formData);
+        if (currentDataStr === lastSavedData.current) return;
+
+        const timer = setTimeout(() => {
+            if (activeProjectId) {
+                lastSavedData.current = currentDataStr;
+                updateProjectData(activeProjectId, formData);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [formData, activeProjectId, updateProjectData]);
 
     // Update active module when industry changes (only if current module doesn't belong to the new industry)
     useEffect(() => {

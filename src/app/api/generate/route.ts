@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
 // --- CONFIGURATION ---
 const DEFAULT_MODEL = "gemini-3.1-flash-lite";
@@ -53,6 +54,22 @@ export async function POST(req: NextRequest) {
     let source = '';
     
     try {
+        const supabase = createSupabaseServerClient();
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+            return NextResponse.json({ error: '未授權存取，請先登入' }, { status: 401 });
+        }
+
+        // Deduct AI Quota on the server
+        const { data: hasQuota, error: quotaError } = await supabase.rpc('decrement_ai_quota', {
+            user_id: session.user.id
+        });
+
+        if (quotaError || hasQuota === false) {
+            return NextResponse.json({ error: 'AI 額度不足，請升級方案' }, { status: 403 });
+        }
+
         const body = await req.json();
         const { mode, userApiKey, turnstileToken, ...params } = body;
 
@@ -193,31 +210,46 @@ ${DEFAULT_OUTPUT_FORMAT}
         }
 
         // --- FETCHING FROM GOOGLE ---
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const modelObj = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: systemPrompt + "\n\n" + userPrompt
-                    }]
-                }]
-            })
-        });
-        
-        const resultData = await response.json();
-        
-        if (!response.ok) {
-            console.error("[CRITICAL API ERROR]", JSON.stringify(resultData, null, 2));
+        const fullPrompt = systemPrompt + "\n\n" + userPrompt;
+
+        try {
+            const resultStream = await modelObj.generateContentStream(fullPrompt);
+            
+            // Create a ReadableStream to stream the response back
+            const stream = new ReadableStream({
+                async start(controller) {
+                    try {
+                        for await (const chunk of resultStream.stream) {
+                            const chunkText = chunk.text();
+                            if (chunkText) {
+                                controller.enqueue(new TextEncoder().encode(chunkText));
+                            }
+                        }
+                        controller.close();
+                    } catch (err) {
+                        console.error('Stream error:', err);
+                        controller.error(err);
+                    }
+                }
+            });
+
+            return new Response(stream, {
+                headers: {
+                    'Content-Type': 'text/plain; charset=utf-8',
+                    'Cache-Control': 'no-cache, no-transform',
+                    'Connection': 'keep-alive',
+                },
+            });
+
+        } catch (apiError: any) {
+            console.error("[CRITICAL API ERROR]", apiError);
             return NextResponse.json({ 
-                error: `AI 故障: ${resultData.error?.message || '未知錯誤'} (Source: ${source})` 
+                error: `AI 故障: ${apiError.message || '未知錯誤'} (Source: ${source})` 
             }, { status: 500 });
         }
-
-        const content = resultData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        return NextResponse.json({ content });
 
     } catch (error: any) {
         console.error("AI Generation Route Error:", error);

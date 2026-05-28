@@ -6,6 +6,9 @@
  */
 import { execFile } from 'child_process';
 import util from 'util';
+import os from 'os';
+import path from 'path';
+import crypto from 'crypto';
 
 const execFileAsync = util.promisify(execFile);
 
@@ -125,15 +128,16 @@ export async function fetchWithScrapling(options: ScraplingFetchOptions): Promis
 
     // 2. 嘗試使用本機 Scrapling CLI 執行 (採用 execFile 徹底消除 Command Injection 風險)
     try {
+        const tempFilePath = path.join(os.tmpdir(), `scrapling_${crypto.randomUUID()}.md`);
         const args: string[] = ['extract'];
 
         if (mode === 'stealth') {
-            args.push('stealthy-fetch', safeUrl, 'content.md', '--impersonate', impersonate);
+            args.push('stealthy-fetch', safeUrl, tempFilePath, '--impersonate', impersonate);
             if (solveCloudflare) args.push('--solve-cloudflare');
         } else if (mode === 'dynamic') {
-            args.push('fetch', safeUrl, 'content.md', '--no-headless');
+            args.push('fetch', safeUrl, tempFilePath, '--no-headless');
         } else {
-            args.push('get', safeUrl, 'content.md', '--impersonate', impersonate);
+            args.push('get', safeUrl, tempFilePath, '--impersonate', impersonate);
         }
 
         if (cssSelector) {
@@ -145,8 +149,8 @@ export async function fetchWithScrapling(options: ScraplingFetchOptions): Promis
 
         const fs = await import('fs/promises');
         try {
-            const content = await fs.readFile('content.md', 'utf-8');
-            await fs.unlink('content.md').catch(() => {});
+            const content = await fs.readFile(tempFilePath, 'utf-8');
+            await fs.unlink(tempFilePath).catch(() => {});
             return {
                 success: true,
                 content,

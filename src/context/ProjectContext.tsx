@@ -147,6 +147,7 @@ export interface Project {
     clientCommLogs?: ClientCommLog[];
     visualProposals?: VisualProposal[];
     snapshots?: ProjectSnapshot[];
+    isFullyLoaded?: boolean;
 }
 
 export interface ProjectSnapshot {
@@ -194,6 +195,7 @@ interface ProjectContextType {
     addChatMessage: (id: string, message: ChatMessage) => void;
     deleteProject: (id: string) => void;
     importProject: (project: Project) => void;
+    fetchFullProject: (id: string) => Promise<void>;
     activeProject: Project | undefined;
     providerInfo: {
         name: string;
@@ -297,42 +299,15 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
 
     const consumeAiQuota = async (): Promise<boolean> => {
-        if (!session?.user) {
-            // For local guests, just decrease local count
-            if (aiQuota <= 0) {
-                setUpgradeModalOpen(true);
-                return false;
-            }
-            setAiQuota(prev => prev - 1);
-            return true;
-        }
-
-        try {
-            // Call Supabase function to decrement quota safely
-            const { data, error } = await supabase.rpc('decrement_ai_quota', { 
-                user_id: session.user.id 
-            });
-
-            if (error) {
-                if (error.message.includes('quota')) {
-                    setUpgradeModalOpen(true);
-                    return false;
-                }
-                throw error;
-            }
-
-            // Sync local state
-            if (data !== null && data !== undefined) {
-                setAiQuota(data);
-            } else {
-                setAiQuota(prev => Math.max(0, prev - 1));
-            }
-            return true;
-        } catch (err) {
-            console.error('Error consuming AI quota:', err);
-            toast.error('無法扣除 AI 額度，請稍後再試');
+        if (aiQuota <= 0) {
+            setUpgradeModalOpen(true);
             return false;
         }
+        
+        // Optimistically decrement local quota.
+        // Server-side will strictly verify and deduct via API endpoints.
+        setAiQuota(prev => Math.max(0, prev - 1));
+        return true;
     };
 
     // Load devMode from localStorage on mount
@@ -592,7 +567,11 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
             // 3. Try to fetch projects (scoped by team if available, fallback to user_id)
             try {
-                let query = supabase.from('projects').select('*');
+                // LIGHTWEIGHT FETCH: Only grab essential fields to avoid massive JSON payloads
+                let query = supabase.from('projects')
+                    .select('id, name, created_at, status, data->moduleId, data->projectType')
+                    .order('updated_at', { ascending: false });
+                    
                 if (activeTeamId) {
                     query = query.eq('team_id', activeTeamId);
                 } else {
@@ -603,19 +582,30 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
                 if (projectsError) {
                     console.warn('Projects table not accessible:', projectsError.message);
                 } else if (cloudProjects) {
-                    const mappedProjects = cloudProjects.map(p => {
-                        if (p.data && p.data.id) return p.data as Project;
+                    const mappedProjects = cloudProjects.map((p: any) => {
                         return {
                             id: p.id,
                             name: p.name,
-                            data: p.data,
+                            data: {
+                                moduleId: p.moduleId || 'web_development',
+                                projectType: p.projectType || 'general',
+                                projectName: p.name,
+                                description: '',
+                                features: ''
+                            },
                             createdAt: new Date(p.created_at).getTime(),
                             chatHistory: [],
                             industries: ['web'],
-                            modules: ['web_development'] // Default fallback
+                            modules: [p.moduleId || 'web_development'],
+                            isFullyLoaded: false
                         } as Project;
                     });
                     setProjects(mappedProjects);
+                    
+                    // Immediately fetch full data for the first project if it exists
+                    if (mappedProjects.length > 0) {
+                        setTimeout(() => fetchFullProject(mappedProjects[0].id), 50);
+                    }
                 }
             } catch (projectsError) {
                 console.warn('Failed to fetch projects:', projectsError);
@@ -765,12 +755,28 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
                     name: newProject.name,
                     status: 'draft',
                     data: newProject,
-                    created_at: new Date().toISOString()
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
                 });
                 if (error) throw error;
             } catch (err) {
                 console.warn('Initial cloud sync failed, will retry in background:', err);
             }
+        }
+    };
+
+    const fetchFullProject = async (id: string) => {
+        if (!session?.user) return;
+        try {
+            const { data, error } = await supabase.from('projects').select('data').eq('id', id).single();
+            if (error) throw error;
+            if (data && data.data) {
+                const fullProject = data.data as Project;
+                fullProject.isFullyLoaded = true;
+                setProjects(prev => prev.map(p => p.id === id ? fullProject : p));
+            }
+        } catch (err) {
+            console.warn(`Failed to lazy load project ${id}:`, err);
         }
     };
 
@@ -959,7 +965,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const selectProject = (id: string) => setActiveProjectId(id);
+    const selectProject = (id: string) => {
+        setActiveProjectId(id);
+        const p = projects.find(x => x.id === id);
+        if (p && !p.isFullyLoaded) {
+            fetchFullProject(id);
+        }
+    };
 
     const updateProjectData = async (id: string, data: Partial<ProjectData>) => {
         let updated: Project | undefined;
@@ -1175,6 +1187,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             createProject,
             selectProject,
             updateProjectData,
+            fetchFullProject,
             updateProjectReport,
             updateProjectQuotation,
             updateProjectInvoiceStatus,

@@ -315,20 +315,38 @@ export function AgiProvider({ children }: { children: ReactNode }) {
                     throw new Error(`API call failed for ${advisorId}`);
                 }
 
-                const data = await res.json();
+                const reader = res.body?.getReader();
+                const decoder = new TextDecoder();
+                let fullContent = '';
                 
+                if (reader) {
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        const chunk = decoder.decode(value, { stream: true });
+                        if (chunk) {
+                            fullContent += chunk;
+                            tempDeliverables[advisorId] = {
+                                content: fullContent,
+                                tasks: undefined
+                            };
+                            setLastDeliverables({ ...tempDeliverables });
+                        }
+                    }
+                }
+
                 // Parse tasks if GM
                 let tasks: any[] = [];
                 if (advisorId === 'gm') {
-                    tasks = parseTasksFromMarkdown(data.content);
+                    tasks = parseTasksFromMarkdown(fullContent);
                 }
 
                 tempDeliverables[advisorId] = {
-                    content: data.content,
+                    content: fullContent,
                     tasks: tasks.length > 0 ? tasks : undefined
                 };
 
-                accumulatedContext += `\n[${advisorId.toUpperCase()} 顧問分析結果]\n${data.content}\n`;
+                accumulatedContext += `\n[${advisorId.toUpperCase()} 顧問分析結果]\n${fullContent}\n`;
                 
                 // Keep local updates reactive
                 setLastDeliverables({ ...tempDeliverables });
@@ -525,6 +543,21 @@ export function AgiProvider({ children }: { children: ReactNode }) {
                     content: msg.content
                 }));
 
+                // 1. Create placeholder messages in state
+                const placeholderIds: Record<string, string> = {};
+                const placeholders: AdvisorMessage[] = targetAdvisors.map(advisorId => {
+                    const msgId = `resp_${advisorId}_${Date.now()}_${Math.random()}`;
+                    placeholderIds[advisorId] = msgId;
+                    return {
+                        id: msgId,
+                        advisorId: advisorId as AdvisorId,
+                        content: '',
+                        timestamp: new Date(),
+                    };
+                });
+                
+                setMessages(prev => [...prev, ...placeholders]);
+
                 // Fetch real AI responses in parallel
                 const promises = targetAdvisors.map(async (advisorId) => {
                     const res = await fetch('/api/agi-chat', {
@@ -542,21 +575,29 @@ export function AgiProvider({ children }: { children: ReactNode }) {
                     
                     if (!res.ok) {
                         const errData = await res.json().catch(() => ({}));
-                        throw new Error(errData.error || `API request failed for ${advisorId}`);
+                        const errMsg = errData.error || `API request failed for ${advisorId}`;
+                        setMessages(prev => prev.map(m => m.id === placeholderIds[advisorId] ? { ...m, content: errMsg } : m));
+                        return;
                     }
-                    const data = await res.json();
                     
-                    return {
-                        id: `resp_${advisorId}_${Date.now()}_${Math.random()}`,
-                        advisorId: advisorId as AdvisorId,
-                        content: data.content,
-                        timestamp: new Date(),
-                    };
+                    const reader = res.body?.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    if (reader) {
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
+                            const chunk = decoder.decode(value, { stream: true });
+                            if (chunk) {
+                                setMessages(prev => prev.map(m => 
+                                    m.id === placeholderIds[advisorId] ? { ...m, content: m.content + chunk } : m
+                                ));
+                            }
+                        }
+                    }
                 });
 
-                const responses = await Promise.all(promises);
-                
-                setMessages(prev => [...prev, ...responses]);
+                await Promise.all(promises);
             } catch (error) {
                 console.error("AGI Chat Error:", error);
                 setMessages(prev => [...prev, {

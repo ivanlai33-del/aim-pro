@@ -1,10 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
 const API_VERSION = "v1beta";
 const MODEL_NAME = "gemini-3.1-flash-lite";
 
 export async function POST(req: NextRequest) {
     try {
+        const supabase = createSupabaseServerClient();
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+            return NextResponse.json({ error: '未授權存取，請先登入' }, { status: 401 });
+        }
+
+        // Deduct AI Quota on the server
+        const { data: hasQuota, error: quotaError } = await supabase.rpc('decrement_ai_quota', {
+            user_id: session.user.id
+        });
+
+        if (quotaError || hasQuota === false) {
+            return NextResponse.json({ error: 'AI 額度不足，請升級方案' }, { status: 403 });
+        }
+
         const body = await req.json();
         const { videoUrl, projectData } = body;
 

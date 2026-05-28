@@ -17,6 +17,7 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
     const { activeProject, addChatMessage } = useProject();
     const [inputMessage, setInputMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [streamingReply, setStreamingReply] = useState<string | null>(null);
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -27,7 +28,7 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
 
     useEffect(() => {
         scrollToBottom();
-    }, [activeProject?.chatHistory]);
+    }, [activeProject?.chatHistory, streamingReply]);
 
     if (!activeProject) return <div>請先選擇專案</div>;
 
@@ -60,7 +61,10 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
         const chatContext = activeProject.chatHistory.map(m => `${m.role}: ${m.content}`).join('\n');
 
         // 3. Call AI
+        setStreamingReply("");
         const projectType = (activeProject.data.projectType || 'web') as 'web' | 'design'; // Default to web for backward compatibility
+        
+        let finalResponseContent = "";
         const response = await generateChatReply(
             mode,
             projectContext,
@@ -69,17 +73,23 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
             userMsg.content,
             apiKey,
             projectType,
-            turnstileToken || undefined
+            turnstileToken || undefined,
+            (chunk) => {
+                setStreamingReply(chunk);
+                finalResponseContent = chunk;
+            }
         );
 
         // 4. Add AI Message (Generated Reply)
+        const content = response.error ? (response.error || "生成失敗") : (finalResponseContent || response.content);
         const aiMsg: ChatMessage = {
             id: generateId(),
             role: 'ai',
-            content: response.content || response.error || "生成失敗",
+            content: content,
             timestamp: Date.now(),
         };
         addChatMessage(activeProject.id, aiMsg);
+        setStreamingReply(null);
         setIsLoading(false);
     };
 
@@ -131,6 +141,22 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
                         </div>
                     </div>
                 ))}
+
+                {/* Streaming Message */}
+                {streamingReply !== null && (
+                    <div className="flex justify-start">
+                        <div className="flex max-w-[80%] flex-row items-start gap-3">
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm bg-emerald-100 text-emerald-600">
+                                <Bot className="w-5 h-5" />
+                            </div>
+                            <div className="group relative p-4 rounded-2xl shadow-sm text-sm leading-relaxed bg-white text-slate-700 border border-black/20 rounded-tl-none prose prose-sm max-w-none">
+                                <ReactMarkdown>{streamingReply || '...'}</ReactMarkdown>
+                                <span className="inline-block w-2 h-4 ml-1 bg-emerald-500 animate-pulse"></span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div ref={messagesEndRef} />
             </div>
 

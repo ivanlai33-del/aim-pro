@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
 const API_VERSION = "v1beta";
 const MODEL_NAME = "gemini-3.1-flash-lite";
@@ -39,6 +41,22 @@ const ADVISOR_PROMPTS: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
     try {
+        const supabase = createSupabaseServerClient();
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+            return NextResponse.json({ error: '未授權存取，請先登入' }, { status: 401 });
+        }
+
+        // Deduct AI Quota on the server
+        const { data: hasQuota, error: quotaError } = await supabase.rpc('decrement_ai_quota', {
+            user_id: session.user.id
+        });
+
+        if (quotaError || hasQuota === false) {
+            return NextResponse.json({ error: 'AI 額度不足，請升級方案' }, { status: 403 });
+        }
+
         const body = await req.json();
         const { message, advisorId, projectData, history, profMemory, projMemory } = body;
 
@@ -108,8 +126,6 @@ export async function POST(req: NextRequest) {
    （注意：請只輸出符合你角色的 Action。若只是閒聊或初步探討，尚未達成具體要寫入儀表板的共識，請勿輸出 JSON。）
 `;
 
-        const apiUrl = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
-
         let formattedHistory = '';
         if (history && Array.isArray(history) && history.length > 0) {
             const recentHistory = history.slice(-8); // 只取最近 8 筆避免 token 爆炸
@@ -119,27 +135,43 @@ export async function POST(req: NextRequest) {
         }
 
         const userPrompt = contextStr + formattedHistory + `\n\n使用者提問：${message}`;
+        const fullPrompt = systemPrompt + "\n\n" + userPrompt;
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: systemPrompt + "\n\n" + userPrompt }]
-                }]
-            })
-        });
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const modelObj = genAI.getGenerativeModel({ model: MODEL_NAME });
 
-        const resultData = await response.json();
+        try {
+            const resultStream = await modelObj.generateContentStream(fullPrompt);
+            
+            const stream = new ReadableStream({
+                async start(controller) {
+                    try {
+                        for await (const chunk of resultStream.stream) {
+                            const chunkText = chunk.text();
+                            if (chunkText) {
+                                controller.enqueue(new TextEncoder().encode(chunkText));
+                            }
+                        }
+                        controller.close();
+                    } catch (err) {
+                        console.error('Stream error:', err);
+                        controller.error(err);
+                    }
+                }
+            });
 
-        if (!response.ok) {
-            console.error("[AGI Chat API Error]", resultData);
-            return NextResponse.json({ error: resultData.error?.message || '呼叫 Gemini API 失敗' }, { status: response.status });
+            return new Response(stream, {
+                headers: {
+                    'Content-Type': 'text/plain; charset=utf-8',
+                    'Cache-Control': 'no-cache, no-transform',
+                    'Connection': 'keep-alive',
+                },
+            });
+
+        } catch (apiError: any) {
+            console.error("[AGI Chat API Error]", apiError);
+            return NextResponse.json({ error: apiError.message || '呼叫 Gemini API 失敗' }, { status: 500 });
         }
-
-        const content = resultData.candidates?.[0]?.content?.parts?.[0]?.text || '我現在無法給予建議。';
-
-        return NextResponse.json({ content });
 
     } catch (error: any) {
         console.error("AGI Chat Route Error:", error);

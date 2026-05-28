@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getItemById, getAllItems } from '@/config/industries';
 import Link from 'next/link';
+import FadeIn from '@/components/animations/FadeIn';
 import { 
     ArrowLeft, Zap, ArrowRight, CheckCircle2, ShieldCheck, 
     Clock, TrendingUp, Users, Globe2, Eye, XCircle,
@@ -40,6 +41,36 @@ const ICON_MAP: Record<string, any> = {
     real_estate_agent: Landmark,
     government_tender: Trophy,
     grant_subsidy: Landmark,
+};
+
+const PAIN_TAGS_MAP: Record<string, string[]> = {
+    web_development: ['規格一直變', '驗收無標準', '被凹加功能', '尾款收不回'],
+    software_outsourcing: ['需求無底洞', '程式碼外流', '保固變免費', '工期狂延遲'],
+    system_integration: ['API 規格缺漏', '資料遺失扛責', '第三方不配合', '介接推諉扯皮'],
+    social_media: ['被求24h回覆', '無限微調圖片', '硬扛業績 KPI', '假日也要發文'],
+    ad_management: ['銷量差怪投手', '預算代操難算', '帳號被封要賠', '平台政策突變'],
+    seo: ['要求立刻首頁', '演算法變更背鍋', '工程師不配合', '不保排名拒付'],
+    influencer_marketing: ['網紅遲交素材', '導購差背鍋', '二次授權被告', '網紅發文翻車'],
+    pr_agency: ['沒上版面拒付', '設備壞公關賠', '免費處理危機', '現場無限追加'],
+    brand_design: ['陷入免費比稿', '報價被亂砍', '無限微調地獄', '智財權被亂用'],
+    video_production: ['拍攝現場超時', '初剪無限改', '天氣不好重拍', '演員授權糾紛'],
+    social_visual: ['圖卡單價極低', '模板惡意二創', '免費改多尺寸', '緊急插單沒錢'],
+    photography: ['被拗全給毛片', '修圖無底洞', '照片未授權', '代墊模特費用'],
+    ui_ux_design: ['程式開發翻案', '工程師做不出', '免費加元件', '主觀感覺不對'],
+    interior_design: ['隱蔽工程自吸', '口頭變更不認', '天候延誤扣款', '完工挑剔扣款'],
+    event_planning: ['取消訂金難討', '硬體出包企劃賠', '現場追加不認', '雨天備案爭議'],
+    exhibition_design: ['申報逾期重罰', '進撤場延誤背鍋', '撤展後挑剔', '展品失竊要賠'],
+    business_consulting: ['半夜call狂問', '沒升級拒付月費', '拿了報告自己做', '無限免費諮詢'],
+    corporate_training: ['無償全客製化', '被偷錄影轉售', '硬體爛怪講師', '上課前臨時改期'],
+    strategy_planning: ['被嫌只是PPT', '提案朝令夕改', '執行錯怪策略', '比稿浪費心血'],
+    online_course_prod: ['盜版四處流竄', '平台分潤不清', '講師拖延交稿', '修改次數無限'],
+    home_organizer: ['物品丟棄爭議', '被當免費清潔工', '收完亂怪收納師', '工時難以估算'],
+    ip_agent: ['保證核准不切實', '駁回怪代理', '客戶拖延補件', '免費撰寫答辯'],
+    ai_agent_consultant: ['AI幻覺被告', 'API費用拒付', '員工不用怪系統', '要求100%精準'],
+    real_estate_agent: ['帶看幾次買別家', '漏水瑕疵背鍋', '買賣私下成交', '被退半成服務費'],
+    government_tender: ['企劃被免費借鑑', '得標驗收刁難', '法規變動算廠商', '公文無限重改'],
+    grant_subsidy: ['沒過要求退訂', '核銷被退件', '客戶亂花補助款', '查帳責任難清'],
+    default: ['進度不透明', '需求一直變動', '品質難以控管', '交付時間延遲']
 };
 
 // ==========================================
@@ -235,7 +266,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                 {/* 斜線網格背景 */}
                 <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-[0.05] mix-blend-overlay" />
 
-                <div className="container mx-auto px-6 lg:px-12 relative z-10">
+                <FadeIn delay={0.1} className="container mx-auto px-6 lg:px-12 relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         {/* 左側：文字與 CTA */}
                         <div className="text-left">
@@ -312,14 +343,14 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             {/* ---------------------------------------------------- */}
             {/* 2. 信任指標橫幅 (Trust Banner) */}
             {/* ---------------------------------------------------- */}
             <div className="bg-white border-b border-slate-200">
-                <div className="container mx-auto px-6 lg:px-12 py-8">
+                <FadeIn delay={0.2} className="container mx-auto px-6 lg:px-12 py-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                         <div className="flex items-center justify-center gap-4 pt-4 md:pt-0">
                             <div className={`w-12 h-12 rounded-full ${theme.uiLight} flex items-center justify-center ${theme.checkIcon}`}>
@@ -349,7 +380,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </FadeIn>
             </div>
 
             {/* ---------------------------------------------------- */}
@@ -357,24 +388,26 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
             {/* ---------------------------------------------------- */}
             <section className="py-24 lg:py-32 bg-[#F8FAFC]">
                 <div className="container mx-auto px-6 lg:px-12">
-                    <div className="text-center mb-16">
+                    <FadeIn delay={0.1} className="text-center mb-16">
                         <h2 className="text-3xl lg:text-4xl font-black text-slate-800 mb-4 tracking-tight leading-snug">
-                            為什麼您需要 <span className={`${theme.checkIcon}`}>{mod.name}</span> 職人AGI團隊模組<br className="hidden md:block"/>
+                            為什麼您需要 <span className={`${theme.checkIcon}`}>{mod.name.replace(' 職人模組', '')}</span> 的專屬 AGI 團隊<br className="hidden md:block"/>
                             {landingData.beforeAfterTitle || '來處理繁雜的合約與報價防禦'}？
                         </h2>
                         <p className="text-slate-500 text-lg">
                             {landingData.beforeAfterSubtitle || '讓您擁有專業的 AGI 團隊協作，確保每一筆交易都安全可靠！'}
                         </p>
-                    </div>
+                    </FadeIn>
 
                     <div className="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12">
                         {/* VS 徽章 (Center Badge) */}
-                        <div className={`hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-white border border-slate-200 rounded-full items-center justify-center shadow-2xl z-20 ${theme.checkIcon} font-black text-5xl`}>
-                            VS
+                        <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                            <FadeIn delay={0.6} className={`w-32 h-32 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-2xl ${theme.checkIcon} font-black text-5xl`}>
+                                VS
+                            </FadeIn>
                         </div>
 
                         {/* Left: Before (過去的困境) */}
-                        <div className="bg-[#F8FAFC] rounded-3xl p-10 lg:p-14 border border-slate-200 flex flex-col relative overflow-hidden shadow-sm">
+                        <FadeIn delay={0.3} className="bg-[#F8FAFC] rounded-3xl p-10 lg:p-14 border border-slate-200 flex flex-col relative overflow-hidden shadow-sm">
                             {/* Header (Top aligned) */}
                             <div className="flex items-center gap-5 mb-10">
                                 <div className="w-14 h-14 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center shrink-0">
@@ -392,10 +425,10 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                                 <Users className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 text-slate-400" />
                                 
                                 {/* Floating Pain Points */}
-                                <div className="absolute top-2 left-0 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[-5deg]">進度不透明</div>
-                                <div className="absolute top-1/4 right-0 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[5deg]">需求一直變動</div>
-                                <div className="absolute bottom-1/4 left-4 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[3deg]">品質難以控管</div>
-                                <div className="absolute bottom-4 right-4 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[-8deg]">交付時間延遲</div>
+                                <div className="absolute top-2 left-0 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[-5deg] whitespace-nowrap">{PAIN_TAGS_MAP[mod.id]?.[0] || PAIN_TAGS_MAP.default[0]}</div>
+                                <div className="absolute top-1/4 right-0 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[5deg] whitespace-nowrap">{PAIN_TAGS_MAP[mod.id]?.[1] || PAIN_TAGS_MAP.default[1]}</div>
+                                <div className="absolute bottom-1/4 left-4 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[3deg] whitespace-nowrap">{PAIN_TAGS_MAP[mod.id]?.[2] || PAIN_TAGS_MAP.default[2]}</div>
+                                <div className="absolute bottom-4 right-4 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-slate-500 text-xs font-medium shadow-sm rotate-[-8deg] whitespace-nowrap">{PAIN_TAGS_MAP[mod.id]?.[3] || PAIN_TAGS_MAP.default[3]}</div>
                             </div>
 
                             <div className="flex flex-col w-full mt-auto">
@@ -408,10 +441,10 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                                     ))}
                                 </ul>
                             </div>
-                        </div>
+                        </FadeIn>
 
                         {/* Right: After (現在的優勢) */}
-                        <div className={`${theme.heroBg} ${theme.iconGlow} rounded-3xl p-10 lg:p-14 border border-white/20 flex flex-col relative overflow-hidden`}>
+                        <FadeIn delay={0.8} className={`${theme.heroBg} ${theme.iconGlow} rounded-3xl p-10 lg:p-14 border border-white/20 flex flex-col relative overflow-hidden`}>
                             {/* Header (Top aligned) */}
                             <div className="flex items-center gap-5 mb-10">
                                 <div className={`w-14 h-14 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full flex items-center justify-center shrink-0 shadow-lg`}>
@@ -468,7 +501,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                                     ))}
                                 </ul>
                             </div>
-                        </div>
+                        </FadeIn>
                     </div>
                 </div>
             </section>
@@ -477,7 +510,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
             {/* 4. 底部 CTA 橫幅 (Bottom CTA Banner) */}
             {/* ---------------------------------------------------- */}
             <section className="py-12 bg-[#F8FAFC]">
-                <div className="container mx-auto px-6 lg:px-12">
+                <FadeIn delay={0.3} className="container mx-auto px-6 lg:px-12">
                     <div className={`${theme.bottomBanner} rounded-3xl p-8 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl`}>
                         <div className="flex items-center gap-6">
                             <div className="hidden md:flex w-16 h-16 bg-white/20 rounded-full items-center justify-center backdrop-blur-sm text-2xl">
@@ -499,22 +532,23 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                             <ArrowRight className="w-4 h-4" />
                         </Link>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             {/* ---------------------------------------------------- */}
             {/* 5. 常見問題 (FAQ) */}
             {/* ---------------------------------------------------- */}
-            <section className="py-24 bg-white border-t border-slate-200/60">
-                <div className="container mx-auto px-6 lg:px-12">
+            <section className={`py-24 relative border-t border-slate-200/60 ${theme.heroBg}`}>
+                <div className="absolute inset-0 bg-white/70 backdrop-blur-[100px]" />
+                <FadeIn delay={0.2} className="container mx-auto px-6 lg:px-12 relative z-10">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-black text-slate-800 mb-4">常見問題 (FAQ)</h2>
-                        <p className="text-slate-500 text-lg">快速了解 {mod.name} 能為您做些什麼。</p>
+                        <p className="text-slate-600 font-medium text-lg">快速了解 {mod.name} 能為您做些什麼。</p>
                     </div>
 
                     <div className="max-w-3xl mx-auto space-y-6">
                         {landingData.faqs.map((faq, idx) => (
-                            <div key={idx} className={`bg-slate-50 rounded-2xl p-6 border border-slate-100 transition-all hover:${theme.afterTitle.replace('text-', 'border-')}/30 hover:shadow-md`}>
+                            <div key={idx} className={`bg-white/60 backdrop-blur-md rounded-2xl p-6 border border-white/50 transition-all hover:${theme.afterTitle.replace('text-', 'border-')}/40 hover:bg-white/90 hover:shadow-xl`}>
                                 <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-start gap-2">
                                     <span className={`${theme.faqQ}`}>Q.</span>
                                     {faq.question}
@@ -525,7 +559,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                             </div>
                         ))}
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
         </main>

@@ -1,8 +1,26 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
 export async function POST(req: Request) {
     try {
+        const supabase = createSupabaseServerClient();
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+            return NextResponse.json({ error: '未授權存取，請先登入' }, { status: 401 });
+        }
+
+        const { data: profile } = await supabase
+            .from('users_profile')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+
+        if (!profile || profile.role !== 'superadmin') {
+            return NextResponse.json({ error: '權限不足，僅限超級管理員使用' }, { status: 403 });
+        }
+
         const { message, context } = await req.json();
         
         const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
