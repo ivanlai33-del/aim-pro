@@ -5,11 +5,11 @@ export const MODULE_PRESENTATION_DESIGN: BusinessModule = {
     name: '簡報與提案設計 職人模組 (Open Design)',
     description: 'Pitch Deck、商業簡報、HTML 網頁簡報與系統化設計 (Design System)',
     categoryId: 'design',
-    tagline: '終結排版地獄！透過模組化設計系統與 AI 生成專屬高轉化率提案',
+    tagline: '終結排版地獄！透過模組化設計系統、多模型 (Multi-Agent) 協作與 AI 多媒體生成，打造專屬高轉化率提案',
     targetUser: '簡報設計師、提案企劃、商業拓展 (BD)',
     painPoints: ['客戶對簡報設計無止盡微調', '缺乏系統化導致每份簡報都從零開始', '文字與視覺邏輯脫節', '提案缺乏互動與現代感 (如 HTML PPT)'],
     corePrompt: `Role: 資深簡報設計師與提案策略師 (Pitch Deck Specialist)
-    Profile: 你精通商業邏輯視覺化，擅長將複雜的商業模式轉化為極具說服力的簡報 (Pitch Deck)。你的專業涵蓋大綱梳理、設計系統 (Design System) 導入、HTML PPT / 橫向滑動簡報設計。
+    Profile: 你精通商業邏輯視覺化，擅長將複雜的商業模式轉化為極具說服力的簡報 (Pitch Deck)。你的專業涵蓋大綱梳理、設計系統 (Design System) 導入、HTML PPT / 橫向滑動簡報設計，以及 HyperFrames 與 AI 影音素材整合。
     Focus: 說服力 (Persuasion)、資訊層級、視覺張力與模組化重用。
     Task: 請提供專業的簡報設計提案，包含內容企劃、視覺定調與預期產出格式 (如靜態 PDF 或互動式 HTML 簡報)。
     Reality Check: 主動釐清簡報的「目標受眾 (TA)」與「核心目的」，避免無效的視覺過度包裝。
@@ -25,7 +25,7 @@ export const MODULE_PRESENTATION_DESIGN: BusinessModule = {
         customFields: [
             { name: "slideCount", label: "預計總頁數", placeholder: "例如：約 15-20 頁", type: "text" },
             { name: "designDepth", label: "設計深度需求", placeholder: "請選擇設計深度...", type: "select", options: ['僅美化排版 (已有完整文字內容)', '內容梳理 + 全案設計', '互動式簡報 (HTML PPT / 網頁版)', '建立企業專屬簡報設計系統 (Design System)'] },
-            { name: "interactiveNeed", label: "是否需要特殊互動效果", placeholder: "請選擇互動需求...", type: "select", options: ['靜態無動畫', '基礎轉場動畫', '進階動態與橫向滑動 (如 Guizang PPT)', '完全網頁化互動'] }
+            { name: "interactiveNeed", label: "是否需要特殊互動效果", placeholder: "請選擇互動需求...", type: "select", options: ['靜態無動畫', '基礎轉場動畫', '進階動態與橫向滑動 (如 Guizang PPT)', '高階動態圖表與 AI 影音 (HyperFrames / Seedance)', '完全網頁化互動'] }
         ]
     },
     aiPrompts: {
@@ -35,7 +35,7 @@ export const MODULE_PRESENTATION_DESIGN: BusinessModule = {
 精準描述客戶本次簡報欲達成之目的（如募資、銷售、報告），以及目前面臨的痛點（如邏輯發散、視覺無力）。
 
 **第二段 — 設計與技術解決方案 (Design & Tech Solution)**
-說明建議的設計路徑。若適合，請推薦導入「Open Design 系統化設計」與「HTML PPT / 橫向滑動簡報技術」，強調如何透過系統化提升品牌專業度與後續維護效率。
+說明建議的設計路徑。若適合，請推薦導入「Open Design 系統化設計」與「HTML PPT / 橫向滑動簡報技術」，並視需求結合 HyperFrames 動態圖表與 AI 影片生成 (如 Seedance)，強調如何透過系統化提升品牌專業度與後續維護效率。
 
 **第三段 — 商業效益 (Business Value / ROI)**
 量化或具象化高質感提案帶來的效益（如：提升投資人停留時間、增強品牌信任感、模組化減少未來 50% 製作時間）。
@@ -51,14 +51,16 @@ export const MODULE_PRESENTATION_DESIGN: BusinessModule = {
 
 **基礎方案 (Essential)**：現有文字稿美化排版（約 10-15 頁）、靜態 PDF 交付。
 **標準方案 (Standard)**：Pitch Deck 內容梳理 + 全新視覺定調 + 基礎動畫設計。
-**尊榮方案 (Pro / Tech)**：導入 Open Design 設計系統、製作高互動 HTML 網頁簡報、包含動態轉場與開發交付。`
+**尊榮方案 (Pro / Tech)**：導入 Open Design 設計系統、製作高互動 HTML 網頁簡報、包含動態轉場、HyperFrames 動態圖表、AI 影片生成素材與開發交付。`
     },
     reportTemplate: {
         structure: `# 簡報設計與提案策略報告\n\n## 1. 簡報目標與受眾分析\n\n## 2. 內容大綱與資訊架構 (Storyboard)\n\n## 3. 視覺風格與設計系統 (Design System)\n- 品牌色彩與字體：\n- 視覺定調：\n\n## 4. 技術與互動提案 (如適用)\n- 格式建議 (PDF / PPT / HTML 網頁簡報)：\n- 互動效果規劃：\n\n## 5. 專案交付與時程`,
         terminology: {
             'Pitch Deck': '商業計畫/募資簡報 (用以向投資人或合作夥伴說服的精煉簡報)',
             'Design System': '設計系統 (統一的字體、色彩、版式規範，確保品牌一致性)',
-            'HTML PPT': '網頁式簡報 (使用網頁技術製作的簡報，具備極高的互動性與跨裝置支援)'
+            'HTML PPT': '網頁式簡報 (使用網頁技術製作的簡報，具備極高的互動性與跨裝置支援)',
+            'HyperFrames': '動態視覺框架 (將 HTML 網頁動畫轉為高品質 MP4 動畫，適合產品展示與動態圖表)',
+            'Multi-Agent': '多模型 AI 協作 (整合各家頂尖 AI 模型，提供最佳設計與程式碼輸出)'
         },
         analysisDimensions: ['邏輯說服力 (Persuasion)', '視覺一致性 (Consistency)', '互動體驗 (Interactivity)', '後續維護性 (Maintainability)']
     },
@@ -115,11 +117,14 @@ export const MODULE_PRESENTATION_DESIGN: BusinessModule = {
         { description: '全份簡報視覺化排版 (15-20頁)', quantity: 1, unitPrice: 25000 },
         { description: '專屬設計系統建立 (Design System Guideline)', quantity: 1, unitPrice: 18000 },
         { description: '互動式 HTML 網頁簡報開發 (Web PPT)', quantity: 1, unitPrice: 35000 },
+        { description: 'HyperFrames / AI 影片素材生成與整合', quantity: 1, unitPrice: 20000 },
     ],
     projectTypes: [
         { id: 'pitch_deck', label: '🚀 募資與商業提案 (Pitch Deck)', description: '具備高度說服力與商業邏輯的募資簡報' },
         { id: 'corporate_deck', label: '🏢 企業介紹簡報 (Corporate Deck)', description: '展現品牌專業度與規模的標準簡報' },
         { id: 'html_ppt', label: '🌐 互動式網頁簡報 (HTML PPT)', description: '使用前端技術打造的高流暢度現代化簡報' },
         { id: 'template_design', label: '📚 品牌簡報模板與設計系統', description: '建立可重複使用的企業專屬簡報規範' },
+        { id: 'replit_deck', label: '💻 產品導覽簡報 (Replit-style Deck)', description: '專為軟體產品設計的互動式功能導覽簡報' },
+        { id: 'media_deck', label: '🎬 多媒體視覺簡報 (HyperFrames / Seedance)', description: '整合高品質 AI 生成影片與動態圖表之沉浸式簡報' },
     ],
 };

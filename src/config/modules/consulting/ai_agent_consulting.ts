@@ -3,7 +3,7 @@ import { BusinessModule } from '@/types/industries';
 export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
     id: 'ai_agent_consultant',
     name: 'AI 導入與培訓 職人模組',
-    description: '企業流程診斷、AI Agent PoC 設計、數位工作流自動化、AI 運維優化',
+    description: '企業流程診斷、AI Agent PoC 設計、數位工作流自動化、企業文檔智慧解析 (Document AI)、AI 運維優化',
     categoryId: 'consulting',
     tagline: '拒絕神話 AI，用具體的概念驗證(PoC)保護雙方期待',
     targetUser: 'AI 顧問、流程工程師、數位轉型專家',
@@ -25,7 +25,7 @@ export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
         customFields: [
             { name: "automationStage", label: "目前規畫階段", placeholder: "請選擇當前階段...", type: "select", options: ['探索與診斷 (Discovery)', 'PoC / MVP 設計 (Validation)', '擴充與產品化 (Scale)', '維運與優化 (Run & Improve)'] },
             { name: "targetIndustry", label: "目標產業別", placeholder: "請選擇產業...", type: "select", options: ['傳統製造 / 工廠', '零售 / 批發 / 貿易', '手工藝 / 設計工作室', '服務業 (健身/美容/教育)', 'B2B 中小企業'] },
-            { name: "dataSources", label: "主要資料來源 (Input)", placeholder: "例如：Line, Google Sheets, ERP API, Email...", type: "text" },
+            { name: "dataSources", label: "主要資料來源 (Input)", placeholder: "例如：Line, Google Sheets, ERP API, Email, PDF/掃描文件...", type: "text" },
             { name: "successMetric", label: "成功指標 (KPI)", placeholder: "例如：每月減少 40 小時人力、錯誤率降至 0...", type: "text" }
         ]
     },
@@ -38,7 +38,7 @@ export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
 **第二段 — 解決方案 (Solution)**
 提供 AI 導入的藍圖：
 1. **切入點建議**：選擇一個 ROI 最高的 PoC (概念驗證) 場景。
-2. **系統架構**：說明 Agent 的串接邏輯（如：LINE + Make + OpenAI）。
+2. **系統架構**：說明 Agent 的串接邏輯（如：LINE + Make + OpenAI）。若涉及實體或非結構化文件，請建議導入 PaddleOCR (如 PaddleOCR-VL 視覺語言模型) 將複雜 PDF/圖片轉為 LLM 可讀的 Markdown/JSON，並搭配 Dify 或 RAGFlow 建立企業知識庫。
 3. **人機協作**：定義 AI 的職權與人類審核點。
 
 **第三段 — ROI 與效率分析 (ROI Analysis)**
@@ -67,7 +67,8 @@ export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
         terminology: {
             'PoC (Proof of Concept)': '概念驗證 (用最小的成本與最快的速度，驗證 AI 是否能確實解決問題，再決定是否全面導入)',
             'Prompt Engineering': '提示詞工程 (設計並調校給 AI 的指令，確保其產出符合企業標準的專業內容)',
-            'API 串接': '讓不同軟體互相溝通的橋樑 (如讓公司內部的 ERP 系統能自動傳資料給 ChatGPT 處理)'
+            'API 串接': '讓不同軟體互相溝通的橋樑 (如讓公司內部的 ERP 系統能自動傳資料給 ChatGPT 處理)',
+            'Document AI (文檔解析)': '利用 AI (如 PaddleOCR) 將掃描檔、PDF 等非結構化文件，轉換為 AI 代理人能讀懂的 Markdown 或 JSON 格式'
         },
         analysisDimensions: ['技術可行性', '資料安全性 (Data Privacy)', '人員適應力', '成本效益比 (ROI)']
     },
@@ -120,6 +121,7 @@ export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
     defaultItems: [
         { description: 'AI 導入地圖規劃與診斷 (Discovery & Diagnosis)', quantity: 1, unitPrice: 15000 },
         { description: 'AI Agent PoC 實作小專案 (MVP Development)', quantity: 1, unitPrice: 50000 },
+        { description: '企業文檔智慧解析與結構化處理 (Document AI & OCR)', quantity: 1, unitPrice: 40000 },
         { description: '系統擴充與產品化 (Scaling & Integration)', quantity: 1, unitPrice: 80000 },
         { description: 'AI Agent 月度維運與優化 (Monthly Retainer)', quantity: 1, unitPrice: 10000 },
     ],
@@ -128,5 +130,6 @@ export const MODULE_AI_AGENT_CONSULTANT: BusinessModule = {
         { id: 'ai_poc', label: '🧪 PoC / MVP 小專案', description: '2-4 週快速驗證，看到真實省時效果' },
         { id: 'ai_scale', label: '🚀 擴充與產品化 (Scale)', description: '橫向發展多流程，建立系統化後台' },
         { id: 'ai_maintenance', label: '🛡️ 維運與優化 (Maintenance)', description: '長期監控、調整規則、數位同事持續成長' },
+        { id: 'ai_doc_parsing', label: '📄 企業知識庫與文檔解析 (Document AI)', description: '將複雜 PDF/圖片轉為 LLM 就緒的結構化數據 (Markdown/JSON)' },
     ],
 };

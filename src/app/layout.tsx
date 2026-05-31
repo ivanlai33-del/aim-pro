@@ -9,33 +9,33 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Aim pro 捷報 AI 職人智能總部 | 全球職人智庫 x 智能經營總部',
+    default: 'Aim pro 捷報 | 職人專屬的智能總部 - 最小規模，最強產能',
     template: '%s | Aim pro 捷報'
   },
-  description: '專為職人打造的 AI 虛擬總部。深度整合全球跨領域專家大腦與法務、財務、稅務基因，為您的專業價值提供最強大的後援。',
-  keywords: ['AI 經營大腦', '全球專家矩陣', '職人法務財務稅務', '虛擬總部', 'AI 估價', '自動化合約'],
+  description: '跨界 Agi 職人團隊為您撐腰，告別單打獨鬥！您的 24H 全能專業合夥人，為您的專業價值提供最強大的後援。',
+  keywords: ['AI 經營大腦', '職人智能總部', 'Agi 職人團隊', '虛擬合夥人', 'AI 估價', '自動化合約'],
   authors: [{ name: '捷報科技 Team' }],
   creator: '捷報科技',
   openGraph: {
     type: 'website',
     locale: 'zh_TW',
     url: 'https://estimator.jiebao.tw',
-    title: '捷報 Estimator Pro | 30秒生成專業報價',
-    description: '告別熬夜寫報價單！專業職人的 AI 智能接案系統，自動生成合約與財務規劃。',
-    siteName: '捷報 Estimator Pro',
+    title: 'Aim pro 捷報 | 職人專屬的智能總部',
+    description: '最小規模，最強產能。跨界 Agi 職人團隊為您撐腰，告別單打獨鬥～您的 24H 全能專業合夥人！',
+    siteName: 'Aim pro 捷報',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: '捷報 Estimator Pro - AI 智能接案系統',
+        alt: 'Aim pro 捷報 - 職人專屬的智能總部',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: '捷報 Estimator Pro | AI 智能接案估價系統',
-    description: '30 秒生成精準報價、合約與執行企劃。',
+    title: 'Aim pro 捷報 | 職人專屬的智能總部',
+    description: '跨界 Agi 職人團隊為您撐腰，您的 24H 全能專業合夥人。',
     images: ['/og-image.png'],
   },
   icons: {
