@@ -288,11 +288,11 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                             </h1>
 
                             <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6 tracking-wide drop-shadow-sm">
-                                {landingData.heroSubtitle || '你的專屬 AGI 幕僚：極速完成提案、報價與合約，不再孤軍奮戰'}
+                                {landingData.heroSubtitle || '職人專屬的智能總部：最小規模，最強產能'}
                             </h2>
                             
                             <p className="text-white/90 text-lg leading-relaxed font-medium mb-10 max-w-xl">
-                                {landingData.heroDescription || mod.tagline || '告別過去繁瑣的傳統流程，擁抱 AGI 帶來的指數級效率。讓懂法務與財務的 AGI 辦公室成為您最堅強的後盾，專注於您的核心專業。'}
+                                {landingData.heroDescription || mod.tagline || '跨界 Agi 職人團隊為您撐腰，告別單打獨鬥！讓懂法務與財務的 24H 全能專業合夥人成為您最堅強的後盾，專注於您的核心專業。'}
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -519,7 +519,7 @@ export default function PersonaPage({ params }: { params: { id: string } }) {
                             <div className="text-white text-center md:text-left max-w-2xl">
                                 <h2 className="text-2xl lg:text-3xl font-black mb-3 drop-shadow-sm">個人接案孤軍奮戰的時代，正式結束了。</h2>
                                 <p className="text-white/90 font-medium text-lg leading-relaxed">
-                                    對標世界頂尖職人頭腦的AGI團隊與您一起協作，立刻為您配置專屬的 AGI 團隊！提供專案各面向的建議與輔導，與您緊密協作，並主動補足個人接案、自由工作者、工作室、微型公司企業容易忽略的隱藏細節。
+                                    立刻啟動您的職人專屬智能總部！跨界 Agi 職人團隊隨時為您撐腰，提供專案各面向的建議與輔導。與您的 24H 全能專業合夥人緊密協作，主動補足個人接案容易忽略的隱藏細節。
                                 </p>
                             </div>
                         </div>
