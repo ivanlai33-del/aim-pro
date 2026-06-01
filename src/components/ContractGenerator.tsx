@@ -351,7 +351,7 @@ export default function ContractGenerator({
 }: ContractGeneratorProps) {
     const contractRef = useRef<HTMLDivElement>(null);
     const currentDate = new Date().toLocaleDateString('zh-TW');
-    const [contractStyle, setContractStyle] = useState<'formal' | 'concise' | 'modern' | 'standard' | 'detailed' | 'od_swiss' | 'od_brutal' | 'od_editorial' | 'od_mono' | 'od_receipt' | 'od_architect' | 'od_academic' | 'od_gallery' | 'od_terminal' | 'od_neo_classic'>('formal');
+    const [contractStyle, setContractStyle] = useState<'formal' | 'concise' | 'modern' | 'standard' | 'detailed' | 'od_swiss' | 'od_brutal' | 'od_editorial' | 'od_mono' | 'od_receipt' | 'od_architect' | 'od_academic' | 'od_gallery' | 'od_terminal' | 'od_neo_classic' | 'gz_ink' | 'gz_indigo' | 'gz_forest' | 'gz_dune' | 'gz_ikb'>('formal');
 
     // 解析 projectTypeId：優先使用 projectTypeId，否則從 industryId 推斷
     const resolvedProjectTypeId = projectTypeId ||

@@ -4,7 +4,7 @@
 
 import { ProjectData } from '@/types/project';
 
-export type DesignPhilosophy = 'apple' | 'estate' | 'cruise' | 'rural' | 'cyber' | 'gallery' | 'magazine';
+export type DesignPhilosophy = 'apple' | 'estate' | 'cruise' | 'rural' | 'cyber' | 'gallery' | 'magazine' | 'ink' | 'indigo' | 'forest' | 'dune' | 'ikb';
 export type DesignSkill = 'prototype' | 'presentation' | 'dashboard' | 'brand_spec' | 'flowchart' | 'html_ppt' | 'swipe_deck';
 
 export interface DesignBrief {
@@ -23,13 +23,18 @@ export function getFullCraftCSS(philosophy: DesignPhilosophy): string {
         rural: `--bg: #fdf8f0; --text: #3d2b1f; --accent: #7c4a1e; --secondary: #f4ece2; --font: 'Noto Serif TC'; --accent-gradient: linear-gradient(to right, #7c4a1e, #a67c52);`,
         cyber: `--bg: #020617; --text: #e2e8f0; --accent: #10b981; --secondary: #0f172a; --font: 'Space Mono'; --accent-gradient: linear-gradient(90deg, #10b981, #3b82f6);`,
         gallery: `--bg: #ffffff; --text: #000; --accent: #e63946; --secondary: #f5f5f0; --font: 'Outfit'; --accent-gradient: linear-gradient(45deg, #e63946, #000);`,
-        magazine: `--bg: #fafafa; --text: #111111; --accent: #ff4500; --secondary: #f0f0f0; --font: 'Helvetica Neue', Helvetica; --accent-gradient: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);`
+                magazine: `--bg: #fafafa; --text: #111111; --accent: #ff4500; --secondary: #f0f0f0; --font: 'Helvetica Neue', Helvetica; --accent-gradient: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);`,
+        ink: `--bg: #f1efea; --text: #0a0a0b; --accent: #8c8c8c; --secondary: #e6e4df; --font: 'Noto Serif TC', serif; --accent-gradient: linear-gradient(135deg, #0a0a0b 0%, #333 100%);`,
+        indigo: `--bg: #0a1f3d; --text: #f1f3f5; --accent: #4da6ff; --secondary: #132a4f; --font: 'Inter', sans-serif; --accent-gradient: linear-gradient(135deg, #4da6ff 0%, #0a1f3d 100%);`,
+        forest: `--bg: #1a2e1f; --text: #f5f1e8; --accent: #66b277; --secondary: #233b29; --font: 'Playfair Display', serif; --accent-gradient: linear-gradient(135deg, #66b277 0%, #1a2e1f 100%);`,
+        dune: `--bg: #1f1a14; --text: #f0e6d2; --accent: #d4a04a; --secondary: #2a241c; --font: 'Outfit', sans-serif; --accent-gradient: linear-gradient(135deg, #d4a04a 0%, #1f1a14 100%);`,
+        ikb: `--bg: #ffffff; --text: #000000; --accent: #002FA7; --secondary: #f5f5f5; --font: 'Helvetica Neue', Helvetica, sans-serif; --accent-gradient: linear-gradient(135deg, #002FA7 0%, #001f70 100%);`
     };
 
     return `
     :root {
         ${palettes[philosophy]}
-        color-scheme: ${philosophy === 'gallery' || philosophy === 'rural' ? 'light' : 'dark'} !important;
+        color-scheme: ${['gallery', 'rural', 'magazine', 'ink', 'ikb'].includes(philosophy) ? 'light' : 'dark'} !important;
         --glass: blur(40px) saturate(200%);
         --shadow-xl: 0 40px 100px -20px rgba(0,0,0,0.6);
         --border-glass: rgba(255,255,255,0.08);
@@ -75,7 +80,8 @@ export function getFullCraftCSS(philosophy: DesignPhilosophy): string {
 }
 
 export const PHILOSOPHY_LABELS: Record<DesignPhilosophy, string> = {
-  apple: '極致蘋果 (Apple)', estate: '私人莊園 (Estate)', cruise: '皇家郵輪 (Cruise)', rural: '文青鄉產 (Rural)', cyber: '賽博科技 (Cyber)', gallery: '現代藝廊 (Creative)', magazine: '時尚雜誌 (Magazine)'
+    apple: '極致蘋果 (Apple)', estate: '私人莊園 (Estate)', cruise: '皇家郵輪 (Cruise)', rural: '文青鄉產 (Rural)', cyber: '賽博科技 (Cyber)', gallery: '現代藝廊 (Creative)', magazine: '時尚雜誌 (Magazine)',
+  ink: '墨水經典 (Ink Classic)', indigo: '靛藍瓷 (Indigo)', forest: '森林墨 (Forest)', dune: '沙丘 (Dune)', ikb: '瑞士克萊因藍 (IKB)'
 };
 
 export const SKILL_LABELS: Record<DesignSkill, string> = {
@@ -89,7 +95,12 @@ export const PHILOSOPHY_DESCRIPTIONS: Record<DesignPhilosophy, string> = {
   rural: '純樸溫度：大地暖色、紙質感、手感編排',
   cyber: '未來脈動：發光網格、霓虹對比、科技感介面',
   gallery: '前衛衝擊：不對稱佈局、流體元素、藝術對比',
-  magazine: '時尚雜誌：大膽排版、全屏圖片、搶眼字體',
+    magazine: '時尚雜誌：大膽排版、全屏圖片、搶眼字體',
+  ink: '墨水經典：暖色紙張、深墨字體、適合商業預設',
+  indigo: '靛藍瓷：深邃科技藍、高對比白字、適合科技/AI',
+  forest: '森林墨：深邃自然綠、暖色文字、適合永續/非虛構',
+  dune: '沙丘：大地暖色調、藝術感排版、適合設計/時尚',
+  ikb: '瑞士網格：純淨白底黑字、高純度克萊因藍點綴'
 };
 
 export const SKILL_DESCRIPTIONS: Record<DesignSkill, string> = {

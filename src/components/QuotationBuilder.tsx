@@ -29,7 +29,7 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
     ]);
     const [taxMode, setTaxMode] = useState<TaxMode>((activeProject?.quotationSettings?.taxMode as TaxMode) || 'exclusive'); // exclusive = +5%
     const [riskLevel, setRiskLevel] = useState<RiskLevel>((activeProject?.quotationSettings?.riskLevel as RiskLevel) || 'medium');
-    const [quoteStyle, setQuoteStyle] = useState<'standard' | 'modern' | 'minimal' | 'classic' | 'creative' | 'od_swiss' | 'od_brutal' | 'od_editorial' | 'od_mono' | 'od_receipt' | 'od_architect' | 'od_academic' | 'od_gallery' | 'od_terminal' | 'od_neo_classic'>('standard');
+    const [quoteStyle, setQuoteStyle] = useState<'standard' | 'modern' | 'minimal' | 'classic' | 'creative' | 'od_swiss' | 'od_brutal' | 'od_editorial' | 'od_mono' | 'od_receipt' | 'od_architect' | 'od_academic' | 'od_gallery' | 'od_terminal' | 'od_neo_classic' | 'gz_ink' | 'gz_indigo' | 'gz_forest' | 'gz_dune' | 'gz_ikb'>('standard');
 
     // Import Confirmation State
     const [isConfirmingImport, setIsConfirmingImport] = useState(false);
@@ -404,18 +404,25 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                                 <option value="minimal">極簡低調 (Minimal)</option>
                                 <option value="classic">經典嚴謹 (Classic)</option>
                                 <option value="creative">創意活潑 (Creative)</option>
-                                <optgroup label="Open Design 黑白職人風格">
-                                    <option value="od_swiss">國際瑞士風 (Swiss)</option>
-                                    <option value="od_brutal">新粗野主義 (Brutal)</option>
-                                    <option value="od_editorial">報刊社論 (Editorial)</option>
-                                    <option value="od_mono">極致純黑 (Monochrome)</option>
-                                    <option value="od_receipt">電子收據 (Receipt)</option>
-                                    <option value="od_architect">建築藍圖 (Architect)</option>
-                                    <option value="od_academic">學術論文 (Academic)</option>
-                                    <option value="od_gallery">現代藝廊 (Gallery)</option>
-                                    <option value="od_terminal">代碼終端 (Terminal)</option>
-                                    <option value="od_neo_classic">新古典 (Neo Classic)</option>
-                                </optgroup>
+                                                                        <optgroup label="Open Design 黑白職人風格">
+                                            <option value="od_swiss">極致純黑 (Monochrome)</option>
+                                            <option value="od_brutal">粗獷主義 (Brutalism)</option>
+                                            <option value="od_editorial">純文字排版 (Editorial)</option>
+                                            <option value="od_mono">白底黑邊 (Mono Outline)</option>
+                                            <option value="od_receipt">收銀條風格 (Receipt)</option>
+                                            <option value="od_architect">藍圖網格 (Architect)</option>
+                                            <option value="od_academic">學術論文 (Academic)</option>
+                                            <option value="od_gallery">藝廊展卡 (Gallery)</option>
+                                            <option value="od_terminal">終端機 (Terminal)</option>
+                                            <option value="od_neo_classic">新古典黑白 (Neo Classic)</option>
+                                        </optgroup>
+                                        <optgroup label="國際版式與雜誌風 (Editorial/Swiss)">
+                                            <option value="gz_ink">墨水經典 (Ink Classic)</option>
+                                            <option value="gz_indigo">靛藍瓷 (Indigo Porcelain)</option>
+                                            <option value="gz_forest">森林墨 (Forest Ink)</option>
+                                            <option value="gz_dune">沙丘 (Dune)</option>
+                                            <option value="gz_ikb">瑞士克萊因藍 (Swiss IKB)</option>
+                                        </optgroup>
                             </select>
                         </div>
                     </div>
@@ -865,7 +872,12 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                             quoteStyle === 'od_academic' && "p-4 border-none mt-4",
                             quoteStyle === 'od_gallery' && "p-4 border-none mt-4",
                             quoteStyle === 'od_terminal' && "p-6 border border-slate-800  mt-4",
-                            quoteStyle === 'od_neo_classic' && "p-8 border-double border-4 border-black mt-4"
+                            quoteStyle === 'od_neo_classic' && "p-8 border-double border-4 border-black mt-4",
+                            quoteStyle === 'gz_ink' && "p-8 border border-[#0a0a0b] mt-4",
+                            quoteStyle === 'gz_indigo' && "p-8 bg-[#132a4f] mt-4 border border-[#4da6ff]/30",
+                            quoteStyle === 'gz_forest' && "p-8 border border-[#66b277]/50 mt-4",
+                            quoteStyle === 'gz_dune' && "p-8 bg-[#2a241c] mt-4",
+                            quoteStyle === 'gz_ikb' && "p-8 border-2 border-[#002FA7] mt-4"
                         )}>
                             {/* ... Totals ... */}
                             <div className={cn("flex justify-between font-medium text-sm", (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit" : "text-slate-500")}>
@@ -916,12 +928,27 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                         quoteStyle === 'od_academic' && "bg-transparent border-none rounded-none p-0",
                         quoteStyle === 'od_gallery' && "bg-transparent border-none rounded-none p-0",
                         quoteStyle === 'od_terminal' && "bg-slate-50 border border-slate-800 rounded-none print:bg-white ",
-                        quoteStyle === 'od_neo_classic' && "bg-white border-double border-[4px] border-black rounded-none"
+                        quoteStyle === 'od_neo_classic' && "bg-white border-double border-[4px] border-black rounded-none",
+                                    quoteStyle === 'gz_ink' && "bg-transparent border border-[#0a0a0b] rounded-none",
+                                    quoteStyle === 'gz_indigo' && "bg-[#132a4f] border border-[#4da6ff]/30 rounded-none",
+                                    quoteStyle === 'gz_forest' && "bg-[#233b29] border border-[#66b277]/30 rounded-none",
+                                    quoteStyle === 'gz_dune' && "bg-[#2a241c] rounded-none",
+                                    quoteStyle === 'gz_ikb' && "bg-white border-2 border-[#002FA7] rounded-none",
+                        quoteStyle === 'gz_ink' && "bg-[#e6e4df] border border-[#0a0a0b] rounded-none",
+                        quoteStyle === 'gz_indigo' && "bg-[#132a4f] border-t-2 border-[#4da6ff] rounded-none",
+                        quoteStyle === 'gz_forest' && "bg-[#233b29] border border-[#66b277]/30 rounded-none",
+                        quoteStyle === 'gz_dune' && "bg-[#2a241c] rounded-none",
+                        quoteStyle === 'gz_ikb' && "bg-[#002FA7] text-white rounded-none"
                     )}>
                         <h4 className={cn(
                             "font-bold text-sm mb-6 flex items-center border-b pb-3 uppercase tracking-wider",
                             (quoteStyle === 'od_mono' || quoteStyle === 'od_terminal') ? "text-inherit border-inherit " : "text-slate-600 border-black/20",
                             ['od_swiss', 'od_brutal', 'od_editorial', 'od_architect', 'od_neo_classic'].includes(quoteStyle) && "border-black text-black",
+                            quoteStyle === 'gz_ink' && "border-[#0a0a0b] text-[#0a0a0b]",
+                            quoteStyle === 'gz_indigo' && "border-[#4da6ff]/50 text-[#f1f3f5]",
+                            quoteStyle === 'gz_forest' && "border-[#66b277]/50 text-[#f5f1e8]",
+                            quoteStyle === 'gz_dune' && "border-[#d4a04a]/50 text-[#f0e6d2]",
+                            quoteStyle === 'gz_ikb' && "border-[#002FA7] text-[#002FA7] font-black uppercase tracking-widest",
                             quoteStyle === 'od_receipt' && "border-dashed border-black text-black"
                         )}>
                             <Calculator className="w-4 h-4 mr-2" />
