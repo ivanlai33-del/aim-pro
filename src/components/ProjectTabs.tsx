@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useProject } from "../context/ProjectContext";
-import { Plus, X, Layout, User, Download, Upload, Hammer, Megaphone, PartyPopper, Video, Search, Store, Palette, Code2, Bot, Sparkles, Save, Check, Edit3, FileText } from "lucide-react";
+import { Plus, X, Layout, User, Download, Upload, Hammer, Megaphone, PartyPopper, Video, Search, Store, Palette, Code2, Bot, Sparkles, Save, Check, Edit3, FileText, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useModuleAccess } from "@/hooks/useModuleAccess";
 import { INDUSTRY_CATEGORIES } from "@/config/industries";
@@ -107,6 +107,37 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
         }
     };
 
+    // Option 1: Dropdown Quick Switcher State
+    const [showProjectSwitcher, setShowProjectSwitcher] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'DRAFT' | 'CLOSED'>('ALL');
+
+    const getProjectStatusBadge = (project: any) => {
+        if (project.isManuallyClosed || project.data?.isClosed) {
+            return { stage: 'CLOSED', label: '🔒 已隱蔽', color: 'bg-rose-900/90 text-rose-200 border-rose-600', dot: 'bg-rose-500' };
+        }
+        if (project.firstViewedAt || project.data?.firstExternalViewedAt) {
+            return { stage: 'ACTIVE', label: '🔵 倒數中', color: 'bg-blue-900/90 text-blue-200 border-blue-600', dot: 'bg-blue-400 animate-pulse' };
+        }
+        return { stage: 'DRAFT', label: '🟢 未開啟', color: 'bg-slate-800 text-slate-300 border-slate-600', dot: 'bg-emerald-500' };
+    };
+
+    const getProjectTotalAmount = (project: any) => {
+        if (project.quotationItems && project.quotationItems.length > 0) {
+            const sum = project.quotationItems.reduce((acc: number, item: any) => acc + item.quantity * item.unitPrice, 0);
+            return Math.round(sum * 1.05); // including tax
+        }
+        return project.data?.budget || 0;
+    };
+
+    const filteredProjects = projects.filter((p) => {
+        const matchesSearch = (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (p.data?.clientCompany || p.data?.clientName || '').toLowerCase().includes(searchQuery.toLowerCase());
+        const status = getProjectStatusBadge(p);
+        if (statusFilter === 'ALL') return matchesSearch;
+        return matchesSearch && status.stage === statusFilter;
+    });
+
     return (
         <div className="flex items-center w-full select-none relative z-20">
 
@@ -119,40 +150,187 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                 <Plus className="w-8 h-8 transition-transform group-hover:rotate-90" />
             </button>
 
-            {/* Center: Scrollable Tabs */}
+            {/* Center: Scrollable Tabs with Status Dots */}
             <div className="flex-1 overflow-x-auto no-scrollbar flex items-center px-2 space-x-2">
-                {projects.map((project) => (
-                    <div
-                        key={project.id}
-                        onClick={() => selectProject(project.id)}
-                        className={cn(
-                            "group relative flex items-center min-w-[160px] max-w-[200px] h-12 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all select-none shrink-0 active:scale-[0.98]",
-                            activeProjectId === project.id
-                                ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md z-10 border border-white/20 dark:border-white/10"
-                                : "bg-surface/60 text-muted-foreground hover:bg-surface hover:text-cyan-600 border border-border/50 dark:border-transparent"
-                        )}
-                    >
-                        {getProjectIcon(project.data.projectType)}
-                        <span className="truncate flex-1 pr-6">{project.name || "未命名專案"}</span>
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDeleteRequest({ id: project.id, name: project.name });
-                            }}
+                {projects.map((project) => {
+                    const status = getProjectStatusBadge(project);
+                    return (
+                        <div
+                            key={project.id}
+                            onClick={() => selectProject(project.id)}
                             className={cn(
-                                "absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-all active:scale-[0.98]",
+                                "group relative flex items-center min-w-[170px] max-w-[210px] h-12 px-3.5 rounded-xl text-xs font-bold cursor-pointer transition-all select-none shrink-0 active:scale-[0.98]",
                                 activeProjectId === project.id
-                                    ? "text-white/70 hover:text-white hover:bg-white/20 opacity-100"
-                                    : "text-muted-foreground hover:bg-muted hover:text-destructive opacity-0 group-hover:opacity-100"
+                                    ? "bg-gradient-to-br from-cyan-400 via-cyan-500 to-emerald-500 text-white shadow-md z-10 border border-white/20 dark:border-white/10"
+                                    : "bg-surface/60 text-muted-foreground hover:bg-surface hover:text-cyan-600 border border-border/50 dark:border-transparent"
                             )}
-                            title="刪除專案"
                         >
-                            <X className="w-3 h-3" />
-                        </button>
-                    </div>
-                ))}
+                            {getProjectIcon(project.data.projectType)}
+                            <span className="truncate flex-1 pr-6">{project.name || "未命名專案"}</span>
+                            <span className={cn("w-2 h-2 rounded-full absolute right-8 top-1/2 -translate-y-1/2", status.dot)} title={status.label} />
+
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDeleteRequest({ id: project.id, name: project.name });
+                                }}
+                                className={cn(
+                                    "absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-all active:scale-[0.98]",
+                                    activeProjectId === project.id
+                                        ? "text-white/70 hover:text-white hover:bg-white/20 opacity-100"
+                                        : "text-muted-foreground hover:bg-muted hover:text-destructive opacity-0 group-hover:opacity-100"
+                                )}
+                                title="刪除專案"
+                            >
+                                <X className="w-3 h-3" />
+                            </button>
+                        </div>
+                    );
+                })}
             </div>
+
+            {/* Quick Project Switcher Dropdown Button */}
+            <button
+                onClick={() => setShowProjectSwitcher(true)}
+                className="flex items-center px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-slate-800 text-slate-100 hover:bg-slate-800 dark:hover:bg-slate-700 border border-slate-700 transition-all shadow-sm active:scale-95 mr-2 shrink-0 gap-1.5 cursor-pointer"
+                title="專案快速切換總表 (含有專案狀態、金額與客戶全銜)"
+            >
+                <ChevronDown className="w-4 h-4 text-cyan-400" />
+                <span>切換專案 ({projects.length})</span>
+            </button>
+
+            {/* Option 1: Quick Switcher Dropdown Modal */}
+            {showProjectSwitcher && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden text-slate-100 font-sans space-y-4 p-6">
+                        <div className="flex justify-between items-center pb-3 border-b border-slate-800">
+                            <div className="flex items-center space-x-2">
+                                <span className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
+                                    🗂️
+                                </span>
+                                <div>
+                                    <h3 className="text-base font-bold text-white">專案與報價狀態總覽清單</h3>
+                                    <p className="text-xs text-slate-400">快速搜尋切換專案、檢視即時報價狀態與對帳進度</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowProjectSwitcher(false)}
+                                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Search Bar & Status Filter */}
+                        <div className="flex flex-wrap gap-3 items-center justify-between">
+                            <div className="relative flex-1 min-w-[200px]">
+                                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                                <input
+                                    type="text"
+                                    placeholder="搜尋專案名稱、客戶公司全銜..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                                />
+                            </div>
+
+                            <div className="flex items-center space-x-1 text-xs">
+                                <button
+                                    onClick={() => setStatusFilter('ALL')}
+                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'ALL' ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+                                >
+                                    全部 ({projects.length})
+                                </button>
+                                <button
+                                    onClick={() => setStatusFilter('ACTIVE')}
+                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'ACTIVE' ? 'bg-blue-500 text-white' : 'bg-slate-800 text-blue-400 hover:bg-slate-700'}`}
+                                >
+                                    🔵 倒數中
+                                </button>
+                                <button
+                                    onClick={() => setStatusFilter('DRAFT')}
+                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'DRAFT' ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-emerald-400 hover:bg-slate-700'}`}
+                                >
+                                    🟢 未開啟
+                                </button>
+                                <button
+                                    onClick={() => setStatusFilter('CLOSED')}
+                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'CLOSED' ? 'bg-rose-500 text-white' : 'bg-slate-800 text-rose-400 hover:bg-slate-700'}`}
+                                >
+                                    🔒 已隱蔽
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Project List Cards */}
+                        <div className="max-h-[360px] overflow-y-auto space-y-2 pr-1">
+                            {filteredProjects.length === 0 ? (
+                                <div className="p-8 text-center text-slate-500 text-xs">
+                                    沒有符合條件的專案項目。
+                                </div>
+                            ) : (
+                                filteredProjects.map((p) => {
+                                    const status = getProjectStatusBadge(p);
+                                    const total = getProjectTotalAmount(p);
+                                    const isSelected = p.id === activeProjectId;
+
+                                    return (
+                                        <div
+                                            key={p.id}
+                                            onClick={() => {
+                                                selectProject(p.id);
+                                                setShowProjectSwitcher(false);
+                                            }}
+                                            className={`p-3.5 rounded-2xl border transition cursor-pointer flex flex-wrap items-center justify-between gap-3 ${
+                                                isSelected
+                                                    ? 'bg-gradient-to-r from-cyan-950/60 to-slate-900 border-cyan-500/80 shadow-md'
+                                                    : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                                            }`}
+                                        >
+                                            <div className="flex items-center space-x-3">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg border border-slate-700 shrink-0">
+                                                    {getProjectIcon(p.data?.projectType)}
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <h4 className="font-bold text-sm text-white">{p.name || '未命名專案'}</h4>
+                                                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${status.color}`}>
+                                                            {status.label}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-xs text-slate-400 mt-0.5">
+                                                        客戶：<strong className="text-slate-300">{p.data?.clientCompany || p.data?.clientName || '未指定客戶'}</strong>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center space-x-4">
+                                                <div className="text-right font-mono">
+                                                    <p className="text-xs text-slate-400">專案估價總額</p>
+                                                    <p className="text-sm font-bold text-emerald-400">
+                                                        NT$ {total.toLocaleString()}
+                                                    </p>
+                                                </div>
+
+                                                <a
+                                                    href={`/p/${p.id}?admin=87257257`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="px-2.5 py-1.5 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 text-xs font-bold rounded-lg border border-amber-500/30 transition"
+                                                    title="👑 上帝視角開啟此報價單"
+                                                >
+                                                    👑 預閱 ➔
+                                                </a>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Right: Actions */}
             <div className="flex items-center px-4 space-x-2 h-full z-20 shrink-0 relative">
