@@ -417,7 +417,11 @@ function Dashboard() {
 
                                 {activeTab === 'documents' && (
                                     <div className="animate-in fade-in zoom-in-95 duration-200 h-full">
-                                        <DocumentManager />
+                                        <DocumentManager
+                                            onGoToAgiOffice={(promptMsg) => {
+                                                setActiveTab('chat');
+                                            }}
+                                        />
                                     </div>
                                 )}
 

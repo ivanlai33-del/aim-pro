@@ -7,7 +7,11 @@ import ReactMarkdown from 'react-markdown';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
-export function DocumentManager() {
+interface DocumentManagerProps {
+    onGoToAgiOffice?: (initialMessage?: string) => void;
+}
+
+export function DocumentManager({ onGoToAgiOffice }: DocumentManagerProps) {
     const { activeProject, updateProjectDocuments } = useProject();
     const [editingDocId, setEditingDocId] = useState<string | null>(null);
     const [editContent, setEditContent] = useState('');
@@ -33,25 +37,55 @@ export function DocumentManager() {
         toast.success('合約已更新並存檔');
     };
 
+    const handleJumpToAgiLegal = (msg?: string) => {
+        if (onGoToAgiOffice) {
+            onGoToAgiOffice(msg || "（請法務長幫我擬定本專案的正式服務與授權合約）");
+        } else {
+            window.location.href = `/dashboard/agi-office?role=legal`;
+        }
+    };
+
     return (
         <div className="w-full max-w-5xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2 text-slate-800 dark:text-gray-100">
                         <ShieldCheck className="w-7 h-7 text-rose-500" />
                         專案合約與文件庫
                     </h2>
-                    <p className="text-muted-foreground mt-1">
+                    <p className="text-muted-foreground mt-1 text-sm">
                         由法務長 (CLO) 審閱或修訂的正式合約將自動歸檔於此。
                     </p>
                 </div>
+
+                {docs.length > 0 && (
+                    <button
+                        onClick={() => handleJumpToAgiLegal("（請法務長協助審視目前已歸檔的合約，並檢查條款是否有修改空間）")}
+                        className="px-4 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center gap-2"
+                    >
+                        <span>💬 與法務長討論/修訂合約 ➔</span>
+                    </button>
+                )}
             </div>
 
             {docs.length === 0 ? (
-                <div className="flex flex-col items-center justify-center p-12 bg-slate-50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-gray-700">
-                    <FileText className="w-12 h-12 text-slate-300 dark:text-gray-600 mb-4" />
-                    <h3 className="text-lg font-medium text-slate-600 dark:text-gray-400">目前尚無文件</h3>
-                    <p className="text-sm text-slate-500 mt-2">請至 AGI 辦公室請法務顧問擬定合約</p>
+                <div className="flex flex-col items-center justify-center p-12 bg-slate-50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-gray-700 text-center space-y-4">
+                    <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center border border-rose-500/20">
+                        <FileText className="w-8 h-8" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-700 dark:text-gray-200">目前尚無歸檔合約</h3>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mt-1 max-w-sm">
+                            您可以直接點擊下方按鈕跳轉至 AGI 辦公室，由法務長 (CLO) 為您量身擬定專業合約。
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => handleJumpToAgiLegal("（請法務長幫我擬定本專案的正式服務與授權合約，包含專案範圍、驗收標準與智財權切結）")}
+                        className="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-sm rounded-xl shadow-xl hover:shadow-rose-500/20 transition active:scale-95 flex items-center gap-2"
+                    >
+                        <span>🚀 點擊直接跳轉至 AGI 辦公室請法務擬定合約 ➔</span>
+                    </button>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 gap-6">
@@ -75,7 +109,14 @@ export function DocumentManager() {
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => handleJumpToAgiLegal(`（請法務長針對這份合約【${doc.title}】進行條款審視與說明）`)}
+                                        className="px-3 py-1.5 text-xs bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 font-bold rounded-lg transition"
+                                    >
+                                        💬 請法務審視此條款
+                                    </button>
+
                                     {editingDocId === doc.id ? (
                                         <div className="flex items-center gap-2">
                                             <button 
@@ -95,6 +136,7 @@ export function DocumentManager() {
                                         <button 
                                             onClick={() => handleEdit(doc)}
                                             className="p-2 text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                            title="編輯合約內容"
                                         >
                                             <FileEdit className="w-4 h-4" />
                                         </button>
