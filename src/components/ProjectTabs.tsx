@@ -114,12 +114,12 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
 
     const getProjectStatusBadge = (project: any) => {
         if (project.isManuallyClosed || project.data?.isClosed) {
-            return { stage: 'CLOSED', label: '🔒 已隱蔽', color: 'bg-rose-900/90 text-rose-200 border-rose-600', dot: 'bg-rose-500' };
+            return { stage: 'CLOSED', label: '🔒 已隱蔽', color: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800', dot: 'bg-rose-500' };
         }
         if (project.firstViewedAt || project.data?.firstExternalViewedAt) {
-            return { stage: 'ACTIVE', label: '🔵 倒數中', color: 'bg-blue-900/90 text-blue-200 border-blue-600', dot: 'bg-blue-400 animate-pulse' };
+            return { stage: 'ACTIVE', label: '🔵 倒數中', color: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800', dot: 'bg-blue-500 animate-pulse' };
         }
-        return { stage: 'DRAFT', label: '🟢 未開啟', color: 'bg-slate-800 text-slate-300 border-slate-600', dot: 'bg-emerald-500' };
+        return { stage: 'DRAFT', label: '🟢 未開啟', color: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800', dot: 'bg-emerald-500' };
     };
 
     const getProjectTotalAmount = (project: any) => {
@@ -231,7 +231,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                                     placeholder="搜尋專案名稱、客戶公司全銜..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 bg-muted/40 dark:bg-slate-800/80 border border-border dark:border-slate-700 rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
+                                    className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all font-medium"
                                 />
                             </div>
 
