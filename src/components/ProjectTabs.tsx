@@ -201,84 +201,105 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                             </button>
                         )}
 
-                        {/* Review / Edit Panel Popover */}
+                        {/* Review / Edit Panel Modal (Fixed Z-[9999] Overlay to avoid clipping) */}
                         {showInstructionsPanel && (
-                            <div className="absolute top-full right-0 mt-3 w-[420px] bg-surface rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1)] border border-border dark:border-transparent overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                                <div className="p-4 bg-muted/50 border-b border-border dark:border-transparent flex justify-between items-center backdrop-blur-sm">
-                                    <div className="flex items-center gap-2">
-                                        <Bot className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                                        <span className="font-bold text-sm text-foreground">專案專屬 AI 角色指令</span>
-                                    </div>
-                                    <button 
-                                        onClick={() => setShowInstructionsPanel(false)}
-                                        className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-surface-hover transition-colors"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-
-                                <div className="p-5 space-y-4">
-                                    {!isEditingInstructions ? (
-                                        // Read-only Review Panel
-                                        <div className="space-y-4 animate-in fade-in duration-200">
-                                            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200/80 rounded-xl p-3">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                                                    <span className="text-xs font-bold text-emerald-800">Active</span>
-                                                </div>
-                                                <span className="text-[11px] text-emerald-600 font-medium">於每次 AI 估價/分析時自動注入</span>
-                                            </div>
-
-                                            <div className="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs font-mono whitespace-pre-wrap max-h-[220px] overflow-y-auto shadow-inner border border-slate-800 leading-relaxed">
-                                                {currentInstruction}
-                                            </div>
-
-                                            <div className="flex justify-end gap-2 pt-2">
-                                                <button
-                                                    onClick={() => setIsEditingInstructions(true)}
-                                                    className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition-all shadow-md active:scale-95"
-                                                >
-                                                    <Edit3 className="w-4 h-4" />
-                                                    編輯指令 (Edit Instructions)
-                                                </button>
-                                            </div>
+                            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
+                                <div className="w-full max-w-lg bg-surface dark:bg-slate-900 rounded-2xl shadow-2xl border border-border dark:border-slate-800 overflow-hidden text-foreground">
+                                    <div className="p-4 bg-muted/60 dark:bg-slate-800/80 border-b border-border dark:border-slate-800 flex justify-between items-center">
+                                        <div className="flex items-center gap-2">
+                                            <Bot className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                                            <span className="font-bold text-sm text-foreground">專案專屬 AI 角色指令 (Custom Instructions)</span>
                                         </div>
-                                    ) : (
-                                        // Edit Mode
-                                        <div className="space-y-4 animate-in fade-in duration-200">
-                                            <div className="flex items-center justify-between">
-                                                <label className="text-xs font-bold text-foreground">自訂指令內容 (Instructions)</label>
-                                                {currentInstruction && (
+                                        <button 
+                                            onClick={() => setShowInstructionsPanel(false)}
+                                            className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-surface-hover transition-colors"
+                                            title="關閉"
+                                        >
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                    </div>
+
+                                    <div className="p-5 space-y-4">
+                                        {!isEditingInstructions ? (
+                                            // Read-only Review Panel
+                                            <div className="space-y-4 animate-in fade-in duration-200">
+                                                <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800 rounded-xl p-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                                                        <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">Active</span>
+                                                    </div>
+                                                    <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">於每次 AI 估價/分析時自動注入</span>
+                                                </div>
+
+                                                <div className="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs font-mono whitespace-pre-wrap max-h-[220px] overflow-y-auto shadow-inner border border-slate-800 leading-relaxed">
+                                                    {currentInstruction}
+                                                </div>
+
+                                                <div className="flex items-center justify-end gap-3 pt-2">
                                                     <button
+                                                        onClick={() => setShowInstructionsPanel(false)}
+                                                        className="w-1/2 flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer"
+                                                    >
+                                                        關閉 (Close)
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setIsEditingInstructions(true)}
+                                                        className="w-1/2 flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-500 transition-all shadow-md active:scale-95 cursor-pointer"
+                                                    >
+                                                        <Edit3 className="w-4 h-4" />
+                                                        編輯指令 (Edit)
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            // Edit Mode
+                                            <div className="space-y-4 animate-in fade-in duration-200">
+                                                <div className="flex items-center justify-between">
+                                                    <label className="text-xs font-bold text-foreground">自訂指令內容 (Instructions)</label>
+                                                    {currentInstruction && (
+                                                        <button
+                                                            onClick={() => {
+                                                                setInstructionInput(currentInstruction);
+                                                                setIsEditingInstructions(false);
+                                                            }}
+                                                            className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                                                        >
+                                                            返回檢視
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                <textarea
+                                                    value={instructionInput}
+                                                    onChange={(e) => setInstructionInput(e.target.value)}
+                                                    placeholder="請輸入給 AI 的專案專屬指示，例如：請以資深架構師的角度審查合約，並嚴格限制修改次數不超過 3 次..."
+                                                    className="w-full h-[180px] p-3.5 border border-input rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/20 focus:border-ring outline-none resize-none leading-relaxed bg-input focus:bg-surface transition-all font-sans"
+                                                />
+
+                                                <div className="flex items-center justify-end gap-3 pt-2">
+                                                    <button
+                                                        type="button"
                                                         onClick={() => {
                                                             setInstructionInput(currentInstruction);
-                                                            setIsEditingInstructions(false);
+                                                            setShowInstructionsPanel(false);
                                                         }}
-                                                        className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                                                        className="w-1/2 flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer"
                                                     >
-                                                        返回檢視 (Cancel)
+                                                        <X className="w-4 h-4" />
+                                                        取消 (Cancel)
                                                     </button>
-                                                )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleSaveInstructions}
+                                                        className="w-1/2 flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:brightness-110 transition-all shadow-lg shadow-indigo-500/25 active:scale-95 cursor-pointer"
+                                                    >
+                                                        <Save className="w-4 h-4" />
+                                                        儲存並啟用 (Save & Activate)
+                                                    </button>
+                                                </div>
                                             </div>
-
-                                            <textarea
-                                                value={instructionInput}
-                                                onChange={(e) => setInstructionInput(e.target.value)}
-                                                placeholder="請輸入給 AI 的專案專屬指示，例如：請以資深架構師的角度審查合約，並嚴格限制修改次數不超過 3 次..."
-                                                className="w-full h-[180px] p-3.5 border border-input rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/20 focus:border-ring outline-none resize-none leading-relaxed bg-input focus:bg-surface transition-all font-sans"
-                                            />
-
-                                            <div className="flex justify-end gap-2 pt-2">
-                                                <button
-                                                    onClick={handleSaveInstructions}
-                                                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:brightness-110 transition-all shadow-lg shadow-indigo-500/25 active:scale-95"
-                                                >
-                                                    <Save className="w-4 h-4" />
-                                                    儲存並啟用 (Save & Activate)
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}
