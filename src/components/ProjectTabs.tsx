@@ -192,30 +192,31 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
             {/* Quick Project Switcher Dropdown Button */}
             <button
                 onClick={() => setShowProjectSwitcher(true)}
-                className="flex items-center px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-slate-800 text-slate-100 hover:bg-slate-800 dark:hover:bg-slate-700 border border-slate-700 transition-all shadow-sm active:scale-95 mr-2 shrink-0 gap-1.5 cursor-pointer"
+                className="flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500/10 via-emerald-500/10 to-teal-500/10 hover:from-cyan-500/20 hover:to-emerald-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 transition-all shadow-sm active:scale-95 mr-2 shrink-0 gap-1.5 cursor-pointer backdrop-blur-sm"
                 title="專案快速切換總表 (含有專案狀態、金額與客戶全銜)"
             >
-                <ChevronDown className="w-4 h-4 text-cyan-400" />
+                <ChevronDown className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                 <span>切換專案 ({projects.length})</span>
             </button>
 
             {/* Option 1: Quick Switcher Dropdown Modal */}
             {showProjectSwitcher && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden text-slate-100 font-sans space-y-4 p-6">
-                        <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-                            <div className="flex items-center space-x-2">
-                                <span className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="w-full max-w-2xl bg-surface dark:bg-slate-900 border border-border dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden text-foreground font-sans space-y-4 p-6">
+                        <div className="flex justify-between items-center pb-3 border-b border-border dark:border-slate-800">
+                            <div className="flex items-center space-x-3">
+                                <span className="w-9 h-9 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold border border-cyan-500/30 text-base shadow-sm">
                                     🗂️
                                 </span>
                                 <div>
-                                    <h3 className="text-base font-bold text-white">專案與報價狀態總覽清單</h3>
-                                    <p className="text-xs text-slate-400">快速搜尋切換專案、檢視即時報價狀態與對帳進度</p>
+                                    <h3 className="text-base font-bold text-foreground">專案與報價狀態總覽清單</h3>
+                                    <p className="text-xs text-muted-foreground mt-0.5">快速搜尋切換專案、檢視即時報價狀態與對帳進度</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setShowProjectSwitcher(false)}
-                                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+                                className="text-muted-foreground hover:text-foreground p-1.5 rounded-xl hover:bg-muted/80 transition cursor-pointer"
+                                title="關閉"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -224,38 +225,38 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         {/* Search Bar & Status Filter */}
                         <div className="flex flex-wrap gap-3 items-center justify-between">
                             <div className="relative flex-1 min-w-[200px]">
-                                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                                <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                                 <input
                                     type="text"
                                     placeholder="搜尋專案名稱、客戶公司全銜..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                                    className="w-full pl-10 pr-4 py-2.5 bg-muted/40 dark:bg-slate-800/80 border border-border dark:border-slate-700 rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
                                 />
                             </div>
 
-                            <div className="flex items-center space-x-1 text-xs">
+                            <div className="flex items-center space-x-1.5 text-xs">
                                 <button
                                     onClick={() => setStatusFilter('ALL')}
-                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'ALL' ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-xl font-bold transition shadow-xs cursor-pointer ${statusFilter === 'ALL' ? 'bg-gradient-to-r from-cyan-500 to-emerald-500 text-white' : 'bg-muted text-muted-foreground hover:bg-surface-hover border border-border/50'}`}
                                 >
                                     全部 ({projects.length})
                                 </button>
                                 <button
                                     onClick={() => setStatusFilter('ACTIVE')}
-                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'ACTIVE' ? 'bg-blue-500 text-white' : 'bg-slate-800 text-blue-400 hover:bg-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-xl font-bold transition shadow-xs cursor-pointer ${statusFilter === 'ACTIVE' ? 'bg-blue-600 text-white' : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30 hover:bg-blue-100 dark:hover:bg-blue-500/20'}`}
                                 >
                                     🔵 倒數中
                                 </button>
                                 <button
                                     onClick={() => setStatusFilter('DRAFT')}
-                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'DRAFT' ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-emerald-400 hover:bg-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-xl font-bold transition shadow-xs cursor-pointer ${statusFilter === 'DRAFT' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-100 dark:hover:bg-emerald-500/20'}`}
                                 >
                                     🟢 未開啟
                                 </button>
                                 <button
                                     onClick={() => setStatusFilter('CLOSED')}
-                                    className={`px-3 py-1.5 rounded-lg font-bold transition ${statusFilter === 'CLOSED' ? 'bg-rose-500 text-white' : 'bg-slate-800 text-rose-400 hover:bg-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-xl font-bold transition shadow-xs cursor-pointer ${statusFilter === 'CLOSED' ? 'bg-rose-600 text-white' : 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 hover:bg-rose-100 dark:hover:bg-rose-500/20'}`}
                                 >
                                     🔒 已隱蔽
                                 </button>
@@ -263,9 +264,9 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                         </div>
 
                         {/* Project List Cards */}
-                        <div className="max-h-[360px] overflow-y-auto space-y-2 pr-1">
+                        <div className="max-h-[360px] overflow-y-auto space-y-2.5 pr-1">
                             {filteredProjects.length === 0 ? (
-                                <div className="p-8 text-center text-slate-500 text-xs">
+                                <div className="p-8 text-center text-muted-foreground text-xs">
                                     沒有符合條件的專案項目。
                                 </div>
                             ) : (
@@ -283,31 +284,31 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                                             }}
                                             className={`p-3.5 rounded-2xl border transition cursor-pointer flex flex-wrap items-center justify-between gap-3 ${
                                                 isSelected
-                                                    ? 'bg-gradient-to-r from-cyan-950/60 to-slate-900 border-cyan-500/80 shadow-md'
-                                                    : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80'
+                                                    ? 'bg-gradient-to-r from-cyan-500/15 via-emerald-500/10 to-transparent border-2 border-cyan-500 dark:border-cyan-400 shadow-md'
+                                                    : 'bg-muted/30 dark:bg-slate-800/40 border-border dark:border-slate-800 hover:border-cyan-500/50 hover:bg-surface dark:hover:bg-slate-800/80'
                                             }`}
                                         >
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg border border-slate-700 shrink-0">
+                                                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg border border-cyan-500/20 shrink-0 shadow-sm">
                                                     {getProjectIcon(p.data?.projectType)}
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center space-x-2">
-                                                        <h4 className="font-bold text-sm text-white">{p.name || '未命名專案'}</h4>
-                                                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${status.color}`}>
+                                                        <h4 className="font-bold text-sm text-foreground">{p.name || '未命名專案'}</h4>
+                                                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${status.color}`}>
                                                             {status.label}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs text-slate-400 mt-0.5">
-                                                        客戶：<strong className="text-slate-300">{p.data?.clientCompany || p.data?.clientName || '未指定客戶'}</strong>
+                                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                                        客戶：<strong className="text-foreground">{p.data?.clientCompany || p.data?.clientName || '未指定客戶'}</strong>
                                                     </p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-center space-x-4">
                                                 <div className="text-right font-mono">
-                                                    <p className="text-xs text-slate-400">專案估價總額</p>
-                                                    <p className="text-sm font-bold text-emerald-400">
+                                                    <p className="text-[11px] text-muted-foreground">專案估價總額</p>
+                                                    <p className="text-sm font-black text-cyan-600 dark:text-cyan-400">
                                                         NT$ {total.toLocaleString()}
                                                     </p>
                                                 </div>
@@ -317,7 +318,7 @@ export default function ProjectTabs({ onDeleteRequest, onImport, onExport, onSet
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     onClick={(e) => e.stopPropagation()}
-                                                    className="px-2.5 py-1.5 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 text-xs font-bold rounded-lg border border-amber-500/30 transition"
+                                                    className="px-3 py-1.5 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 text-xs font-bold rounded-xl border border-amber-500/30 transition shadow-xs"
                                                     title="👑 上帝視角開啟此報價單"
                                                 >
                                                     👑 預閱 ➔
