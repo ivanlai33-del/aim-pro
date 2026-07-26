@@ -181,11 +181,31 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
                             AI 將參考本專案的評估報告與上下文進行回覆
                         </div>
                     </div>
-                    <div className="flex space-x-3">
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={() => {
+                                setInputMessage("（請 AGI 顧問審視目前報價單項目的合理性、利潤率與可能的項目漏估風險）");
+                            }}
+                            disabled={isLoading}
+                            className="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow hover:brightness-110 text-xs font-black transition-all active:scale-95 disabled:opacity-50"
+                            title="請 AGI 審視報價明細"
+                        >
+                            🔍 AGI 審視報價單
+                        </button>
+                        <button
+                            onClick={() => {
+                                setInputMessage("（請 AGI 法律顧問檢查服務合約條款對職人的權益保障，並檢查是否有爭議隱患）");
+                            }}
+                            disabled={isLoading}
+                            className="px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl shadow hover:brightness-110 text-xs font-black transition-all active:scale-95 disabled:opacity-50"
+                            title="請 AGI 法律顧問檢查合約"
+                        >
+                            ⚖️ AGI 條款檢查
+                        </button>
                         <button
                             onClick={() => handleGenerateReply('payment')}
                             disabled={isLoading}
-                            className="px-4 py-2.5 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl shadow-lg shadow-red-200 hover:brightness-110 text-sm font-black transition-all active:scale-95 disabled:opacity-50"
+                            className="px-3 py-2 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl shadow hover:brightness-110 text-xs font-black transition-all active:scale-95 disabled:opacity-50"
                             title="發出正式催款通知"
                         >
                             💰 催款通知
@@ -193,7 +213,7 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
                         <button
                             onClick={() => handleGenerateReply('followup')}
                             disabled={isLoading}
-                            className="px-4 py-2.5 bg-gradient-to-br from-sky-500 to-indigo-600 text-white rounded-xl shadow-lg shadow-sky-200 hover:brightness-110 text-sm font-black transition-all active:scale-95 disabled:opacity-50"
+                            className="px-3 py-2 bg-gradient-to-br from-sky-500 to-indigo-600 text-white rounded-xl shadow hover:brightness-110 text-xs font-black transition-all active:scale-95 disabled:opacity-50"
                             title="客戶已讀不回時使用"
                         >
                             👋 主動追問

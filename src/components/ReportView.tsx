@@ -479,8 +479,31 @@ export default function ReportView({ reportContent, onSave, apiKey }: ReportView
                         <p>本文件由 Aim pro 自動生成，報價與時程僅供參考。</p>
                     </div>
 
+                    {/* Protected Proposal Portal CTA Banner */}
+                    <div className="mt-8 rounded-[20px] bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border border-emerald-500/40 p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-500/10">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                                <Sparkles className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <p className="font-black text-white text-base">🛡️ 將分析報告一鍵轉化為「HTML 線上保密防禦報價單」</p>
+                                <p className="text-slate-300 text-sm mt-0.5">具備 5 重防複製、VPN 海外自動攔截、預約對帳戶名綁定與白紙黑字簽核列印</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => {
+                                const projectId = activeProject?.id || 'demo';
+                                window.open(`/p/${projectId}?admin=87257257`, '_blank');
+                            }}
+                            className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-emerald-500/25 whitespace-nowrap"
+                        >
+                            🚀 開啟 HTML 保密防禦網址
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </div>
+
                     {/* Visual Studio CTA Banner */}
-                    <div className="mt-8 rounded-[20px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-emerald-500/20 p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-500/5">
+                    <div className="mt-4 rounded-[20px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-emerald-500/20 p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-500/5">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
                                 <Wand2 className="w-6 h-6 text-white" />

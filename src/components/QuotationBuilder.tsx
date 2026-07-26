@@ -431,6 +431,19 @@ export default function QuotationBuilder({ projectData, reportContent }: Quotati
                 <div className="flex items-center gap-6 -mt-5">
                     <button
                         type="button"
+                        onClick={() => {
+                            const pid = activeProject?.id || 'demo';
+                            window.open(`/p/${pid}?admin=87257257`, '_blank');
+                        }}
+                        className="flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl hover:brightness-110 transition-all font-black text-sm shadow-xl shadow-emerald-200 active:scale-95 h-[68px] scale-110 origin-right"
+                        title="發布為 HTML 線上保密防禦報價單 (防拷/防圖文合成/VPN自動攔截)"
+                    >
+                        <Sparkles className="w-5 h-5 mr-2" />
+                        🚀 發布為 HTML 保密防禦網址
+                    </button>
+
+                    <button
+                        type="button"
                         onClick={() => setViewMode('contract')}
                         className="flex items-center px-6 py-3 bg-gradient-to-br from-violet-600 to-indigo-700 text-white rounded-2xl hover:brightness-110 transition-all font-black text-sm shadow-xl shadow-indigo-200 active:scale-95 h-[68px] scale-110 origin-right"
                         title="生成正式合約書"
